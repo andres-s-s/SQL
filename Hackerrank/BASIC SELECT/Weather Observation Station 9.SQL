@@ -1,0 +1,17 @@
+--MySQL  &  MS SQL Server
+SELECT DISTINCT city FROM STATION WHERE LEFT(city , "1") NOT IN ("a","e","i","o","u");
+
+--MySQL
+SELECT DISTINCT city FROM STATION WHERE city NOT RLIKE  "^[aeiou]";
+
+--MySQL
+SELECT DISTINCT city FROM STATION WHERE city RLIKE  "^[^aeiou]";
+
+--MySQL
+SELECT DISTINCT city FROM STATION WHERE REGEXP_LIKE(city , "^[^aioue]");
+
+--MS SQL Server
+SELECT DISTINCT city FROM STATION WHERE city NOT LIKE "[aeiou]%";
+
+--MS SQL Server
+SELECT DISTINCT city FROM STATION WHERE city LIKE "[^aeiou]%";

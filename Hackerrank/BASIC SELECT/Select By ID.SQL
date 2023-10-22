@@ -1,0 +1,2 @@
+--MySQL  &  MS SQL Server
+SELECT * FROM CITY WHERE id = 1661;

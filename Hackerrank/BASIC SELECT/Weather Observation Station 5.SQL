@@ -1,0 +1,9 @@
+--MySQL
+SELECT city , LENGTH(city) FROM STATION ORDER BY LENGTH(city) ASC  , city LIMIT 1;
+SELECT city , LENGTH(city) FROM STATION ORDER BY LENGTH(city) DESC , city LIMIT 1;
+
+
+
+--MS SQL Server
+SELECT TOP 1 city , LEN(city) FROM STATION ORDER BY LEN(city) ASC  , city;
+SELECT TOP 1 city , LEN(city) FROM STATION ORDER BY LEN(city) DESC , city;
