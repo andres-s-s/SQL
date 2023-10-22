@@ -1,2 +1,2 @@
 # SQL
-Here you cand find different solutions to SQL problems 
+Here you can find different solutions to SQL problems 
