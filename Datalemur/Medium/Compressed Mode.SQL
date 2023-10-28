@@ -1,4 +1,4 @@
-# 1
+-- 1
 SELECT item_count AS mode
 FROM items_per_order
 WHERE order_occurrences = 
@@ -6,7 +6,7 @@ WHERE order_occurrences =
 ORDER BY item_count ASC ;
 
 
-# 2
+-- 2
 SELECT item_count AS mode
 FROM items_per_order
 WHERE order_occurrences = 
