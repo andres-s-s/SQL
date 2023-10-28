@@ -1,4 +1,4 @@
-# 1
+-- 1
 SELECT
   item_type ,
   ROUND( (500000 -  (SELECT SUM(square_footage) FROM inventory 
@@ -22,7 +22,7 @@ GROUP BY item_type;
 
 
 
-# 2
+-- 2
 WITH Summary AS (
   SELECT 
     SUM(CASE WHEN item_type = 'not_prime' THEN square_footage END ) 
