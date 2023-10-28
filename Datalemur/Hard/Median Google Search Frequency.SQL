@@ -1,4 +1,4 @@
-# 1 
+-- 1 
 SELECT 
 ROUND(
   CASE WHEN LENGTH(d_set) % 2 != 0 
@@ -18,7 +18,7 @@ FROM (
 
 
 
-# 2
+-- 2
 WITH T AS (
   SELECT searches , GENERATE_SERIES(1 , num_users , 1)
   FROM search_frequency
