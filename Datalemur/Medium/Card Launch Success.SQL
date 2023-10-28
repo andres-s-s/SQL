@@ -1,4 +1,4 @@
-# 1
+-- 1
 SELECT card_name , issued_amount 
   FROM (
     SELECT 
@@ -13,7 +13,7 @@ WHERE rnk = 1
 ORDER BY issued_amount DESC ;
 
 
-# 2
+-- 2
 SELECT card_name , issued_amount 
 FROM (
     SELECT card_name , issued_amount ,
