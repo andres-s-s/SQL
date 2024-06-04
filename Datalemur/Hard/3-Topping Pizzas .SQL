@@ -6,7 +6,7 @@ Sort the results with the highest total cost on the top followed by pizza toppin
 
 
 select
-    concat(p1.topping_name , ',' , p2.topping_name , ',' , p3.topping_name) as pizza
+    concat( p1.topping_name ,  ','  , p2.topping_name ,  ','  , p3.topping_name ) as pizza
   , p1.ingredient_cost + p2.ingredient_cost + p3.ingredient_cost as total_cost
 
 from 
