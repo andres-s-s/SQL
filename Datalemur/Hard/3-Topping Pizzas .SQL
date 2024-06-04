@@ -8,7 +8,8 @@ from
   , pizza_toppings as p3
 
 where 
-      p1.topping_name < p2.topping_name
+      1=1
+  and p1.topping_name < p2.topping_name
   and p2.topping_name < p3.topping_name
 
 order by 
