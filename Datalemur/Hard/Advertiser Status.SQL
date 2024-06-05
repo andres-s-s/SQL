@@ -1,14 +1,22 @@
-SELECT COALESCE(A.user_id , D.user_id ) AS user_id ,
-  CASE 
-    WHEN D.user_id IS NULL THEN 'CHURN'
-    ELSE 
-      CASE
-        WHEN A.status = 'CHURN'  THEN 'RESURRECT'
-        WHEN A.user_id  IS NULL  THEN 'NEW' 
-        ELSE  'EXISTING'
-      END
-  END AS new_status
-FROM advertiser A
-FULL OUTER JOIN daily_pay D
-  ON D.user_id = A.user_id
-ORDER BY user_id;
+select 
+    coalesce(a.user_id , d.user_id ) as user_id_coalesce
+  , case 
+      when d.user_id is null then 'CHURN'
+      else 
+
+        case
+          when a.status = 'CHURN'  then 'RESURRECT'
+          when a.user_id  is null  then 'NEW' 
+          else  'EXISTING'
+        end
+
+    end as new_status
+
+from 
+  advertiser a
+  
+  full outer join daily_pay d
+    on d.user_id = a.user_id
+
+order by 
+    user_id_coalesce;

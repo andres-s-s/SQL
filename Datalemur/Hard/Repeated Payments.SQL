@@ -1,11 +1,18 @@
-WITH T AS (
-SELECT 
-  CASE WHEN 
-  EXTRACT( EPOCH FROM ( transaction_timestamp -
-  LAG(transaction_timestamp) 
-  OVER(PARTITION BY credit_card_id , merchant_id ,  amount ) ) ) <=600
-  THEN 1 ELSE NULL 
-  END AS tf
-FROM transactions
+with T as (
+    select 
+      case 
+        when extract( epoch from ( transaction_timestamp - lag(transaction_timestamp) 
+        over(partition by credit_card_id , merchant_id ,  amount ) ) ) <=600
+        then 1 else null 
+      end as tf
+
+    from 
+      transactions
 )
-SELECT COUNT(tf) FROM T;
+
+
+select 
+    COUNT(tf) 
+
+from 
+  T;
