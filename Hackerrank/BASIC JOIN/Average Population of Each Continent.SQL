@@ -6,4 +6,6 @@ SELECT
 FROM COUNTRY Co 
 
 JOIN CITY C 
-  ON C.countrycode = Co.code GROUP BY  Co.continent ;
+  ON C.countrycode = Co.code 
+
+GROUP BY  Co.continent ;
