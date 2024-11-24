@@ -12,12 +12,12 @@ Output how many not_prime and prime_eligible items fit in the warehouse
 
 with 
     summary as (
-  select 
-    sum(   case when item_type = 'not_prime'      then square_footage end ) as np_sf   
-  , count( case when item_type = 'not_prime'      then square_footage end ) as np_cnt  
-  , sum(   case when item_type = 'prime_eligible' then square_footage end ) as pe_sf  
-  , count( case when item_type = 'prime_eligible' then square_footage end ) as pe_cnt
-  
+  select     -- When the "case when statment" does not find a match it'll put a null value
+      sum(   case when item_type = 'not_prime'      then square_footage end ) as np_sf   
+    , count( case when item_type = 'not_prime'      then square_footage end ) as np_cnt  
+    , sum(   case when item_type = 'prime_eligible' then square_footage end ) as pe_sf  
+    , count( case when item_type = 'prime_eligible' then square_footage end ) as pe_cnt
+    
   from 
     inventory
 ) 

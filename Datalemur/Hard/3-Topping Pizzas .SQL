@@ -1,13 +1,24 @@
 /*
-Instructions:
-Given a list of pizza toppings, consider all the possible 3-topping pizzas, and print out the total cost of those 3 toppings.
-Sort the results with the highest total cost on the top followed by pizza toppings in ascending order
+  Instructions:
+  Given a list of pizza toppings, consider all the possible 3-topping pizzas, and print 
+  out the total cost of those 3 toppings.
+
+  Sort the results with the highest total cost on the top followed by pizza topping names 
+  in ascending order
+
+  There is only one table called pizza_toppings
 */
 
 
 select
-    concat( p1.topping_name ,  ','  , p2.topping_name ,  ','  , p3.topping_name ) as pizza
-  , p1.ingredient_cost + p2.ingredient_cost + p3.ingredient_cost as total_cost
+    concat(   p1.topping_name 
+            ,  ','  
+            , p2.topping_name 
+            ,  ','  
+            , p3.topping_name 
+            ) as pizza
+  , p1.ingredient_cost  +  p2.ingredient_cost  +  p3.ingredient_cost 
+        as total_cost
 
 from 
     pizza_toppings as p1
@@ -17,11 +28,16 @@ from
 where 
       1=1
   and p1.topping_name < p2.topping_name --This will be a match      Jalapenos < Onions
-  and p2.topping_name < p3.topping_name --This will not be a match  Onions    < Jalapenos
+  and p2.topping_name < p3.topping_name --This will NOT be a match  Onions    < Jalapenos
   /*
-  Remember that a < z 
-  Making these joins using these conditions will also allow us not to repeat a list of ingredients 
-  in different order, each row is unique
+    Remember that a < z 
+    Using these conditions will also allow us not to repeat a list of ingredients 
+    in different order, each row is unique
+
+
+    Using < allows to get the pizza toppings in alphabetical order in the concat funtion
+    Well as shown in the next piece of code this is not technically true but in order not 
+    to over complicate things I did it this way.
   */
 
 order by
@@ -33,22 +49,37 @@ order by
 
 
 /*
-Alternative
+  Alternative
+  Just for practice, I replace < with > and the logic of the where conditions is now in 
+  the join statements
+
+  In the select statement the order of the topping_names is the opposite as before
+  Now you can see it starts with p3.topping_name because of the > change
 */
 
 select
-    concat( p1.topping_name ,  ','  , p2.topping_name ,  ','  , p3.topping_name ) as pizza
-  , p1.ingredient_cost + p2.ingredient_cost + p3.ingredient_cost as total_cost
+    p3.topping_name
+        ||  ','  
+        || p2.topping_name 
+        ||  ','  
+        || p1.topping_name 
+        as pizza
+  , p1.ingredient_cost  +  p2.ingredient_cost  +  p3.ingredient_cost 
+        as total_cost
 
 from 
   pizza_toppings as p1
 
     join pizza_toppings as p2
-      on p1.topping_name < p2.topping_name
+      on p1.topping_name > p2.topping_name
     
     join pizza_toppings as p3
-      on p2.topping_name < p3.topping_name
+      on p2.topping_name > p3.topping_name
 
 order by
     total_cost desc
   , pizza asc;
+
+
+
+

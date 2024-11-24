@@ -1,17 +1,20 @@
-SELECT 
-  EXTRACT(YEAR FROM transaction_date) AS yr , 
-  product_id , 
-  spend AS curr_year_spend , 
-  pys AS prev_year_spend   ,
-  ROUND( ( ( spend - pys ) *100.0 )/pys , 2 )
-    AS yoy_rate
-FROM (
-    SELECT
-      * ,
-      LAG(spend) 
-      OVER(PARTITION BY product_id 
-      ORDER BY transaction_date) 
-      AS pys
-    FROM user_transactions
-) AS T
-ORDER BY product_id , transaction_date ASC;
+select 
+    extract(year from transaction_date) as yr
+  , product_id
+  , spend as curr_year_spend 
+  , pys as prev_year_spend
+  , round( ( ( spend - pys ) *100.0 )/pys , 2 ) as yoy_rate
+
+from (
+    select
+        *
+      , lag(spend) 
+      , over(partition by product_id 
+      , order by transaction_date) as pys
+    
+    from user_transactions
+) as T
+
+order by 
+    product_id
+  , transaction_date asc;
