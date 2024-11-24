@@ -10,6 +10,11 @@
 */
 
 
+/*
+Cross joins will allow having all the possible combinations and the conditions in the 
+where statement make sure each row is unique
+*/
+
 select
     concat(   p1.topping_name 
             ,  ','  
