@@ -74,8 +74,67 @@ where
       1=1
   and to_char(u.event_date , 'DD/MM/YYYY') like '%07/2022%'
   and exists(
-        select * from users_in_june_of_2022 u_june where u.user_id = u_june.user_id
-  )
+        select 
+            u_june.user_id 
+          
+        from 
+          users_in_june_of_2022 u_june 
+        
+        where 
+            u.user_id = u_june.user_id
+            )
 
 group by
     extract( month from u.event_date );
+
+
+
+
+
+
+
+
+
+-- another
+
+with users_who_performed_actions as (
+  select 
+      u.user_id
+    , extract(month from u.event_date) as mth
+
+  from 
+    user_actions u
+
+  where 
+        1=1
+    and to_char(u.event_date , 'DD/MM/YYYY') like '%07/2022%'
+    or  to_char( u.event_date , 'DD/MM/YYYY' ) like '%06/2022%'
+
+  group by 
+      u.user_id
+    , extract(month from u.event_date) 
+)
+
+, active_users as (
+  select 
+      count( uw.user_id ) 
+    , max(uw.mth) as mnth
+
+  from 
+    users_who_performed_actions uw
+
+  group by 
+      uw.user_id
+    
+  having count( uw.user_id ) > 1
+)
+
+select 
+    au.mnth
+  , count(*)
+  
+from 
+  active_users au
+
+group by 
+    mnth
