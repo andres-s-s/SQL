@@ -80,7 +80,7 @@ The active_users cte takes advantage of that, grouping by user_id in the second 
 and then getting rid of the users who only have one record
 This works because there's only one recod per user in a month therefore if the
 user_id appears only one time that means the user didn't performed an 
-action in both months then with the max funtion takes the current month
+action in both months then the max funtion takes the current month
 This give us a list of users who are active plus the current month
 
 Finally in the last select statement we group by month and count the amount of records

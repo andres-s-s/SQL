@@ -8,20 +8,28 @@ searches	num_users
   2	          2
   3	          3
   4	          1
+
+NOW I realize the only reason this solution worked It is because the number of searches
+in the data is always one digit long
+But It's still interesting
 */
 
 
 --This was my solution before learning about the percentile_cont function
 with 
-    list_of_searches as (
+  list_of_searches as (
     select 
-        repeat( cast( searches as varchar ) , num_users ) as number_of_searches
-    
-    from 
-      search_frequency
-    
-    order by  
-        searches ASC
+        repeat( 
+            cast( searches as varchar ) 
+          , num_users 
+          ) 
+        as number_of_searches
+  
+  from 
+    search_frequency
+  
+  order by  
+      searches asc
 )
 /*
 This  will  turn   into    this
@@ -30,12 +38,16 @@ searches	num_users   |    number_of_searches
 */
 
 
-  , string_of_searches as (
-    select 
-        string_agg(number_of_searches , '') as only_row
+, string_of_searches as (
+  select 
+      string_agg(
+          number_of_searches 
+        , ''
+                ) 
+      as only_row
 
-    from 
-      list_of_searches
+  from 
+    list_of_searches
 )
 /*
 This will outpout only one row turning the list we had before into one single string
@@ -47,29 +59,34 @@ select
       case 
         when length(only_row) % 2 != 0 --If the amount of elements is odd
           then  cast(  
-                  substring( only_row 
-                  , cast( 
-                      ceil( 
-                        length(only_row)/2 ) 
-                    as int ) 
-                  , 1 ) 
-                as int )
+                  substring( 
+                      only_row  -- What string
+                    , cast(     -- The start position. The first position in string is 1
+                        ceil( 
+                            length(only_row)/2 
+                            ) 
+                      as int ) 
+                    , 1         -- The number of characters to extract 
+                           ) 
+                  as int )
           else (                      --If the amount of elements is even
             cast( 
-              substring( only_row  
+              substring( 
+                only_row  
               , length(only_row)/2 
               , 1 ) 
             as int ) 
             + 
             cast( 
-              substring( only_row  
+              substring( 
+                only_row  
               , length(only_row)/2 + 1 
               , 1 ) 
             as int ) 
         )
         /2.0
       end 
-    , 1 ) as median
+    , 1 ) as median 
 
 from
   string_of_searches
@@ -83,9 +100,10 @@ Alternative
 with 
     searches_expanded_as_list as (
     select 
-        searches,num_users
+        searches
+      , num_users
       , generate_series(1 , num_users , 1) as gs
-    -- generate_series ( start , stop , step  )
+    --  generate_series( start , stop , step  )
 
     from
       search_frequency
