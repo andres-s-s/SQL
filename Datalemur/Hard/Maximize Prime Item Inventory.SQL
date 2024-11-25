@@ -31,7 +31,7 @@ The count function gets the total numbers of item per batch
 
 , t as (
   select 500000 - np_sf as space_left
-  
+
   from summary
 )
 /*
@@ -44,11 +44,11 @@ t is a short arbitrary name
 select 
     'prime_eligible' as item_type
   , floor( 
-        (
-          select space_left 
-          from t 
-        )/pe_sf 
-            ) * pe_cnt 
+            (
+              select space_left 
+              from t 
+            ) /pe_sf 
+          ) * pe_cnt 
           as item_count
   /* The result of space_left/pe_sf gets rounded down then multiplied by pe_cnt to know the total items 
      The division gets the amount of batches that fit in   */

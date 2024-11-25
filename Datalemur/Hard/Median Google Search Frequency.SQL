@@ -65,7 +65,7 @@ select
                         ceil( 
                             length(only_row)/2 
                             ) 
-                      as int ) 
+                        as int ) 
                     , 1         -- The number of characters to extract 
                            ) 
                   as int )
