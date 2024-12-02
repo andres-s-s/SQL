@@ -112,8 +112,10 @@ with
 
 select 
     round(
-      percentile_cont(0.50) within group ( order by searches)::decimal 
-    , 1 ) as median
+      percentile_cont(0.50) 
+      within group ( order by searches)::decimal 
+      , 1 ) 
+        as median
   
 from 
   searches_expanded_as_list;
