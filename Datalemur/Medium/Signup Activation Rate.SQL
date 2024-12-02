@@ -1,12 +1,12 @@
-SELECT 
-    ROUND( 
-        COUNT(T.email_id)/COUNT(*)::DECIMAL 
+select 
+    round( 
+        count(t.email_id)/count(*)::decimal 
       , 2 )
-      AS activation_rate
+      as activation_rate
 
-FROM 
-  emails E
+from 
+  emails e
 
-    LEFT JOIN texts T
-      ON T.email_id = E.email_id 
-     AND T.signup_action = 'Confirmed';
+    left join texts t
+      on t.email_id = e.email_id 
+     and t.signup_action = 'confirmed';

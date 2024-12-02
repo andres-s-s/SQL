@@ -1,26 +1,26 @@
-with T as (
-  SELECT 
+with t as (
+  select 
       * 
-    , ROW_NUMBER()
-        OVER(
-          PARTITION BY 
+    , row_number()
+        over(
+          partition by 
               user_id 
-          ORDER BY 
-              transaction_date ASC) 
-      AS ind 
+          order by 
+              transaction_date asc) 
+      as ind 
   
-  FROM 
+  from 
     transactions
 )
 
-SELECT 
+select 
     user_id 
   , spend 
   , transaction_date 
 
-FROM 
-  T 
+from 
+  t 
 
-WHERE 
+where 
       1=1
   and ind = 3;

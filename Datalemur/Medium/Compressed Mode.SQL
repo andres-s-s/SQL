@@ -1,38 +1,38 @@
 -- 1
-SELECT 
+select 
     item_count 
-      AS mode
+      as mode
 
-FROM 
+from 
   items_per_order
 
-WHERE 
+where 
   order_occurrences = 
-      (SELECT 
-          MAX(order_occurrences) 
+      (select 
+          max(order_occurrences) 
        
-       FROM 
+       from 
         items_per_order)
 
-ORDER BY 
-  item_count ASC ;
+order by 
+  item_count asc ;
 
 
 -- 2
-SELECT 
+select 
     item_count 
-      AS mode
+      as mode
 
-FROM 
+from 
   items_per_order
 
-WHERE 
+where 
   order_occurrences = 
-      ( SELECT 
-            MODE() WITHIN GROUP (ORDER BY order_occurrences DESC) 
+      ( select 
+            mode() within group (order by order_occurrences desc) 
 
-        FROM 
+        from 
           items_per_order)
 
-ORDER BY 
-  item_count ASC ;
+order by 
+  item_count asc ;

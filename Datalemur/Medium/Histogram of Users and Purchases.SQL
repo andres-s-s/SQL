@@ -1,32 +1,32 @@
-SELECT 
+select 
     transaction_date 
   , user_id 
-  , COUNT(*) 
+  , count(*) 
 
-FROM (
-  SELECT 
+from (
+  select 
       user_id 
     ,	spend 
     , transaction_date 
-    , DENSE_RANK() 
-        OVER(
-          PARTITION BY 
+    , dense_rank() 
+        over(
+          partition by 
             user_id 
-          ORDER BY 
-            transaction_date DESC 
-        ) AS ind
+          order by 
+            transaction_date desc 
+        ) as ind
   
-  FROM 
+  from 
     user_transactions
-) AS T
+) as t
 
-WHERE 
+where 
       1=1
   and ind = 1 
 
-GROUP BY 
+group by 
     transaction_date 
   , user_id
 
-ORDER BY 
+order by 
     transaction_date;

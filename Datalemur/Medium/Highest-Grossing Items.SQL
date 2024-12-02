@@ -1,35 +1,35 @@
-SELECT 
+select 
     category 
   , product 
-  , sp AS total_spend 
+  , sp as total_spend 
 
-FROM (
-    SELECT 
+from (
+    select 
         * 
-      , ROW_NUMBER() 
-            OVER(
-                PARTITION BY 
+      , row_number() 
+            over(
+                partition by 
                     category 
-                ORDER BY 
-                    sp DESC
+                order by 
+                    sp desc
                     ) 
-            AS ind
-    FROM (
-        SELECT 
+            as ind
+    from (
+        select 
             category 
           , product 
-          , SUM(spend) 
-                AS sp
+          , sum(spend) 
+                as sp
         
-        FROM 
+        from 
             product_spend
         
-        WHERE 
-            EXTRACT( YEAR FROM transaction_date ) = '2022'
+        where 
+            extract( year from transaction_date ) = '2022'
         
-        GROUP BY 
+        group by 
             category 
           , product 
-    ) AS T 
-) AS T2
-WHERE ind IN ( 1 , 2 );
+    ) as t 
+) as t2
+where ind in ( 1 , 2 );

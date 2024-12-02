@@ -1,18 +1,18 @@
-SELECT 
+select 
     user_id 
   , tweet_date 
-  , ROUND(
-      AVG(tweet_count) 
-      OVER( 
-        PARTITION BY 
+  , round(
+      avg(tweet_count) 
+      over( 
+        partition by 
             user_id 
-        ORDER BY 
-            tweet_date ASC 
+        order by 
+            tweet_date asc 
         
-        RANGE BETWEEN 
-            INTERVAL '2' DAY PRECEDING AND CURRENT ROW  ) 
-          --ROWS BETWEEN 2 PRECEDING AND CURRENT ROW )
+        range between 
+            interval '2' day preceding and current row  ) 
+          --rows between 2 preceding and current row )
     , 2) 
-    AS rolling_avg_3d
+    as rolling_avg_3d
 
-FROM tweets;
+from tweets;

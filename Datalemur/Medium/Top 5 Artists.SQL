@@ -1,42 +1,42 @@
-with T as (
-  SELECT 
-      A.artist_name 
-    , COUNT(*) 
-      AS cnt
+with t as (
+  select 
+      a.artist_name 
+    , count(*) 
+      as cnt
   
-  FROM   
-    artists A
+  from   
+    artists a
   
-    JOIN  songs S
-      ON  S.artist_id = A.artist_id 
+    join  songs s
+      on  s.artist_id = a.artist_id 
   
-    JOIN global_song_rank G
-      ON G.song_id = S.song_id
+    join global_song_rank g
+      on g.song_id = s.song_id
   
-  WHERE  
+  where  
         1=1
-    and G.rank <= 10 
+    and g.rank <= 10 
   
-  GROUP BY  
-      A.artist_id 
-    , A.artist_name
+  group by  
+      a.artist_id 
+    , a.artist_name
 )
 
-, T2 as (
-  SELECT 
+, t2 as (
+  select 
       artist_name 
-    , DENSE_RANK() OVER(ORDER BY cnt DESC ) 
-      AS artist_rank
+    , dense_rank() over(order by cnt desc ) 
+      as artist_rank
   
-  FROM 
-    T
+  from 
+    t
 
 )
 
 
-SELECT 
+select 
     * 
-FROM 
-  T2
+from 
+  t2
 
-WHERE artist_rank <= 5;
+where artist_rank <= 5;

@@ -1,21 +1,21 @@
-SELECT  
+select  
     customer_id 
 
-FROM 
-    customer_contracts C
+from 
+    customer_contracts c
 
-  JOIN products P
-    ON C.product_id = P.product_id
+  join products p
+    on c.product_id = p.product_id
 
-GROUP BY 
+group by 
     customer_id 
 
-HAVING 
-    COUNT( 
-      DISTINCT product_category
+having 
+    count( 
+      distinct product_category
          ) = 
-      (SELECT 
-          COUNT(DISTINCT product_category) 
+      (select 
+          count(distinct product_category) 
         
-        FROM 
+        from 
           products);

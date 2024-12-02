@@ -1,69 +1,69 @@
 -- 1
-with T as (
-  SELECT 
+with t as (
+  select 
       card_name 
     , issued_amount 
-    , RANK() OVER(
-        PARTITION BY 
+    , rank() over(
+        partition by 
             card_name 
-        ORDER BY 
+        order by 
             issue_year 
           , issue_month )
-        AS rnk
+        as rnk
   
-  FROM 
+  from 
     monthly_cards_issued
 
 )
 
-SELECT 
+select 
     card_name 
   , issued_amount 
 
-FROM
-  T
+from
+  t
 
-WHERE 
+where 
       1=1
   and rnk = 1 
 
-ORDER BY 
-    issued_amount DESC ;
+order by 
+    issued_amount desc ;
 
 
 -- 2
-with T as (
-  SELECT 
+with t as (
+  select 
       card_name 
     , issued_amount 
-    , MAKE_DATE(
+    , make_date(
             issue_year 
           , issue_month 
           , 1)
-        AS issue_date 
-    , MIN( 
-        MAKE_DATE(
+        as issue_date 
+    , min( 
+        make_date(
             issue_year 
           , issue_month 
           , 1) )
-        OVER(
-          PARTITION BY 
+        over(
+          partition by 
               card_name
               )
-        AS launch_date 
-  FROM monthly_cards_issued
+        as launch_date 
+  from monthly_cards_issued
 
 )
 
-SELECT 
+select 
     card_name 
   , issued_amount 
 
-FROM 
-  T
+from 
+  t
 
-WHERE 
+where 
   launch_date = issue_date 
 
-ORDER BY 
-  issued_amount DESC;
+order by 
+  issued_amount desc;

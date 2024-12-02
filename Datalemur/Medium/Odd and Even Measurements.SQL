@@ -1,46 +1,46 @@
-WITH ranked_measurements AS (
-  SELECT 
+with ranked_measurements as (
+  select 
       measurement_value 
     , measurement_time 
-    , ROW_NUMBER() 
-        OVER(
-          PARTITION BY DATE( measurement_time )
-          ORDER BY 
-              measurement_time ASC) 
-        AS ind
-  FROM 
+    , row_number() 
+        over(
+          partition by date( measurement_time )
+          order by 
+              measurement_time asc) 
+        as ind
+  from 
     measurements
 )
 
-SELECT 
-    DATE(measurement_time ) 
-  , SUM(
-      CASE 
-        WHEN 
+select 
+    date(measurement_time ) 
+  , sum(
+      case 
+        when 
           ind % 2 != 0 
-        THEN 
+        then 
           measurement_value 
-        ELSE 
+        else 
           0 
-      END 
+      end 
        ) 
-      AS odd_sum 
-  , SUM(
-      CASE 
-        WHEN 
+      as odd_sum 
+  , sum(
+      case 
+        when 
           ind % 2 = 0 
-        THEN 
+        then 
           measurement_value 
-        ELSE 
+        else 
           0 
-      END ) 
-      AS even_sum
+      end ) 
+      as even_sum
 
-FROM 
+from 
   ranked_measurements 
 
-GROUP BY 
-    DATE( measurement_time )
+group by 
+    date( measurement_time )
 
-ORDER BY DATE
-    ( measurement_time ) ASC ;
+order by date
+    ( measurement_time ) asc ;

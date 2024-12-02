@@ -1,25 +1,25 @@
-SELECT  
-  ROUND(
-    ( AVG( 
-        CASE 
-          WHEN 
-            Pinf.country_id = Pinf2.country_id 
+select  
+  round(
+    ( avg( 
+        case 
+          when 
+            pinf.country_id = pinf2.country_id 
         
-          THEN 
+          then 
             0 
-          ELSE 
+          else 
             1 
-        END
+        end
          ) 
     )* 100.00 
     , 1 )
-    AS international_calls_pct
+    as international_calls_pct
 
-FROM 
-  phone_calls AS Pc
+from 
+  phone_calls as pc
 
-    JOIN phone_info AS Pinf
-      ON Pc.caller_id = Pinf.caller_id 
+    join phone_info as pinf
+      on pc.caller_id = pinf.caller_id 
 
-    JOIN phone_info AS Pinf2
-      ON Pc.receiver_id   = Pinf2.caller_id ;
+    join phone_info as pinf2
+      on pc.receiver_id   = pinf2.caller_id ;
