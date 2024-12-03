@@ -1,16 +1,16 @@
---MySQL  &  MS SQL Server
-SELECT S.name FROM STUDENTS S
-JOIN  PACKAGES P  ON S.id = P.id 
-JOIN  FRIENDS  F  ON F.id = S.id 
-JOIN  PACKAGES PF ON PF.id = F.friend_id 
-WHERE P.salary < PF.salary 
-ORDER BY PF.salary;
+--mysql  &  ms sql server
+select s.name from students s
+join  packages p  on s.id = p.id 
+join  friends  f  on f.id = s.id 
+join  packages pf on pf.id = f.friend_id 
+where p.salary < pf.salary 
+order by pf.salary;
 
 
 
---MySQL  &  MS SQL Server
-SELECT S.name FROM STUDENTS S , 
-PACKAGES P   , FRIENDS  F    , PACKAGES PF  
-WHERE P.salary < PF.salary 
-AND S.id = P.id AND F.id = S.id AND PF.id = F.friend_id 
-ORDER BY PF.salary;
+--mysql  &  ms sql server
+select s.name from students s , 
+packages p   , friends  f    , packages pf  
+where p.salary < pf.salary 
+and s.id = p.id and f.id = s.id and pf.id = f.friend_id 
+order by pf.salary;

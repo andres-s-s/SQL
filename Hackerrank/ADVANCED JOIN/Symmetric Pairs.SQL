@@ -1,98 +1,98 @@
---MySQL  &  MS SQL Server
-SELECT 
-    F.x 
-  , F.y 
+--mysql  &  ms sql server
+select 
+    f.x 
+  , f.y 
 
-FROM 
-  FUNCTIONS F 
+from 
+  functions f 
 
-    JOIN FUNCTIONS Fl
-      ON  F.x = Fl.y 
-      AND F.y = Fl.x 
-      AND F.x < F.y
+    join functions fl
+      on  f.x = fl.y 
+      and f.y = fl.x 
+      and f.x < f.y
 
-UNION 
+union 
 
-SELECT 
+select 
     x 
   , y 
 
-FROM 
-  FUNCTIONS F 
+from 
+  functions f 
 
-GROUP BY 
+group by 
     x 
   , y 
 
-HAVING COUNT(*) > 1 
+having count(*) > 1 
 
-ORDER BY x;
+order by x;
 
 
 
---MySQL  &  MS SQL Server
-SELECT 
-    F.x 
-  , F.y 
+--mysql  &  ms sql server
+select 
+    f.x 
+  , f.y 
 
-FROM 
-  FUNCTIONS F 
+from 
+  functions f 
 
-WHERE EXISTS(
-                SELECT * 
-                
-                FROM  FUNCTIONS Fl 
-                
-                WHERE 
-                      1=1
-                  and F.x = Fl.y 
-                  AND F.y = Fl.x 
-                  AND F.x < F.y 
-                
-                GROUP BY 
-                    Fl.x 
-                  , Fl.y  
+where exists(
+        select * 
+        
+        from  functions fl 
+        
+        where 
+              1=1
+          and f.x = fl.y 
+          and f.y = fl.x 
+          and f.x < f.y 
+        
+        group by 
+            fl.x 
+          , fl.y  
             )
-OR    EXISTS(
-                SELECT * 
-                
-                FROM  FUNCTIONS Fl 
-                
-                WHERE
-                      1=1
-                  and F.x = Fl.x 
-                  AND Fl.y = F.y 
-                
-                GROUP BY 
-                    x 
-                  , y 
-                
-                HAVING COUNT(*)> 1  )
+or    exists(
+        select * 
+        
+        from  functions fl 
+        
+        where
+              1=1
+          and f.x = fl.x 
+          and fl.y = f.y 
+        
+        group by 
+            x 
+          , y 
+        
+        having count(*)> 1  )
 
-GROUP BY 
+group by 
     x 
   , y
 
-ORDER BY 
+order by 
     x; 
 
 
 
---MySQL  &  MS SQL Server
-SELECT 
-    F.x 
-  , F.y 
+--mysql  &  ms sql server
+select 
+    f.x 
+  , f.y 
 
-FROM 
-  FUNCTIONS F 
+from 
+  functions f 
 
-WHERE EXISTS(SELECT * FROM  FUNCTIONS Fl 
-             WHERE F.x = Fl.y AND F.y = Fl.x  
-             GROUP BY Fl.x , Fl.y
-             HAVING COUNT(*) > 1 OR  F.x < F.y )
+where exists(select * from  functions fl 
+             where f.x = fl.y and f.y = fl.x  
+             group by fl.x , fl.y
+             having count(*) > 1 or  f.x < f.y )
 
-GROUP BY 
+group by 
     x 
   , y
 
-ORDER BY x; 
+order by x; 

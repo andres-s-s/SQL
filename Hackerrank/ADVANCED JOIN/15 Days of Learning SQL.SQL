@@ -1,200 +1,200 @@
---MySQL
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
+--mysql
+set @date = (select min(submission_date) from submissions );
 
-SELECT 
-    Mt.submission_date 
-  , Mt.ct 
+select 
+    mt.submission_date 
+  , mt.ct 
   , 
-      (SELECT hacker_id FROM SUBMISSIONS WHERE submission_date = Mt.submission_date
-       GROUP BY hacker_id ORDER BY COUNT(*) DESC , hacker_id ASC LIMIT 1 ) AS h_id 
-  , (SELECT name FROM HACKERS WHERE hacker_id = h_id )
+      (select hacker_id from submissions where submission_date = mt.submission_date
+       group by hacker_id order by count(*) desc , hacker_id asc limit 1 ) as h_id 
+  , (select name from hackers where hacker_id = h_id )
 
-FROM  (
-       SELECT T.submission_date , COUNT(*) AS ct FROM  (
-          SELECT submission_date , hacker_id FROM SUBMISSIONS 
-          GROUP BY submission_date , hacker_id   ) AS T 
-          WHERE (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-                 WHERE hacker_id = T.hacker_id  AND submission_date < T.submission_date )  
-          =  DATEDIFF(T.submission_date , @date )
-       GROUP BY T.submission_date
-      ) AS Mt
-ORDER BY 
-    Mt.submission_date ASC;
+from  (
+       select t.submission_date , count(*) as ct from  (
+          select submission_date , hacker_id from submissions 
+          group by submission_date , hacker_id   ) as t 
+          where (select count(distinct submission_date) from submissions 
+                 where hacker_id = t.hacker_id  and submission_date < t.submission_date )  
+          =  datediff(t.submission_date , @date )
+       group by t.submission_date
+      ) as mt
+order by 
+    mt.submission_date asc;
 
 
 
---MySQL
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
+--mysql
+set @date = (select min(submission_date) from submissions );
 
-SELECT  
-    Mt.submission_date 
-  , Mt.ct 
-  , H.hacker_id 
+select  
+    mt.submission_date 
+  , mt.ct 
+  , h.hacker_id 
   , name 
-FROM  (
-    SELECT submission_date , COUNT(*) AS ct FROM  (
-           SELECT submission_date , hacker_id FROM SUBMISSIONS 
-           GROUP BY submission_date , hacker_id   ) AS T 
-    WHERE (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-           WHERE hacker_id = T.hacker_id  AND
-           submission_date < T.submission_date )  
-    =  DATEDIFF( T.submission_date , @date )
-    GROUP BY T.submission_date
-      ) AS Mt
-JOIN  SUBMISSIONS S ON Mt.submission_date = S.submission_date
-JOIN  HACKERS H     ON S.hacker_id = H.hacker_id 
-WHERE S.hacker_id = (SELECT hacker_id FROM SUBMISSIONS WHERE submission_date = Mt.submission_date
-                     GROUP BY hacker_id ORDER BY COUNT(*) DESC , hacker_id ASC LIMIT 1
+from  (
+    select submission_date , count(*) as ct from  (
+           select submission_date , hacker_id from submissions 
+           group by submission_date , hacker_id   ) as t 
+    where (select count(distinct submission_date) from submissions 
+           where hacker_id = t.hacker_id  and
+           submission_date < t.submission_date )  
+    =  datediff( t.submission_date , @date )
+    group by t.submission_date
+      ) as mt
+join  submissions s on mt.submission_date = s.submission_date
+join  hackers h     on s.hacker_id = h.hacker_id 
+where s.hacker_id = (select hacker_id from submissions where submission_date = mt.submission_date
+                     group by hacker_id order by count(*) desc , hacker_id asc limit 1
                      )
-GROUP BY Mt.submission_date , Mt.ct , H.hacker_id , name 
-ORDER BY Mt.submission_date ASC;
+group by mt.submission_date , mt.ct , h.hacker_id , name 
+order by mt.submission_date asc;
 
 
 
---MySQL
-SELECT 
-    Mt.submission_date 
-  , COUNT(*) 
-  , H_idt.hacker_id 
-  , H.name 
+--mysql
+select 
+    mt.submission_date 
+  , count(*) 
+  , h_idt.hacker_id 
+  , h.name 
 
-FROM (
-     SELECT submission_date , hacker_id , 
-     IF(hacker_id != @hv , @csct := 1 ,  @csct := @csct + 1 ) AS h_rank , @hv := hacker_id  
-     FROM (SELECT DISTINCT submission_date , hacker_id  FROM SUBMISSIONS 
-           ORDER BY hacker_id , submission_date  ) Sd , (SELECT @csct := 1,@hv := 0 ) Et 
-) AS Mt
-JOIN (
-     SELECT submission_date , @d := @d + 1 AS d_rank
-     FROM (SELECT DISTINCT submission_date FROM SUBMISSIONS ORDER BY submission_date ASC ) Idt,
-          (SELECT @d := 0) Dv 
-) AS Dt
-ON Dt.submission_date = Mt.submission_date AND Mt.h_rank = Dt.d_rank
-JOIN (
-     SELECT submission_date , hacker_id ,
-     @mc := CASE WHEN submission_date = @ahv THEN @mc + 1 ELSE 1 END AS mch , @ahv := submission_date
-     FROM (SELECT submission_date , hacker_id FROM SUBMISSIONS GROUP BY submission_date , hacker_id 
-           ORDER BY submission_date , COUNT(*) DESC, hacker_id) M , (SELECT @mc := 0,@ahv := 0) Et2
-) AS H_idt
-ON H_idt.submission_date = Mt.submission_date AND H_idt.mch = 1
-JOIN HACKERS H ON  H_idt.hacker_id = H.hacker_id
-GROUP BY Mt.submission_date , H_idt.hacker_id , H.name
-ORDER BY Mt.submission_date ASC;
-
-
-
---MySQL
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
-
-SELECT 
-    Dt.submission_date 
-  , (SELECT COUNT(DISTINCT hacker_id) FROM SUBMISSIONS AS S
-     WHERE submission_date = Dt.submission_date 
-     AND   (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-            WHERE S.submission_date > submission_date 
-            AND hacker_id = S.hacker_id) = 
-    DATEDIFF( Dt.submission_date , @date )  ) 
-  , (SELECT hacker_id FROM SUBMISSIONS 
-     WHERE submission_date = Dt.submission_date 
-     GROUP BY hacker_id 
-     ORDER BY COUNT(*) DESC , hacker_id LIMIT 1  ) AS H_id 
-  , (SELECT name FROM HACKERS  WHERE H_id = hacker_id  )
-
-FROM (SELECT DISTINCT submission_date 
-      FROM SUBMISSIONS 
-      ORDER BY submission_date ASC  ) AS Dt
-ORDER BY Dt.submission_date ASC;
+from (
+     select submission_date , hacker_id , 
+     if(hacker_id != @hv , @csct := 1 ,  @csct := @csct + 1 ) as h_rank , @hv := hacker_id  
+     from (select distinct submission_date , hacker_id  from submissions 
+           order by hacker_id , submission_date  ) sd , (select @csct := 1,@hv := 0 ) et 
+) as mt
+join (
+     select submission_date , @d := @d + 1 as d_rank
+     from (select distinct submission_date from submissions order by submission_date asc ) idt,
+          (select @d := 0) dv 
+) as dt
+on dt.submission_date = mt.submission_date and mt.h_rank = dt.d_rank
+join (
+     select submission_date , hacker_id ,
+     @mc := case when submission_date = @ahv then @mc + 1 else 1 end as mch , @ahv := submission_date
+     from (select submission_date , hacker_id from submissions group by submission_date , hacker_id 
+           order by submission_date , count(*) desc, hacker_id) m , (select @mc := 0,@ahv := 0) et2
+) as h_idt
+on h_idt.submission_date = mt.submission_date and h_idt.mch = 1
+join hackers h on  h_idt.hacker_id = h.hacker_id
+group by mt.submission_date , h_idt.hacker_id , h.name
+order by mt.submission_date asc;
 
 
 
---MS SQL Server
-DECLARE @date DATE;
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
+--mysql
+set @date = (select min(submission_date) from submissions );
 
-SELECT submission_date , ct , h_id , name FROM (
-SELECT Mt.submission_date , Mt.ct , 
-      (SELECT TOP 1 hacker_id FROM SUBMISSIONS WHERE submission_date = Mt.submission_date
-       GROUP BY hacker_id ORDER BY COUNT(*) DESC , hacker_id ASC ) AS h_id 
-FROM  (
-SELECT submission_date , COUNT(*) AS ct FROM  (
-       SELECT submission_date , hacker_id FROM SUBMISSIONS 
-       GROUP BY submission_date , hacker_id   ) AS T 
-WHERE (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-       WHERE hacker_id = T.hacker_id  AND
-       submission_date < T.submission_date )  
-    =  DATEDIFF(dd, @date , T.submission_date )
-GROUP BY T.submission_date
-      ) AS Mt
- ) Xt 
- JOIN HACKERS H ON Xt.h_id = H.hacker_id 
- ORDER BY submission_date ASC ;
+select 
+    dt.submission_date 
+  , (select count(distinct hacker_id) from submissions as s
+     where submission_date = dt.submission_date 
+     and   (select count(distinct submission_date) from submissions 
+            where s.submission_date > submission_date 
+            and hacker_id = s.hacker_id) = 
+    datediff( dt.submission_date , @date )  ) 
+  , (select hacker_id from submissions 
+     where submission_date = dt.submission_date 
+     group by hacker_id 
+     order by count(*) desc , hacker_id limit 1  ) as h_id 
+  , (select name from hackers  where h_id = hacker_id  )
+
+from (select distinct submission_date 
+      from submissions 
+      order by submission_date asc  ) as dt
+order by dt.submission_date asc;
 
 
 
---MS SQL Server
-DECLARE @date DATE;
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
-SELECT Mt.submission_date , Mt.ct , H.hacker_id , name 
-FROM  (
-SELECT submission_date , COUNT(*) AS ct FROM  (
-       SELECT submission_date , hacker_id FROM SUBMISSIONS 
-       GROUP BY submission_date , hacker_id   ) AS T 
-WHERE (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-       WHERE hacker_id = T.hacker_id  AND
-       submission_date < T.submission_date )  
-    =  DATEDIFF(dd, @date , T.submission_date )
-GROUP BY T.submission_date
-      ) AS Mt
-JOIN  SUBMISSIONS S ON Mt.submission_date = S.submission_date
-JOIN  HACKERS H     ON S.hacker_id = H.hacker_id 
-WHERE S.hacker_id = (SELECT TOP 1 hacker_id FROM SUBMISSIONS WHERE submission_date = Mt.submission_date
-                     GROUP BY hacker_id ORDER BY COUNT(*) DESC , hacker_id ASC 
+--ms sql server
+declare @date date;
+set @date = (select min(submission_date) from submissions );
+
+select submission_date , ct , h_id , name from (
+select mt.submission_date , mt.ct , 
+      (select top 1 hacker_id from submissions where submission_date = mt.submission_date
+       group by hacker_id order by count(*) desc , hacker_id asc ) as h_id 
+from  (
+select submission_date , count(*) as ct from  (
+       select submission_date , hacker_id from submissions 
+       group by submission_date , hacker_id   ) as t 
+where (select count(distinct submission_date) from submissions 
+       where hacker_id = t.hacker_id  and
+       submission_date < t.submission_date )  
+    =  datediff(dd, @date , t.submission_date )
+group by t.submission_date
+      ) as mt
+ ) xt 
+ join hackers h on xt.h_id = h.hacker_id 
+ order by submission_date asc ;
+
+
+
+--ms sql server
+declare @date date;
+set @date = (select min(submission_date) from submissions );
+select mt.submission_date , mt.ct , h.hacker_id , name 
+from  (
+select submission_date , count(*) as ct from  (
+       select submission_date , hacker_id from submissions 
+       group by submission_date , hacker_id   ) as t 
+where (select count(distinct submission_date) from submissions 
+       where hacker_id = t.hacker_id  and
+       submission_date < t.submission_date )  
+    =  datediff(dd, @date , t.submission_date )
+group by t.submission_date
+      ) as mt
+join  submissions s on mt.submission_date = s.submission_date
+join  hackers h     on s.hacker_id = h.hacker_id 
+where s.hacker_id = (select top 1 hacker_id from submissions where submission_date = mt.submission_date
+                     group by hacker_id order by count(*) desc , hacker_id asc 
                      )
-GROUP BY Mt.submission_date , Mt.ct , H.hacker_id , name 
-ORDER BY Mt.submission_date ASC;
+group by mt.submission_date , mt.ct , h.hacker_id , name 
+order by mt.submission_date asc;
 
 
 
---MS SQL Server
-SELECT Mt.submission_date , COUNT(*) , Hid_t.hacker_id , H.name
-FROM
-(SELECT submission_date , hacker_id , 
- ROW_NUMBER() OVER(PARTITION BY hacker_id ORDER BY hacker_id ,submission_date) AS ct
- FROM SUBMISSIONS GROUP BY submission_date , hacker_id) AS Mt
- JOIN 
-(SELECT submission_date , ROW_NUMBER() OVER(ORDER BY submission_date) AS ct
- FROM SUBMISSIONS GROUP BY submission_date ) AS Dt 
-ON Mt.ct = Dt.ct AND Mt.submission_date = Dt.submission_date
-JOIN 
-(SELECT hacker_id , submission_date ,
- ROW_NUMBER() OVER(PARTITION BY submission_date ORDER BY  COUNT(*) DESC , hacker_id )
- AS ct FROM SUBMISSIONS GROUP BY submission_date , hacker_id ) AS Hid_t
-JOIN HACKERS H ON H.hacker_id = Hid_t.hacker_id                 /**/
-ON Hid_t.submission_date = Mt.submission_date AND Hid_t.ct = 1  /**/
-GROUP BY Mt.submission_date , Hid_t.hacker_id , H.name
-ORDER BY Mt.submission_date ASC
+--ms sql server
+select mt.submission_date , count(*) , hid_t.hacker_id , h.name
+from
+(select submission_date , hacker_id , 
+ row_number() over(partition by hacker_id order by hacker_id ,submission_date) as ct
+ from submissions group by submission_date , hacker_id) as mt
+ join 
+(select submission_date , row_number() over(order by submission_date) as ct
+ from submissions group by submission_date ) as dt 
+on mt.ct = dt.ct and mt.submission_date = dt.submission_date
+join 
+(select hacker_id , submission_date ,
+ row_number() over(partition by submission_date order by  count(*) desc , hacker_id )
+ as ct from submissions group by submission_date , hacker_id ) as hid_t
+join hackers h on h.hacker_id = hid_t.hacker_id                 /**/ 
+on hid_t.submission_date = mt.submission_date and hid_t.ct = 1  /**/
+group by mt.submission_date , hid_t.hacker_id , h.name
+order by mt.submission_date asc
 
 
 
---MS SQL Server
-DECLARE @date DATE;
-SET @date = (SELECT MIN(submission_date) FROM SUBMISSIONS );
-SELECT submission_date , ct , h_id , name FROM (
-    SELECT Dt.submission_date , 
-        (SELECT COUNT(DISTINCT hacker_id) FROM SUBMISSIONS AS S
-         WHERE submission_date = Dt.submission_date 
-         AND   (SELECT COUNT(DISTINCT submission_date) FROM SUBMISSIONS 
-                WHERE Dt.submission_date > submission_date 
-                AND hacker_id = S.hacker_id) = 
-        DATEDIFF(dd, @date , Dt.submission_date )  ) AS ct,
+--ms sql server
+declare @date date;
+set @date = (select min(submission_date) from submissions );
+select submission_date , ct , h_id , name from (
+    select dt.submission_date , 
+        (select count(distinct hacker_id) from submissions as s
+         where submission_date = dt.submission_date 
+         and   (select count(distinct submission_date) from submissions 
+                where dt.submission_date > submission_date 
+                and hacker_id = s.hacker_id) = 
+        datediff(dd, @date , dt.submission_date )  ) as ct,
     
-        (SELECT TOP 1 hacker_id FROM SUBMISSIONS 
-         WHERE submission_date = Dt.submission_date 
-         GROUP BY hacker_id 
-         ORDER BY COUNT(*) DESC , hacker_id  ) AS h_id 
-    FROM (SELECT DISTINCT submission_date 
-          FROM SUBMISSIONS 
-         ) AS Dt
-    ) AS T 
-JOIN HACKERS H ON H.hacker_id = h_id
-ORDER BY submission_date ASC ;
+        (select top 1 hacker_id from submissions 
+         where submission_date = dt.submission_date 
+         group by hacker_id 
+         order by count(*) desc , hacker_id  ) as h_id 
+    from (select distinct submission_date 
+          from submissions 
+         ) as dt
+    ) as t 
+join hackers h on h.hacker_id = h_id
+order by submission_date asc ;
