@@ -1,3 +1,3 @@
---MySQL  &  MS SQL Server
-SELECT SUM(C.population) FROM CITY C JOIN COUNTRY Co ON Co.code =  C.countrycode WHERE Co.continent = "Asia";
-SELECT SUM(C.population) FROM CITY C JOIN COUNTRY Co ON Co.code =  C.countrycode AND Co.continent = "Asia";
+--mysql  &  ms sql server
+select sum(c.population) from city c join country co on co.code =  c.countrycode where co.continent = "Asia";
+select sum(c.population) from city c join country co on co.code =  c.countrycode and co.continent = "Asia";

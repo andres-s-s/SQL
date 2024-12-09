@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT COUNT(*) FROM CITY WHERE population > 100000;
+--mysql  &  ms sql server
+select count(*) from city where population > 100000;

@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT name FROM CITY WHERE countrycode = "JPN";
+--mysql  &  ms sql server
+select name from city where countrycode = "JPN";

@@ -1,18 +1,18 @@
---MySQL  &  MS SQL Server
-SELECT CAST( SUM(LAT_N)  AS DECIMAL(12,4) )
-FROM STATION
-WHERE LAT_N > 38.7880 AND LAT_N < 137.2345 ;
+--mysql  &  ms sql server
+select cast( sum(lat_n)  as decimal(12,4) )
+from station
+where lat_n > 38.7880 and lat_n < 137.2345 ;
 
 
 
---MySQL 
-SELECT ROUND( SUM(LAT_N) , 4 )
-FROM STATION
-WHERE LAT_N > 38.7880 AND LAT_N < 137.2345 ;
+--mysql 
+select round( sum(lat_n) , 4 )
+from station
+where lat_n > 38.7880 and lat_n < 137.2345 ;
 
 
 
---MySQL 
-SELECT TRUNCATE( SUM(LAT_N) , 4 )
-FROM STATION
-WHERE LAT_N > 38.7880 AND LAT_N < 137.2345 ;
+--mysql 
+select truncate( sum(lat_n) , 4 )
+from station
+where lat_n > 38.7880 and lat_n < 137.2345 ;

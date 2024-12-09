@@ -1,4 +1,4 @@
---MySQL  &  MS SQL Server
-SELECT DISTINCT city FROM STATION WHERE id % 2 = 0;
---MySQL
-SELECT DISTINCT city FROM STATION WHERE MOD(id , 2 ) = 0;
+--mysql  &  ms sql server
+select distinct city from station where id % 2 = 0;
+--mysql
+select distinct city from station where mod(id , 2 ) = 0;

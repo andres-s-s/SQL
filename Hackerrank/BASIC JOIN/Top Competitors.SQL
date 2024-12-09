@@ -1,24 +1,24 @@
---MySQL  &  MS SQL Server
-SELECT 
-    H.hacker_id 
+--mysql  &  ms sql server
+select 
+    h.hacker_id 
   , name 
 
-FROM 
-    HACKERS AS H 
+from 
+    hackers as h 
   
-    JOIN SUBMISSIONS AS S 
-    ON H.hacker_id = S.hacker_id
+    join submissions as s 
+    on h.hacker_id = s.hacker_id
 
-    JOIN CHALLENGES AS C 
-    ON S.challenge_id = C.challenge_id 
+    join challenges as c 
+    on s.challenge_id = c.challenge_id 
 
-    JOIN DIFFICULTY AS D 
-    ON C.difficulty_level = D.difficulty_level
+    join difficulty as d 
+    on c.difficulty_level = d.difficulty_level
 
-WHERE 
-    D.score = S.score /*we can replace this where with AND*/
+where 
+    d.score = s.score /*we can replace this where with and*/
 
-GROUP BY H.hacker_id , name 
-HAVING COUNT(*) > 1
+group by h.hacker_id , name 
+having count(*) > 1
 
-ORDER BY COUNT(*) DESC ,  H.hacker_id ;
+order by count(*) desc ,  h.hacker_id ;

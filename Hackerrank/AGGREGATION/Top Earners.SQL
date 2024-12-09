@@ -1,32 +1,32 @@
---MySQL  &  MS SQL Server
-SELECT salary * months , COUNT(*) FROM EMPLOYEE     
-WHERE  salary * months = ( SELECT MAX(salary * months) FROM EMPLOYEE )
-GROUP BY salary * months;
+--mysql  &  ms sql server
+select salary * months , count(*) from employee     
+where  salary * months = ( select max(salary * months) from employee )
+group by salary * months;
 
 
 
---MySQL 
-SELECT salary * months AS te, COUNT(*) FROM EMPLOYEE     
-GROUP BY salary * months
-HAVING te = ( SELECT MAX(salary * months) FROM EMPLOYEE );
+--mysql 
+select salary * months as te, count(*) from employee     
+group by salary * months
+having te = ( select max(salary * months) from employee );
 
 
 
---MySQL 
-SELECT salary * months AS te, COUNT(*) FROM EMPLOYEE     
-GROUP BY te
-ORDER BY te DESC LIMIT 1 ;
+--mysql 
+select salary * months as te, count(*) from employee     
+group by te
+order by te desc limit 1 ;
 
 
 
---MS SQL Server
-SELECT salary * months , COUNT(*) FROM EMPLOYEE     
-GROUP BY salary * months
-HAVING salary * months = ( SELECT MAX(salary * months) FROM EMPLOYEE );
+--ms sql server
+select salary * months , count(*) from employee     
+group by salary * months
+having salary * months = ( select max(salary * months) from employee );
 
 
 
---MS SQL Server
-SELECT TOP 1 salary * months , COUNT(*) FROM EMPLOYEE     
-GROUP BY salary * months
-ORDER BY salary * months DESC;
+--ms sql server
+select top 1 salary * months , count(*) from employee     
+group by salary * months
+order by salary * months desc;

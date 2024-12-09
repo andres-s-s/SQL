@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT name FROM STUDENTS WHERE marks >= 76 ORDER BY RIGHT(name , 3 ), id ASC;
+--mysql  &  ms sql server
+select name from students where marks >= 76 order by right(name , 3 ), id asc;

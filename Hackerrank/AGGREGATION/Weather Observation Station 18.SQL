@@ -1,11 +1,11 @@
---MySQL  &  MS SQL Server
-SELECT CAST( ( MAX(LAT_N) - MIN(LAT_N) ) + ( MAX(LONG_W) - MIN(LONG_W) ) 
-            AS DECIMAL(12,4) )
-FROM STATION ;
+--mysql  &  ms sql server
+select cast( ( max(lat_n) - min(lat_n) ) + ( max(long_w) - min(long_w) ) 
+            as decimal(12,4) )
+from station ;
 
 
 
---MySQL
-SELECT ROUND( ( MAX(LAT_N) - MIN(LAT_N) ) + ( MAX(LONG_W) - MIN(LONG_W) ) 
+--mysql
+select round( ( max(lat_n) - min(lat_n) ) + ( max(long_w) - min(long_w) ) 
             , 4 )
-FROM STATION ;
+from station ;

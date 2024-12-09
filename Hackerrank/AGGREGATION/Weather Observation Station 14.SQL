@@ -1,25 +1,25 @@
---MySQL  &  MS SQL Server
-SELECT CAST( MAX(LAT_N)  AS DECIMAL(12,4) )
-FROM STATION
-WHERE LAT_N < 137.2345 ;
+--mysql  &  ms sql server
+select cast( max(lat_n)  as decimal(12,4) )
+from station
+where lat_n < 137.2345 ;
 
 
 
---MySQL
-SELECT ROUND( MAX(LAT_N) , 4 )
-FROM STATION
-WHERE LAT_N < 137.2345 ;
+--mysql
+select round( max(lat_n) , 4 )
+from station
+where lat_n < 137.2345 ;
 
 
 
---MySQL
-SELECT TRUNCATE( LAT_N , 4 )
-FROM STATION
-WHERE LAT_N < 137.2345 ORDER BY LAT_N DESC LIMIT 1 ;
+--mysql
+select truncate( lat_n , 4 )
+from station
+where lat_n < 137.2345 order by lat_n desc limit 1 ;
 
 
 
---MS SQL Server
-SELECT TOP 1 CAST( LAT_N  AS DECIMAL(12,4) )
-FROM STATION
-WHERE LAT_N < 137.2345 ORDER BY LAT_N DESC ;
+--ms sql server
+select top 1 cast( lat_n  as decimal(12,4) )
+from station
+where lat_n < 137.2345 order by lat_n desc ;

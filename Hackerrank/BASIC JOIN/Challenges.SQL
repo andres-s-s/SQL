@@ -1,33 +1,33 @@
---MySQL  &  MS SQL Server 
-WITH TL AS (SELECT H.hacker_id , name , COUNT(*) AS c ,
-                     ROW_NUMBER() OVER(PARTITION BY COUNT(*) ORDER BY H.hacker_id) AS counter
-                     FROM HACKERS AS H JOIN CHALLENGES AS C 
-                     ON H.hacker_id = C.hacker_id GROUP BY  H.hacker_id , name )
+--mysql  &  ms sql server 
+with tl as (select h.hacker_id , name , count(*) as c ,
+                     row_number() over(partition by count(*) order by h.hacker_id) as counter
+                     from hackers as h join challenges as c 
+                     on h.hacker_id = c.hacker_id group by  h.hacker_id , name )
                      
-SELECT hacker_id , name , c FROM TL 
-WHERE c  = (SELECT MAX(c) FROM TL ) 
-OR  c NOT IN(SELECT c FROM TL WHERE counter = 2)
-ORDER BY c DESC , hacker_id;
+select hacker_id , name , c from tl 
+where c  = (select max(c) from tl ) 
+or  c not in(select c from tl where counter = 2)
+order by c desc , hacker_id;
 
 
 
---MySQL  &  MS SQL Server 
-SELECT H.hacker_id , name , COUNT(*) 
-FROM HACKERS AS H JOIN CHALLENGES AS C ON H.hacker_id = C.hacker_id
-GROUP BY  H.hacker_id , name 
-HAVING  COUNT(*) = (SELECT MAX(co) FROM (SELECT COUNT(*) AS co FROM CHALLENGES GROUP BY hacker_id) AS T )
-OR  COUNT(*) IN    (SELECT coun FROM (SELECT COUNT(*) AS coun FROM CHALLENGES GROUP BY hacker_id) AS T
-                    GROUP BY coun HAVING COUNT(*) = 1)
-ORDER BY COUNT(*) DESC ,  H.hacker_id;
+--mysql  &  ms sql server 
+select h.hacker_id , name , count(*) 
+from hackers as h join challenges as c on h.hacker_id = c.hacker_id
+group by  h.hacker_id , name 
+having  count(*) = (select max(co) from (select count(*) as co from challenges group by hacker_id) as t )
+or  count(*) in    (select coun from (select count(*) as coun from challenges group by hacker_id) as t
+                    group by coun having count(*) = 1)
+order by count(*) desc ,  h.hacker_id;
 
 
 
---MS SQL Server
-SELECT hacker_id , name , cnt FROM (
-    SELECT hacker_id , name , cnt , COUNT(*) OVER(PARTITION BY cnt) AS s_cnt , 
-    MAX(cnt) OVER() AS ma FROM (
-        SELECT H.hacker_id , name , COUNT(*) AS cnt
-        FROM HACKERS AS H JOIN CHALLENGES AS C ON H.hacker_id = C.hacker_id
-        GROUP BY  H.hacker_id , name  ) AS T  ) T2
-WHERE cnt = ma OR s_cnt = 1 
-ORDER BY cnt DESC , hacker_id
+--ms sql server
+select hacker_id , name , cnt from (
+    select hacker_id , name , cnt , count(*) over(partition by cnt) as s_cnt , 
+    max(cnt) over() as ma from (
+        select h.hacker_id , name , count(*) as cnt
+        from hackers as h join challenges as c on h.hacker_id = c.hacker_id
+        group by  h.hacker_id , name  ) as t  ) t2
+where cnt = ma or s_cnt = 1 
+order by cnt desc , hacker_id

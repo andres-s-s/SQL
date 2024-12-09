@@ -1,9 +1,9 @@
---MySQL
-SELECT ROUND( SUM(LAT_N) , 2 ), ROUND( SUM(LONG_W) , 2 ) FROM STATION;
+--mysql
+select round( sum(lat_n) , 2 ), round( sum(long_w) , 2 ) from station;
 
 
 
---MySQL  &  MS SQL Server
-SELECT CAST( SUM(LAT_N)  AS DECIMAL(8,2) ),
-       CAST( SUM(LONG_W) AS DECIMAL(8,2) ) 
-FROM STATION;
+--mysql  &  ms sql server
+select cast( sum(lat_n)  as decimal(8,2) ),
+       cast( sum(long_w) as decimal(8,2) ) 
+from station;

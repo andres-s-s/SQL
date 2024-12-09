@@ -1,24 +1,24 @@
---MySQL  &  MS SQL Server
-SELECT CASE WHEN grade > 7 THEN name END , grade , marks 
-FROM STUDENTS JOIN GRADES ON marks BETWEEN min_mark AND max_mark ORDER BY grade DESC , name ;
+--mysql  &  ms sql server
+select case when grade > 7 then name end , grade , marks 
+from students join grades on marks between min_mark and max_mark order by grade desc , name ;
 
 
 
---MySQL  &  MS SQL Server
-SELECT 
-    (SELECT name 
-      FROM STUDENTS 
-      WHERE marks >= 70 AND St.name = name) 
+--mysql  &  ms sql server
+select 
+    (select name 
+      from students 
+      where marks >= 70 and st.name = name) 
   , grade 
   , marks 
 
-FROM STUDENTS St 
-    JOIN GRADES ON marks BETWEEN min_mark AND max_mark 
+from students st 
+    join grades on marks between min_mark and max_mark 
 
-ORDER BY grade DESC , name ;
+order by grade desc , name ;
 
 
 
---MySQL
-SELECT IF(grade >=8 , name , NULL ), grade , marks 
-FROM STUDENTS JOIN GRADES ON marks BETWEEN min_mark AND max_mark ORDER BY grade DESC , name ;
+--mysql
+select if(grade >=8 , name , null ), grade , marks 
+from students join grades on marks between min_mark and max_mark order by grade desc , name ;

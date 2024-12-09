@@ -1,26 +1,26 @@
---MySQL  &  MS SQL Server
-SELECT DISTINCT city FROM STATION WHERE RIGHT(city , 1) NOT IN  ("a","e","i","o","u") ;
+--mysql  &  ms sql server
+select distinct city from station where right(city , 1) not in  ("a","e","i","o","u") ;
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE city REGEXP  ".*[^oiuea]$";
+--mysql
+select distinct city from station where city regexp  ".*[^oiuea]$";
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE city NOT REGEXP  ".*[oiuea]$";
+--mysql
+select distinct city from station where city not regexp  ".*[oiuea]$";
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE NOT REGEXP_LIKE(city , "[aioue]$");
+--mysql
+select distinct city from station where not regexp_like(city , "[aioue]$");
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE REGEXP_LIKE(city , "[^aioue]$");
+--mysql
+select distinct city from station where regexp_like(city , "[^aioue]$");
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE city RLIKE  ".*[^oiuea]$";
+--mysql
+select distinct city from station where city rlike  ".*[^oiuea]$";
 
---MySQL
-SELECT DISTINCT city FROM STATION WHERE city NOT RLIKE  ".*[oiuea]$";
+--mysql
+select distinct city from station where city not rlike  ".*[oiuea]$";
 
---MS SQL Server
-SELECT DISTINCT city FROM STATION WHERE city LIKE "%[^aeiou]";
+--ms sql server
+select distinct city from station where city like "%[^aeiou]";
 
---MS SQL Server
-SELECT DISTINCT city FROM STATION WHERE city NOT LIKE "%[aeiou]";
+--ms sql server
+select distinct city from station where city not like "%[aeiou]";

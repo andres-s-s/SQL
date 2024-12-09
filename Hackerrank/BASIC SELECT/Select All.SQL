@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT * FROM CITY;
+--mysql  &  ms sql server
+select * from city;

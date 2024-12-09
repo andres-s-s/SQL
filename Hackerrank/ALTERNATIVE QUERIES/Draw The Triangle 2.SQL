@@ -1,15 +1,15 @@
---MySQL
-SELECT REPEAT( "* ", @num := @num + 1 ) FROM 
-INFORMATION_SCHEMA.TABLES AS T1 , (SELECT @num := 0 ) AS T2
-WHERE @num < 20;
+--mysql
+select repeat( "* ", @num := @num + 1 ) from 
+information_schema.tables as t1 , (select @num := 0 ) as t2
+where @num < 20;
 
 
 
---MS SQL Server
-DECLARE @num INT;
-SET @num = 0;
-WHILE @num < 20
-    BEGIN
-    SET @num = @num + 1;
-    PRINT( REPLICATE("* " , @num) )
-    END
+--ms sql server
+declare @num int;
+set @num = 0;
+while @num < 20
+    begin
+    set @num = @num + 1;
+    print( replicate("* " , @num) )
+    end

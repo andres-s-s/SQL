@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT name FROM EMPLOYEE WHERE salary > 2000 AND months < 10 ORDER BY employee_id ASC;
+--mysql  &  ms sql server
+select name from employee where salary > 2000 and months < 10 order by employee_id asc;

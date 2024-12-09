@@ -1,9 +1,9 @@
---MySQL
-SELECT CEIL( AVG(salary) - AVG( REPLACE(salary , 0 , "") ) ) FROM EMPLOYEES;
+--mysql
+select ceil( avg(salary) - avg( replace(salary , 0 , "") ) ) from employees;
 
 
 
---MySQL  &  MS SQL Server
-SELECT CEILING( AVG( CAST( salary AS DECIMAL) ) - 
-                AVG( CAST( REPLACE(salary , 0 , "") AS DECIMAL) ) ) 
-FROM EMPLOYEES;
+--mysql  &  ms sql server
+select ceiling( avg( cast( salary as decimal) ) - 
+                avg( cast( replace(salary , 0 , "") as decimal) ) ) 
+from employees;

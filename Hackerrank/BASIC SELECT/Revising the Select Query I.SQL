@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT * FROM CITY WHERE countrycode = "USA" AND population > 100000;
+--mysql  &  ms sql server
+select * from city where countrycode = "USA" and population > 100000;

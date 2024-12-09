@@ -1,2 +1,2 @@
-----MySQL  &  MS SQL Server
-SELECT AVG(population) FROM CITY WHERE district = "California";
+----mysql  &  ms sql server
+select avg(population) from city where district = "California";

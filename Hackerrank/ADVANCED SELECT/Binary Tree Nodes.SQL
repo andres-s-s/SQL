@@ -1,27 +1,27 @@
---MySQL  &  MS SQL Server
-SELECT N , 
-    CASE WHEN P IS NULL THEN "Root"
-         WHEN N IN (SELECT DISTINCT P FROM BST) THEN "Inner"
-         ELSE "Leaf" END
-FROM BST ORDER BY N;
+--mysql  &  ms sql server
+select n , 
+    case when p is null then "Root"
+         when n in (select distinct p from bst) then "Inner"
+         else "Leaf" end
+from bst order by n;
 
 
 
---MySQL  &  MS SQL Server
-SELECT N , 
-    CASE WHEN P IS NULL THEN "Root"
-         WHEN EXISTS(SELECT P FROM BST WHERE B.N = P ) THEN "Inner"
-         WHEN (SELECT COUNT(P) FROM BST WHERE B.N = P ) = 0 THEN "Leaf" END
-FROM BST B ORDER BY N;
+--mysql  &  ms sql server
+select n , 
+    case when p is null then "Root"
+         when exists(select p from bst where b.n = p ) then "Inner"
+         when (select count(p) from bst where b.n = p ) = 0 then "Leaf" end
+from bst b order by n;
 
 
 
---MySQL 
-WITH CTE AS (SELECT DISTINCT p FROM BST)
+--mysql 
+with cte as (select distinct p from bst)
 
-SELECT n , 
-IF(p IS NULL , "Root" , 
-    IF(n IN (SELECT p FROM CTE ) , "Inner" , "Leaf") 
+select n , 
+if(p is null , "Root" , 
+    if(n in (select p from cte ) , "Inner" , "Leaf") 
 ) 
-FROM BST 
-ORDER BY n; 
+from bst 
+order by n; 

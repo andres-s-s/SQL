@@ -1,15 +1,15 @@
---MySQL  &  MS SQL Server
-SELECT CAST( MIN(LAT_N) AS DECIMAL(12,4) ) FROM STATION 
-WHERE LAT_N > 38.7780 ;
+--mysql  &  ms sql server
+select cast( min(lat_n) as decimal(12,4) ) from station 
+where lat_n > 38.7780 ;
 
 
 
---MySQL 
-SELECT ROUND( LAT_N , 4 ) FROM STATION 
-WHERE LAT_N > 38.7780 ORDER BY LAT_N ASC LIMIT 1;
+--mysql 
+select round( lat_n , 4 ) from station 
+where lat_n > 38.7780 order by lat_n asc limit 1;
 
 
 
---MS SQL Server
-SELECT TOP 1 CAST( LAT_N AS DECIMAL(8,4) ) FROM STATION 
-WHERE LAT_N > 38.7780 ORDER BY LAT_N ASC;
+--ms sql server
+select top 1 cast( lat_n as decimal(8,4) ) from station 
+where lat_n > 38.7780 order by lat_n asc;

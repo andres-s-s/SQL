@@ -1,3 +1,3 @@
---MySQL  &  MS SQL Server
-SELECT C.name FROM CITY C JOIN COUNTRY Co ON  Co.code =  C.countrycode WHERE Co.continent = "Africa";
-SELECT C.name FROM CITY C JOIN COUNTRY Co ON  Co.code =  C.countrycode AND Co.continent = "Africa";
+--mysql  &  ms sql server
+select c.name from city c join country co on  co.code =  c.countrycode where co.continent = "Africa";
+select c.name from city c join country co on  co.code =  c.countrycode and co.continent = "Africa";

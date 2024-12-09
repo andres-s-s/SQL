@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT name FROM EMPLOYEE ORDER BY name ASC;
+--mysql  &  ms sql server
+select name from employee order by name asc;

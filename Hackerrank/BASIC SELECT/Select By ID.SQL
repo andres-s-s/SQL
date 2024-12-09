@@ -1,2 +1,2 @@
---MySQL  &  MS SQL Server
-SELECT * FROM CITY WHERE id = 1661;
+--mysql  &  ms sql server
+select * from city where id = 1661;

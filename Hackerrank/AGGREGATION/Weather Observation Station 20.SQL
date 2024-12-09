@@ -1,42 +1,42 @@
---MySQL  &  MS SQL Server
-SELECT CAST( LAT_N AS DECIMAL(10,4) ) FROM STATION S 
-WHERE (SELECT COUNT(*) FROM STATION WHERE LAT_N > S.LAT_N ) =
-      (SELECT COUNT(*) FROM STATION WHERE LAT_N < S.LAT_N ) ;
+--mysql  &  ms sql server
+select cast( lat_n as decimal(10,4) ) from station s 
+where (select count(*) from station where lat_n > s.lat_n ) =
+      (select count(*) from station where lat_n < s.lat_n ) ;
 
 
 
---MySQL
-SET @index := -1;
-SELECT ROUND(LAT_N,4) FROM 
-        (SELECT @index := @index + 1 AS ind , 
-         LAT_N FROM STATION ORDER BY LAT_N    ) AS T
-WHERE ind IN ( FLOOR(@index/2) , CEIL(@index/2) ) ;
+--mysql
+set @index := -1;
+select round(lat_n,4) from 
+        (select @index := @index + 1 as ind , 
+         lat_n from station order by lat_n    ) as t
+where ind in ( floor(@index/2) , ceil(@index/2) ) ;
 
 
 
---MS SQL Server
-DECLARE @tm INT;
-SET @tm = (SELECT COUNT(*) - 1 FROM STATION);
-SELECT CAST(LAT_N AS DECIMAL(10,4) ) FROM 
-         (SELECT ROW_NUMBER() OVER(ORDER BY LAT_N) - 1 AS ind , LAT_N
-          FROM STATION ) AS T
-WHERE ind  IN ( FLOOR( @tm/2.00 ) , CEILING( @tm/2.00 ) ) ;
+--ms sql server
+declare @tm int;
+set @tm = (select count(*) - 1 from station);
+select cast(lat_n as decimal(10,4) ) from 
+         (select row_number() over(order by lat_n) - 1 as ind , lat_n
+          from station ) as t
+where ind  in ( floor( @tm/2.00 ) , ceiling( @tm/2.00 ) ) ;
 
 
 
---MS SQL Server
-SET @tm = (SELECT COUNT(*) FROM STATION);  /*o SELECT*/
-SELECT CAST( LAT_N AS DECIMAL( 8, 4) ) FROM 
-    (SELECT  LAT_N , ROW_NUMBER() OVER( ORDER BY LAT_N ) AS num 
-     FROM STATION ) AS T
-WHERE  @tm % 2 = 0 AND T.num IN (@tm/2, @tm/2+1) OR T.num = (@tm+1)/2;
+--ms sql server
+set @tm = (select count(*) from station);  /*o select*/
+select cast( lat_n as decimal( 8, 4) ) from 
+    (select  lat_n , row_number() over( order by lat_n ) as num 
+     from station ) as t
+where  @tm % 2 = 0 and t.num in (@tm/2, @tm/2+1) or t.num = (@tm+1)/2;
 
 
 
---MS SQL Server
-DECLARE @tm INT;
-SET @tm = (SELECT COUNT(*) - 1 FROM STATION);
-SELECT CAST(LAT_N AS DECIMAL(10,4) ) FROM 
-         (SELECT ROW_NUMBER() OVER(ORDER BY LAT_N) - 1 AS ind , LAT_N
-          FROM STATION ) AS T
-WHERE ind % 2 != 0 AND ind IN (@tm/2 , @tm/2 + 1) OR ind = ( @tm/2) ;
+--ms sql server
+declare @tm int;
+set @tm = (select count(*) - 1 from station);
+select cast(lat_n as decimal(10,4) ) from 
+         (select row_number() over(order by lat_n) - 1 as ind , lat_n
+          from station ) as t
+where ind % 2 != 0 and ind in (@tm/2 , @tm/2 + 1) or ind = ( @tm/2) ;

@@ -1,26 +1,26 @@
---MySQL  &  MS SQL Server
-SELECT C.company_code , C.founder , 
-COUNT(DISTINCT LM.lead_manager_code)  ,COUNT(DISTINCT SM.senior_manager_code)  , 
-COUNT(DISTINCT M.manager_code)        ,COUNT(DISTINCT E.employee_code)
-FROM COMPANY C 
-JOIN LEAD_MANAGER LM ON C.company_code = LM.company_code
-JOIN SENIOR_MANAGER SM ON SM.lead_manager_code = LM.lead_manager_code
-JOIN MANAGER M ON M.senior_manager_code = SM.senior_manager_code
-JOIN EMPLOYEE E ON E.manager_code = M.manager_code 
-GROUP BY C.company_code , C.founder
-ORDER BY C.company_code ASC ;
+--mysql  &  ms sql server
+select c.company_code , c.founder , 
+count(distinct lm.lead_manager_code)  ,count(distinct sm.senior_manager_code)  , 
+count(distinct m.manager_code)        ,count(distinct e.employee_code)
+from company c 
+join lead_manager lm on c.company_code = lm.company_code
+join senior_manager sm on sm.lead_manager_code = lm.lead_manager_code
+join manager m on m.senior_manager_code = sm.senior_manager_code
+join employee e on e.manager_code = m.manager_code 
+group by c.company_code , c.founder
+order by c.company_code asc ;
 
 
 
---MySQL  &  MS SQL Server
-SELECT C.company_code , C.founder , 
-COUNT(DISTINCT LM.lead_manager_code)  ,COUNT(DISTINCT SM.senior_manager_code)  , 
-COUNT(DISTINCT M.manager_code)        ,COUNT(DISTINCT E.employee_code)
-FROM COMPANY C  ,  LEAD_MANAGER LM  , 
-     SENIOR_MANAGER SM  , MANAGER M  , EMPLOYEE E 
-WHERE  E.manager_code = M.manager_code 
-AND    M.senior_manager_code = SM.senior_manager_code 
-AND    SM.lead_manager_code = LM.lead_manager_code 
-AND    C.company_code = LM.company_code 
-GROUP BY C.company_code , C.founder
-ORDER BY C.company_code ASC ;
+--mysql  &  ms sql server
+select c.company_code , c.founder , 
+count(distinct lm.lead_manager_code)  ,count(distinct sm.senior_manager_code)  , 
+count(distinct m.manager_code)        ,count(distinct e.employee_code)
+from company c  ,  lead_manager lm  , 
+     senior_manager sm  , manager m  , employee e 
+where  e.manager_code = m.manager_code 
+and    m.senior_manager_code = sm.senior_manager_code 
+and    sm.lead_manager_code = lm.lead_manager_code 
+and    c.company_code = lm.company_code 
+group by c.company_code , c.founder
+order by c.company_code asc ;

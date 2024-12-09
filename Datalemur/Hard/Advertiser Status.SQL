@@ -17,9 +17,9 @@ and have made a payment again recently.
 Example of an expected output
 #	Current Status	  Updated Status	  Payment on Day T
 1	NEW	              EXISTING	        Paid
-2	NEW	              CHURN	Not         Not paid
+2	NEW	              CHURN	            Not paid
 3	EXISTING	        EXISTING	        Paid
-4	EXISTING	        CHURN	Not         Not paid
+4	EXISTING	        CHURN	            Not paid
 5	CHURN             RESURRECT	        Paid
 6	CHURN	            CHURN	            Not paid
 */
@@ -36,12 +36,12 @@ select
         case
           when a.status = 'CHURN'  then 'RESURRECT'
           when a.user_id  is null  then 'NEW' 
-          else  'EXISTING'
+          else 'EXISTING'
         end
     end 
       as new_status
 /*
-When an advertisers is new there is no record of it in the advertiser
+When an advertisers is new there is no record of it in the advertiser table
 */
 
 

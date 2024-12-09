@@ -1,24 +1,24 @@
---MySQL  &  MS SQL Server
-SELECT CAST( 
-      SQRT(   POWER( MAX(LAT_N) -  MIN(LAT_N)  ,2 ) + 
-              POWER( MAX(LONG_W) - MIN(LONG_W) ,2 ) )
-    AS DECIMAL(12,4)  )
-FROM STATION ;
+--mysql  &  ms sql server
+select cast( 
+      sqrt(   power( max(lat_n) -  min(lat_n)  ,2 ) + 
+              power( max(long_w) - min(long_w) ,2 ) )
+    as decimal(12,4)  )
+from station ;
 
 
 
---MySQL
-SELECT ROUND( 
-      SQRT(   POWER( MAX(LAT_N) -  MIN(LAT_N)  ,2 ) + 
-              POWER( MAX(LONG_W) - MIN(LONG_W) ,2 ) )
+--mysql
+select round( 
+      sqrt(   power( max(lat_n) -  min(lat_n)  ,2 ) + 
+              power( max(long_w) - min(long_w) ,2 ) )
     , 4 )
-FROM STATION ;
+from station ;
 
 
 
---MS SQL Server
-SELECT CAST( 
-      SQRT(   SQUARE( MAX(LAT_N) -  MIN(LAT_N)   ) + 
-              SQUARE( MAX(LONG_W) - MIN(LONG_W)  ) )
-    AS DECIMAL(12,4)  )
-FROM STATION ;
+--ms sql server
+select cast( 
+      sqrt(   square( max(lat_n) -  min(lat_n)   ) + 
+              square( max(long_w) - min(long_w)  ) )
+    as decimal(12,4)  )
+from station ;
