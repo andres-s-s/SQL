@@ -56,7 +56,7 @@ select
       The order of the operations work from left to right, first it goes the subtraction
         then the multiplication and the division
       The ", 2" is a parameter for the round function
-    */
+      */
 from 
   curr_year_spend_vs_prev_year_spend cvs
 

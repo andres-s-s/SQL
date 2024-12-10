@@ -43,7 +43,7 @@ where
     Using < allows to get the pizza toppings in alphabetical order in the concat funtion
     Well as shown in the next piece of code this is not technically true but in order not 
     to over complicate things I did it this way.
-  */
+    */
 
 order by
     total_cost desc

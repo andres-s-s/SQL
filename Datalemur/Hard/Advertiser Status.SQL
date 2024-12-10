@@ -30,7 +30,8 @@ select
       as user_id_coalesce
   , case 
       when d.user_id is null then 'CHURN' 
-      /*If the Advertiser didn't pay its user_id won't be in the daily_pay table
+      /*
+        If the Advertiser didn't pay its user_id won't be in the daily_pay table
         Regardless if it is New, Existing or Churn it will turn into Churn
 
         Therefore the rest of Advertisers have made at least one payment
@@ -53,8 +54,7 @@ select
   another again
   The rest of advertisers are in both tables and their status is updated based on the 
   previous one
-*/
-
+  */
 
 from 
   advertiser a

@@ -35,10 +35,10 @@ The count function gets the total numbers of item per batch
   from summary
 )
 /*
-We need to know the available space after taking into account a batch of non-prime products.
-Then the remaining space can be prioritized for prime eligible products
-t is a short arbitrary name
-*/
+  We need to know the available space after taking into account a batch of non-prime products.
+  Then the remaining space can be prioritized for prime eligible products
+  t is a short arbitrary name
+  */
 
 
 select 

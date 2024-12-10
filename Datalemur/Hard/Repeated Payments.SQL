@@ -25,12 +25,13 @@ with repeated_payments as (
                             , t.amount ) 
                           ) 
                 )<=600 -- 600 segundos son equivalentes a 10 minutos      
-      then 1  /* 
+      then 1  
+              /* 
                 If there is past a transaction with the same credit_card_id, merchant_id and amount
                 as the record being processed, and it happened no more than 600 seconds ago (10 
                 minutes) then in the new column add "1", if this is not true add "null" 
                 (not a string, a value)
-              */
+                */
 
       else null 
     end as tf
@@ -40,7 +41,7 @@ with repeated_payments as (
       You can try this
       select extract(epoch from timestamp '1971-01-01 00:00:00');
       and the result will be 31536000.000000, a year has exactly 31,536,000 seconds
-    */
+      */
 
   from 
     transactions t
