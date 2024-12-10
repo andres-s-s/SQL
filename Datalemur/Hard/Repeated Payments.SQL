@@ -16,13 +16,13 @@ with repeated_payments as (
       
         extract( 
           epoch from ( 
-                  transaction_timestamp 
-                  - lag(transaction_timestamp) 
+                  t.transaction_timestamp 
+                  - lag(t.transaction_timestamp) 
                       over( 
                           partition by
-                              credit_card_id 
-                            , merchant_id 
-                            , amount ) 
+                              t.credit_card_id 
+                            , t.merchant_id 
+                            , t.amount ) 
                           ) 
                 )<=600 -- 600 segundos son equivalentes a 10 minutos      
       then 1  /* 
@@ -43,13 +43,13 @@ with repeated_payments as (
     */
 
   from 
-    transactions
+    transactions t
 )
 
 
 select 
-    count(tf) /* All the repeated payments records have 1 in their tf column whereas
+    count(rp.tf) /* All the repeated payments records have 1 in their tf column whereas
       the other records have a null value, therefore the count function does not count them
       */
 from 
-  repeated_payments;
+  repeated_payments rp;
