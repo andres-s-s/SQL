@@ -1,9 +1,23 @@
 --mysql 
-select start_date , 
-    (select end_date from projects 
-     where end_date not in (select start_date from projects)  
-     and end_date > t.start_date 
-     order by end_date limit 1 ) as end_date
+select 
+    start_date 
+  , (
+      select 
+          end_date 
+      
+      from 
+        projects 
+     
+     where 
+           end_date not in (select start_date from projects)  
+       and end_date > t.start_date 
+     
+     order by 
+         end_date 
+      
+     limit 1 
+    ) as end_date
+
 from 
     (select start_date from projects 
      where start_date not in (select end_date from projects )  ) as t

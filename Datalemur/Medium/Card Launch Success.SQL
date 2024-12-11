@@ -3,13 +3,14 @@ with t as (
   select 
       card_name 
     , issued_amount 
-    , rank() over(
-        partition by 
-            card_name 
-        order by 
-            issue_year 
-          , issue_month )
-        as rnk
+    , rank() 
+        over(
+          partition by 
+              card_name 
+          order by 
+              issue_year 
+            , issue_month )
+          as rnk
   
   from 
     monthly_cards_issued
