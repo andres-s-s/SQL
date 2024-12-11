@@ -20,16 +20,16 @@ with
   list_of_searches as (
     select 
         repeat( 
-            cast( searches as varchar ) 
-          , num_users 
+            cast( s.searches as varchar ) 
+          , s.num_users 
           ) 
         as number_of_searches
   
   from 
-    search_frequency
+    search_frequency s
   
   order by  
-      searches asc
+      s.searches asc
 )
 /*
 This  will  turn   into    this
@@ -41,13 +41,13 @@ searches	num_users   |    number_of_searches
 , string_of_searches as (
   select 
       string_agg(
-          number_of_searches 
+          l.number_of_searches 
         , ''
                 ) 
       as only_row
 
   from 
-    list_of_searches
+    list_of_searches l
 )
 /*
 This will outpout only one row turning the list we had before into one single string
@@ -57,13 +57,13 @@ This will outpout only one row turning the list we had before into one single st
 select 
     round(
       case 
-        when length(only_row) % 2 != 0 --If the amount of elements is odd
+        when length(ss.only_row) % 2 != 0 --If the amount of elements is odd
           then  cast(  
                   substring( 
-                      only_row  -- What string
+                      ss.only_row  -- What string
                     , cast(     -- The start position. The first position in string is 1
                         ceil( 
-                            length(only_row)/2 
+                            length(ss.only_row)/2 
                             ) 
                         as int ) 
                     , 1         -- The number of characters to extract 
@@ -72,15 +72,15 @@ select
           else (                      --If the amount of elements is even
             cast( 
               substring( 
-                only_row  
-              , length(only_row)/2 
+                ss.only_row  
+              , length(ss.only_row)/2 
               , 1 ) 
             as int ) 
             + 
             cast( 
               substring( 
-                only_row  
-              , length(only_row)/2 + 1 
+                ss.only_row  
+              , length(ss.only_row)/2 + 1 
               , 1 ) 
             as int ) 
         )
@@ -89,7 +89,7 @@ select
     , 1 ) as median 
 
 from
-  string_of_searches
+  string_of_searches ss
 
 
 
@@ -100,25 +100,25 @@ Alternative
 with 
     searches_expanded_as_list as (
     select 
-        searches
-      , num_users
-      , generate_series(1 , num_users , 1) as gs
+        s.searches
+      , s.num_users
+      , generate_series(1 , s.num_users , 1) as gs
     --  generate_series( start , stop , step  )
 
     from
-      search_frequency
+      search_frequency s
 )
 
 
 select 
     round(
       percentile_cont(0.50) 
-      within group ( order by searches)::decimal 
+      within group ( order by se.searches)::decimal 
       , 1 ) 
         as median
   
 from 
-  searches_expanded_as_list;
+  searches_expanded_as_list se;
 
 
 /*

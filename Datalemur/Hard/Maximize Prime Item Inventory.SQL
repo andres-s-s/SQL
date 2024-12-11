@@ -14,13 +14,13 @@ Output how many not_prime and prime_eligible items fit in the warehouse
 with 
     summary as (
   select     -- When the "case when statment" does not find a match it'll put a null value
-      sum(   case when item_type = 'not_prime'      then square_footage end ) as np_sf   
-    , count( case when item_type = 'not_prime'      then square_footage end ) as np_cnt  
-    , sum(   case when item_type = 'prime_eligible' then square_footage end ) as pe_sf  
-    , count( case when item_type = 'prime_eligible' then square_footage end ) as pe_cnt
+      sum(   case when i.item_type = 'not_prime'      then square_footage end ) as np_sf   
+    , count( case when i.item_type = 'not_prime'      then square_footage end ) as np_cnt  
+    , sum(   case when i.item_type = 'prime_eligible' then square_footage end ) as pe_sf  
+    , count( case when i.item_type = 'prime_eligible' then square_footage end ) as pe_cnt
     
   from 
-    inventory
+    inventory i
 ) 
 /*
 The sum function gets the amount of space that one batch will take 
@@ -30,9 +30,9 @@ The count function gets the total numbers of item per batch
 
 
 , t as (
-  select 500000 - np_sf as space_left
+  select 500000 - s.np_sf as space_left
 
-  from summary
+  from summary s
 )
 /*
   We need to know the available space after taking into account a batch of non-prime products.
@@ -45,23 +45,23 @@ select
     'prime_eligible' as item_type
   , floor( 
             (
-              select space_left 
+              select t.space_left 
               from t 
-            ) /pe_sf 
-          ) * pe_cnt 
+            ) /s.pe_sf 
+          ) * s.pe_cnt 
           as item_count
   /* The result of space_left/pe_sf gets rounded down then multiplied by pe_cnt to know the total items 
      The division gets the amount of batches that fit in   */
 
 from 
-  summary 
+  summary s
 
 
 union all 
 
 select 
     'not_prime' as item_type
-  , floor( ( ( (select space_left from t ) % pe_sf ) + np_sf )/np_sf ) * np_cnt as item_count
+  , floor( ( ( (select t.space_left from t ) % s.pe_sf ) + s.np_sf )/s.np_sf ) * np_cnt as item_count
   /* The order in which operations are executed is from left to right, no need to 
      worry about so many parentheses
      The % gets the space left after prime_eligible products, + np_sf represents 
@@ -69,7 +69,7 @@ select
      the division and multiplicacion work the same as before  */
 
 from 
-  summary;
+  summary s;
 
 
 
