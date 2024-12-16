@@ -41,6 +41,10 @@ with repeated_payments as (
       You can try this
       select extract(epoch from timestamp '1971-01-01 00:00:00');
       and the result will be 31536000.000000, a year has exactly 31,536,000 seconds
+
+      However in this case it works slightly different, the output of 
+      t.transaction_timestamp - lag(t.transaction_timestamp) looks like is "hours":1,"minutes":9
+      and the epoch function will turn in into this 4140.000000
       */
 
   from 

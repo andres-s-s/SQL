@@ -28,10 +28,9 @@ with curr_year_spend_vs_prev_year_spend as (
       as prev_year_spend
   
   from user_transactions us
-) 
-
+)
 /*
-  Example Output:
+  Example Output of curr_year_spend_vs_prev_year_spend:
 
   product_id	spend	    transaction_date	    pys
   123424	    1500.60	  12/31/2019 12:00:00	  NULL
@@ -42,7 +41,7 @@ with curr_year_spend_vs_prev_year_spend as (
   We are making a new table like the original but getting rid of the transaction_id
   because it's not necessary and adding a new column with the amount spent last year
   according to each product_id
-*/
+  */
 
 select 
     extract(year from cvs.transaction_date) as yr -- Year from a timestamp field

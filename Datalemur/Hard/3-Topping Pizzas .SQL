@@ -11,24 +11,26 @@
 
 
 /*
-Cross joins will allow having all the possible combinations and the conditions in the 
-where statement make sure each row is unique
+  Cross joins will allow having all the possible combinations and the conditions in the 
+  where statement make sure each row is unique
 */
 
 select
-    concat(   p1.topping_name 
+    concat(   
+              p1.topping_name 
             ,  ','  
             , p2.topping_name 
             ,  ','  
             , p3.topping_name 
-            ) as pizza
+          ) 
+      as pizza
   , p1.ingredient_cost  +  p2.ingredient_cost  +  p3.ingredient_cost 
-        as total_cost
+      as total_cost
 
 from 
-    pizza_toppings as p1
-  , pizza_toppings as p2
-  , pizza_toppings as p3
+    pizza_toppings p1
+  , pizza_toppings p2
+  , pizza_toppings p3
 
 where 
       1=1
@@ -46,8 +48,8 @@ where
     */
 
 order by
-    total_cost desc
-  , pizza asc;
+    total_cost desc -- Sum of the cost of the ingredients
+  , pizza asc; -- Concat function
 
 
 
@@ -63,28 +65,29 @@ order by
 */
 
 select
-    p3.topping_name
+    (
+           p3.topping_name
         ||  ','  
         || p2.topping_name 
         ||  ','  
         || p1.topping_name 
-        as pizza
+     )
+      as pizza
   , p1.ingredient_cost  +  p2.ingredient_cost  +  p3.ingredient_cost 
-        as total_cost
+      as total_cost
 
 from 
-  pizza_toppings as p1
+    pizza_toppings p1
 
-    join pizza_toppings as p2
-      on p1.topping_name > p2.topping_name
+    join pizza_toppings p2
+       on p1.topping_name > p2.topping_name
     
-    join pizza_toppings as p3
-      on p2.topping_name > p3.topping_name
+    join pizza_toppings p3
+       on p2.topping_name > p3.topping_name
 
 order by
-    total_cost desc
-  , pizza asc;
-
+    total_cost desc -- Sum of the cost of the ingredients
+  , pizza asc; -- Concat function
 
 
 

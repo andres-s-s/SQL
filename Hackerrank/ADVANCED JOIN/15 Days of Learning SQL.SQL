@@ -770,7 +770,7 @@ from (
                 where 
                       dt.submission_date > submission_date 
                   and hacker_id = s.hacker_id) 
-          = datediff(dd, @date , dt.submission_date ) 
+            = datediff(dd, @date , dt.submission_date ) 
          ) as ct
         ,(
           select 

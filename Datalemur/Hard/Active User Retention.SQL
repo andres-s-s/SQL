@@ -1,21 +1,23 @@
 /*
-Instructions:
-Assume you're given a table containing information on Facebook user actions. 
+  Instructions:
+  Assume you're given a table containing information on Facebook user actions. 
 
-Write a query to obtain number of monthly active users (MAUs) in July 2022.
-An active user is defined as a user who has performed actions such as 'sign-in', 
-'like', or 'comment' in both the current month and the previous month.
+  Write a query to obtain number of monthly active users (MAUs) in July 2022.
+  An active user is defined as a user who has performed actions such as 'sign-in', 
+  'like', or 'comment' in both the current month and the previous month.
 */
 
 
 /*
-It takes the users who performed an action in July, then it makes sure these users also
-performed an action the month before (the cte and the third condition in the where statement
-, 50 line, help with this) after that we have a list of active users however
-if the same user performed several actions in the month, It will appear more than once
-and we don't want that, therefore we need to group by month and since all the records are 
-from the same month that will return one line, then the count function plus distinct will 
-let as know how many distinct users are
+  The cte takes a list of users who performed an action in june of 2022
+
+  The query filters the data based on the previous list and users who performed 
+  an action in july
+  Since an user can perform several actions the same month, "distinct" is necessary
+  so the same user is only counted once
+  The reason of the group by clause is to get the month  
+
+
 */
 
 
@@ -23,16 +25,16 @@ let as know how many distinct users are
 
 with users_in_june_of_2022 as (
   select 
-      u.user_id 
+      distinct u.user_id 
 
-  from user_actions u
+  from 
+      user_actions u
 
   where 
         1=1
     and to_char( u.event_date , 'DD/MM/YYYY' ) like '%06/2022%'
-)
---List of users who performed an action such as 'sign-in', 'like', or 'comment' in june of 2022
 
+) -- List of users who performed an action such as 'sign-in', 'like', or 'comment' in june of 2022
 
 
 
@@ -41,7 +43,7 @@ select
   , count(distinct u.user_id) as monthly_active_users
 
 from 
-  user_actions u
+    user_actions u
 
 where 
       1=1
@@ -52,12 +54,12 @@ where
             u_june.user_id 
           
         from 
-          users_in_june_of_2022 u_june 
+            users_in_june_of_2022 u_june 
         
         where 
             u.user_id = u_june.user_id
             )
-      -- Makes sure the users also performed an action the month before
+        -- Makes sure the users also performed an action the month before
 
 group by
     extract( month from u.event_date );
