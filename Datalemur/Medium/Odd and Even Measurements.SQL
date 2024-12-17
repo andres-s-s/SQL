@@ -40,17 +40,17 @@ select
           0 
       end 
        ) 
-      as odd_sum 
+      as odd_sum
   , sum(
-      case 
-        when 
-          r.ind % 2 = 0 
-        then 
-          r.measurement_value 
-        else 
-          0 
-      end 
-       ) 
+      case
+        when
+          r.ind % 2 = 0
+        then
+          r.measurement_value
+        else
+          0
+      end
+       )
       as even_sum
 
 from 

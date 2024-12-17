@@ -1,17 +1,80 @@
---mysql  &  ms sql server
-select distinct city from station where left(city , "1") not in ("a","e","i","o","u");
+/* mysql  &  ms sql server */
+select 
+    distinct s.city 
 
---mysql
-select distinct city from station where city not rlike  "^[aeiou]";
+from 
+    station s 
 
---mysql
-select distinct city from station where city rlike  "^[^aeiou]";
+where 
+      1=1
+  and left(s.city , "1") not in ("a","e","i","o","u");
 
---mysql
-select distinct city from station where regexp_like(city , "^[^aioue]");
 
---ms sql server
-select distinct city from station where city not like "[aeiou]%";
 
---ms sql server
-select distinct city from station where city like "[^aeiou]%";
+
+/* mysql */
+select 
+    distinct s.city 
+
+from 
+    station s 
+
+where 
+      1=1
+  and s.city not rlike  "^[aeiou]";
+
+
+
+
+/* mysql */
+select 
+    distinct s.city 
+
+from 
+    station s 
+
+where 
+      1=1
+  and s.city rlike  "^[^aeiou]";
+
+
+
+
+/* mysql */
+select 
+    distinct s.city 
+
+from 
+    station s 
+
+where 
+      1=1
+  and s.regexp_like(city , "^[^aioue]");
+
+
+
+
+/* ms sql server */
+select 
+    distinct s.city 
+
+from 
+    station s 
+
+where 
+      1=1
+  and s.city not like "[aeiou]%";
+
+
+
+
+/* ms sql server */
+select 
+    distinct s.city 
+
+from 
+    station s 
+
+where 
+      1=1
+  and s.city like "[^aeiou]%";

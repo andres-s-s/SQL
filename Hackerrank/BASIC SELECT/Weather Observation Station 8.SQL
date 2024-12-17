@@ -1,8 +1,39 @@
---mysql  &  ms sql server
-select distinct city from station where right(city , 1) in  ("a","e","i","o","u") and left(city , 1) in  ("a","e","i","o","u");
+/* mysql  &  ms sql server */
+select 
+    distinct s.city 
 
---mysql
-select distinct city from station where city rlike "^[aeiou].*[aeiou]$";
+from 
+    station s
 
---ms sql server
-select distinct city from station where city like "[aeiou]%[aeiou]";
+where 
+      1=1
+  and right(s.city , 1) in  ("a","e","i","o","u") 
+  and left(s.city , 1)  in  ("a","e","i","o","u");
+
+
+
+
+/* mysql */
+select 
+    distinct s.city 
+
+from 
+    station s
+
+where 
+      1=1
+  and s.city rlike "^[aeiou].*[aeiou]$";
+
+
+
+
+/* ms sql server */
+select 
+    distinct s.city 
+
+from 
+    station s
+
+where 
+      1=1
+  and s.city like "[aeiou]%[aeiou]";

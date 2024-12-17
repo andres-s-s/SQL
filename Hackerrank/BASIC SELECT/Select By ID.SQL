@@ -7,8 +7,8 @@ select
   , c.population 
 
 from 
-    city 
+    city c
     
 where 
       1=1
-  and id = 1661;
+  and c.id = 1661;

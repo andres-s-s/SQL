@@ -8,6 +8,9 @@ from
 where 
       1=1
   and s.id % 2 = 0;
+ 
+
+
 
 /* mysql */
 select 

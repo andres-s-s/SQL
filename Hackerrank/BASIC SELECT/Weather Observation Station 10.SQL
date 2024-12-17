@@ -1,26 +1,51 @@
---mysql  &  ms sql server
-select distinct city from station where right(city , 1) not in  ("a","e","i","o","u") ;
+/* mysql  &  ms sql server */
+select 
+    distinct s.city 
 
---mysql
-select distinct city from station where city regexp  ".*[^oiuea]$";
+from 
+    station s
 
---mysql
-select distinct city from station where city not regexp  ".*[oiuea]$";
+where 
+      1=1
+  and right(s.city , 1) not in  ("a","e","i","o","u") ;
+  /*From right to left take one character and make sure it is not a vowel */
 
---mysql
-select distinct city from station where not regexp_like(city , "[aioue]$");
 
---mysql
-select distinct city from station where regexp_like(city , "[^aioue]$");
+/* mysql */
+select 
+    distinct s.city 
 
---mysql
-select distinct city from station where city rlike  ".*[^oiuea]$";
+from 
+    station s
 
---mysql
-select distinct city from station where city not rlike  ".*[oiuea]$";
+where 
+      1=1
+  and s.city regexp  ".*[^oiuea]$";
+/*  
+  Alternatives for the where clause
 
---ms sql server
-select distinct city from station where city like "%[^aeiou]";
+  and s.city not regexp  ".*[oiuea]$"   
 
---ms sql server
-select distinct city from station where city not like "%[aeiou]";
+  and not regexp_like(s.city , "[aioue]$");   
+
+  and regexp_like(s.city , "[^aioue]$");   
+    
+  and s.city rlike  ".*[^oiuea]$";   
+
+  and s.city not rlike  ".*[oiuea]$";   
+  */
+
+
+
+
+/* ms sql server */
+select 
+    distinct s.city 
+
+from 
+    station s
+
+where 
+      1=1
+  and s.city like "%[^aeiou]";
+--and s.city not like "%[aeiou]" --Alternative;

@@ -11,6 +11,7 @@ where
 
 
 
+
 /* mysql */
 select 
     distinct s.city 
@@ -21,6 +22,7 @@ from
 where 
       1=1
   and s.city rlike "^[aeiou]";
+
 
 
 

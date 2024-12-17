@@ -1,36 +1,38 @@
 /* mysql  &  ms sql server */
 select 
-    distinct city 
+    distinct s.city 
 
 from 
-    station 
+    station s
 
 where 
       1=1
-  and right(city , 1) in  ("a","e","i","o","u");
+  and right(s.city , 1) in  ("a","e","i","o","u");
+
 
 
 
 /* mysql */
 select 
-    distinct city 
+    distinct s.city 
 
 from 
-    station 
+    station s
 
 where 
       1=1
-  and city rlike  "^.*[aeiou]$";
+  and s.city rlike  "^.*[aeiou]$";
+
 
 
 
 /* ms sql server */
 select 
-    distinct city 
+    distinct s.city 
 
 from 
-    station 
+    station s
 
 where 
       1=1
-  and city like '%[aeiou]';
+  and s.city like '%[aeiou]';

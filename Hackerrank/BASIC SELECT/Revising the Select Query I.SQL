@@ -11,5 +11,5 @@ from
 
 where 
       1=1
-  and countrycode = "USA" 
-  and population > 100000;
+  and c.countrycode = "USA" 
+  and c.population > 100000;

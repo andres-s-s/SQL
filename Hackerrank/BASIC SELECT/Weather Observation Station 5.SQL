@@ -25,6 +25,7 @@ order by
 
 
 
+
 /* ms sql server */
 select 
     top 1 s.city 
