@@ -1,2 +1,14 @@
 --mysql  &  ms sql server
-select name from students where marks >= 76 order by right(name , 3 ), id asc;
+select 
+    s.name 
+
+from 
+    students s 
+
+where 
+      1=1
+  and s.marks >= 76 
+
+order by 
+    s.right(name , 3 )
+  , s.id asc;
