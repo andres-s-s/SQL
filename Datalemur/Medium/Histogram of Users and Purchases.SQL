@@ -26,7 +26,7 @@ with transactions_sorted_by_date as (
 /*
   The transactions made by each user get tagged with a number based on their date,
   the most recent ones get a 1 (if they have the same transaction_date and it happens
-  to be the most recent date for that user) and the cte also
+  to be the most recent date for that user)
   */
 
 
@@ -41,7 +41,7 @@ from
 
 where 
       1=1
-  and t.ind = 1 -- The most recent transactions
+  and t.ind = 1 -- The most recent transactions for each user
 
 group by 
     t.transaction_date 

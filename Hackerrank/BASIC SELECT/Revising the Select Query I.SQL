@@ -1,2 +1,15 @@
---mysql  &  ms sql server
-select * from city where countrycode = "USA" and population > 100000;
+/* mysql  &  ms sql server */
+select 
+    c.id
+  , c.name
+  , c.countrycode
+  , c.district
+  , c.population
+
+from 
+    city c
+
+where 
+      1=1
+  and countrycode = "USA" 
+  and population > 100000;

@@ -1,9 +1,51 @@
---mysql
-select city , length(city) from station order by length(city) asc  , city limit 1;
-select city , length(city) from station order by length(city) desc , city limit 1;
+/* mysql */
+select 
+    s.city 
+  , length(s.city) 
+
+from 
+    station s
+
+order by 
+    length(s.city) asc  
+  , s.city limit 1;
 
 
 
---ms sql server
-select top 1 city , len(city) from station order by len(city) asc  , city;
-select top 1 city , len(city) from station order by len(city) desc , city;
+select 
+    s.city 
+  , length(s.city) 
+
+from 
+    station s
+
+order by 
+    length(s.city) desc 
+  , s.city limit 1;
+
+
+
+/* ms sql server */
+select 
+    top 1 s.city 
+  , len(s.city) 
+
+from 
+    station s 
+
+order by 
+    len(s.city) asc  
+  , s.city;
+
+
+
+select 
+    top 1 s.city 
+  , len(s.city) 
+
+from 
+    station s 
+
+order by 
+    len(s.city) desc 
+  , s.city;

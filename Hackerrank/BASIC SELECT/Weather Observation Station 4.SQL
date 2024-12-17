@@ -1,2 +1,6 @@
---mysql  &  ms sql server
-select count(*) - count(distinct city ) from station;
+/* mysql  &  ms sql server */
+select 
+    count(s.city) - count(distinct s.city ) 
+
+from 
+    station s;

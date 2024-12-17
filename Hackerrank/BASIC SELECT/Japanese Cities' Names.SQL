@@ -1,2 +1,10 @@
---mysql  &  ms sql server
-select name from city where countrycode = "JPN";
+/* mysql  &  ms sql server */
+select 
+    c.name 
+
+from 
+    city c
+
+where
+      1=1
+  and c.countrycode = "JPN";

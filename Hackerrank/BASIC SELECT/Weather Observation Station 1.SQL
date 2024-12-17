@@ -1,2 +1,7 @@
 --mysql  &  ms sql server
-select city , state from station ;
+select 
+    s.city 
+  , s.state 
+  
+from 
+    station s;

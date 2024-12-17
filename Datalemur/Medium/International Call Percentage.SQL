@@ -20,7 +20,7 @@ select
             1 
         end -- This will produce a list of 1s and 0s and it be handed to the avg function
          ) 
-    ) * 100.00 -- Without this result would look like 0.54545454
+    ) * 100.00 -- Without this the result would look like 0.54545454
     , 1 ) -- Round the result to 1 decimal
     as international_calls_pct
 
@@ -34,7 +34,7 @@ from
        on pc.receiver_id   = pinf2.caller_id ;
 /*
   The phone table contains caller_id, receiver_id	and call_time
-  The phone table contains caller_id,	country_id,	network	and phone_number
+  The phone_info table contains caller_id,	country_id,	network	and phone_number
 
   The joins are to get the country of the caller_id	and receiver_id to know 
   if the call is international so We can get the average
