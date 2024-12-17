@@ -46,40 +46,53 @@ from
 
 where 
       1=1
-  and c.rnk = 1 -- 1 represents the first record for each card
+  and c.rnk = 1 -- 1 represents the first record for each card ordered by date
 
 order by 
     c.issued_amount desc ;
 
 
+
+
+
+
 /*
+  Another solution
 
+  New two columns get created in the cte issue_date and launch_date
 
+    issue_date:  takes issue_year and issue_month to create a date field
+    launch_date: the min window function gets a pre-made date and it selects the 
+    smallest one for each card_name field thanks to partitioning the table
+
+  Then I can select the records in which the issue_date and launch_date are
+  exactly the same 
   */
 
 
 
 with t as (
   select 
-      card_name 
-    , issued_amount 
+      m.card_name 
+    , m.issued_amount 
     , make_date(
-            issue_year 
-          , issue_month 
+            m.issue_year 
+          , m.issue_month 
           , 1)
         as issue_date 
     , min( 
         make_date(
-            issue_year 
-          , issue_month 
+            m.issue_year 
+          , m.issue_month 
           , 1) 
          )
         over(
           partition by 
-              card_name
+              m.card_name
               )
         as launch_date 
-  from monthly_cards_issued
+
+  from monthly_cards_issued m
 )
 
 

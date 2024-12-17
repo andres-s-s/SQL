@@ -1,32 +1,52 @@
-select 
-    transaction_date 
-  , user_id 
-  , count(*) 
+/*
+  Instructions:
+  Assume you're given a table on Walmart user transactions. 
+  Based on their most recent transaction date, write a query that retrieve the 
+  users along with the number of products they bought.
+  */
 
-from (
+
+
+with transactions_sorted_by_date as (
   select 
-      user_id 
-    ,	spend 
-    , transaction_date 
-    , dense_rank() 
+      u.user_id 
+    ,	u.spend  -- Amount of money spend on that specific product 
+    , u.transaction_date 
+    , dense_rank() -- Several products will have the exact same transaction_date
         over(
           partition by 
-            user_id 
+              u.user_id 
           order by 
-            transaction_date desc 
+              u.transaction_date desc 
         ) as ind
   
   from 
-    user_transactions
-) as t
+      user_transactions u
+) 
+/*
+  The transactions made by each user get tagged with a number based on their date,
+  the most recent ones get a 1 (if they have the same transaction_date and it happens
+  to be the most recent date for that user) and the cte also
+  */
+
+
+
+select 
+    t.transaction_date 
+  , t.user_id 
+  , count(*) -- Amount of products with the same transaction_date and user_id
+
+from 
+    transactions_sorted_by_date t
 
 where 
       1=1
-  and ind = 1 
+  and t.ind = 1 -- The most recent transactions
 
 group by 
-    transaction_date 
-  , user_id
+    t.transaction_date 
+  , t.user_id
 
 order by 
-    transaction_date;
+    t.transaction_date;
+
