@@ -1,6 +1,6 @@
 --mysql  &  ms sql server
 select 
-    s.name 
+    s.name
 
 from 
     students s 

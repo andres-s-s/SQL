@@ -4,7 +4,7 @@ select
 
 from 
     employee e
-
+ 
 where 
       1=1
   and e.salary > 2000 
