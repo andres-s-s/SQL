@@ -1,25 +1,41 @@
+/*
+  Instructions:
+  Assume you're given a table with measurement values obtained from a Google sensor over multiple days with measurements taken multiple times within each day.
+
+  Write a query to calculate the sum of odd-numbered and even-numbered measurements separately 
+  for a particular day and display the results in two different columns. 
+  Refer to the Example Output below for the desired format.
+*/
+
+
+
 with ranked_measurements as (
   select 
-      measurement_value 
-    , measurement_time 
+      m.measurement_value 
+    , m.measurement_time 
     , row_number() 
         over(
-          partition by date( measurement_time )
+          partition by date( 
+              m.measurement_time 
+                           )
           order by 
-              measurement_time asc) 
+              m.measurement_time asc
+            ) 
         as ind
   from 
-    measurements
+      measurements m
 )
 
+
+
 select 
-    date(measurement_time ) 
+    date(r.measurement_time ) 
   , sum(
       case 
         when 
-          ind % 2 != 0 
+          r.ind % 2 != 0 
         then 
-          measurement_value 
+          r.measurement_value 
         else 
           0 
       end 
@@ -28,19 +44,20 @@ select
   , sum(
       case 
         when 
-          ind % 2 = 0 
+          r.ind % 2 = 0 
         then 
-          measurement_value 
+          r.measurement_value 
         else 
           0 
-      end ) 
+      end 
+       ) 
       as even_sum
 
 from 
-  ranked_measurements 
+    ranked_measurements r
 
 group by 
-    date( measurement_time )
+    date(r.measurement_time)
 
 order by date
-    ( measurement_time ) asc ;
+    r.measurement_time asc ;
