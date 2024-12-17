@@ -1,9 +1,9 @@
 --mysql  &  ms sql server
 select 
-    name 
+    e.name 
 
 from 
-    employee 
+    employee e
 
 order by 
-    name asc;
+    e.name asc;
