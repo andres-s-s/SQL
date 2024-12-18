@@ -1,73 +1,78 @@
 /* mysql  &  ms sql server */
 select  
-    min(case when occupation = "Doctor"    then name end) as "Doctor" 
-  , max(case when occupation = "Professor" then name end) as "Professor" 
-  , min(case when occupation = "Singer"    then name end) as "Singer"    
-  , max(case when occupation = "Actor"     then name end) as "Actor" 
+    min(case when t.occupation = "Doctor"    then name end) as "Doctor" 
+  , max(case when t.occupation = "Professor" then name end) as "Professor" 
+  , min(case when t.occupation = "Singer"    then name end) as "Singer"    
+  , max(case when t.occupation = "Actor"     then name end) as "Actor" 
 
 from (
         select 
-            name 
-          , occupation 
+            o.name 
+          , o.occupation 
           , row_number() 
               over(
                 partition by 
-                    occupation 
+                    o.occupation 
                 order by 
-                    name
+                    o.name
                   ) 
               as ind
         
         from 
-            occupations 
+            occupations o
      ) as t 
 
 group by 
-    ind;
+    t.ind;
 
 
 
---mysql  &  ms sql server
+
+/* mysql  &  ms sql server */
 select  
-    min(doctor)    as "Doctor"
-  , max(professor) as "Professor"  
-  , min(singer)    as "Singer"
-  , max(actor)     as "Actor" 
+    min(t.doctor)    as "Doctor"
+  , max(t.professor) as "Professor"  
+  , min(t.singer)    as "Singer"
+  , max(t.actor)     as "Actor" 
 
 from (
       select 
-          name 
-        , occupation 
+          o.name 
+        , o.occupation 
         , row_number() 
             over(
               partition by 
-                  occupation 
+                  o.occupation 
               order by 
-                  name
+                  o.name
                 ) 
             as ind 
         , case 
-            when occupation = "Doctor" 
-            then name end as "Doctor"
+            when o.occupation = "Doctor" 
+            then o.name 
+            end as "Doctor"
 
         , case 
-            when occupation = "Professor" 
-            then name end as "Professor"  
+            when o.occupation = "Professor" 
+            then o.name 
+            end as "Professor"  
         
         , case 
-            when occupation = "Singer"
-            then name end as "Singer"
+            when o.occupation = "Singer"
+            then o.name 
+            end as "Singer"
         
         , case 
-            when occupation = "Actor"
-            then name end as "Actor"
+            when o.occupation = "Actor"
+            then o.name 
+            end as "Actor"
       
       from 
-          occupations 
+          occupations o
      ) as t 
 
 group by 
-    ind;
+    t.ind;
 
 
 
@@ -81,50 +86,54 @@ set
 
 
 select  
-    min(doctor) as "Doctor"
-  , max(professor) as "Professor"  
-  , min(singer)    as "Singer"
-  , max(actor)     as "Actor" 
+    min(t.doctor)    as "Doctor"
+  , max(t.professor) as "Professor"  
+  , min(t.singer)    as "Singer"
+  , max(t.actor)     as "Actor" 
 
 from (
       select 
-          name 
-        , occupation 
+          o.name 
+        , o.occupation 
         , case 
-            when occupation = "Doctor" 
+            when o.occupation = "Doctor" 
             then (@d := @d + 1) 
             
-            when occupation = "Professor" 
+            when o.occupation = "Professor" 
             then (@p := @p + 1)
             
-            when occupation = "Singer" 
+            when o.occupation = "Singer" 
             then (@s := @s + 1)
             
-            when occupation = "Actor" 
+            when o.occupation = "Actor" 
              then (@a := @a + 1) 
           
           end as ind 
         
         , case 
-            when occupation = "Doctor"    
-            then name end as "Doctor"
+            when o.occupation = "Doctor"    
+            then o.name 
+            end as "Doctor"
         
         , case 
-            when occupation = "Professor" 
-            then name end as "Professor"
+            when o.occupation = "Professor" 
+            then o.name 
+            end as "Professor"
         
-        , case when occupation = "Singer"
-          then name end as "Singer"
+        , case when o.occupation = "Singer"
+          then o.name 
+          end as "Singer"
         
-        , case when occupation = "Actor"
-          then name end as "Actor"
+        , case when o.occupation = "Actor"
+          then o.name 
+          end as "Actor"
       
       from 
-          occupations 
+          occupations o
       
       order by 
           name 
      ) as t 
 
 group by 
-    ind;
+    t.ind;

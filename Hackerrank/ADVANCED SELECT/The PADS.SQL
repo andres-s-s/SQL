@@ -1,21 +1,115 @@
---mysql  &  ms sql server
-select concat( name ,"(", upper( left(occupation , 1 ) ) , ")" ) from occupations order by name;
-select concat("There are a total of " , count(*) ," " ,  lower(occupation) , "s." )
-from occupations group by occupation
-order by count(*) asc , occupation;
+/* mysql  &  ms sql server */
+select 
+    concat( 
+            o.name 
+          , "("
+          , upper( 
+                left( o.occupation , 1 ) 
+                 ) 
+          , ")" 
+          ) 
+
+from 
+    occupations o
+
+order by 
+    o.name;
+
+
+select 
+    concat(
+            "There are a total of " 
+          , count(*) 
+          , " " 
+          , lower(o.occupation) 
+          , "s." 
+          )
+
+from 
+    occupations o
+
+group by 
+    o.occupation
+
+order by 
+    count(*) asc 
+  , o.occupation;
 
 
 
---mysql  &  ms sql server
-select concat( name ,"(", upper( substring(occupation,1,1) ) , ")" ) from occupations order by name;
-select concat("There are a total of " , count(*) ," " ,  lower(occupation) , "s." )
-from occupations group by occupation
-order by count(*) asc , occupation;
+
+/* mysql  &  ms sql server */
+select 
+    concat( 
+            o.name 
+          , "("
+          , upper( 
+                substring( o.occupation, 1, 1) 
+                 ) 
+          , ")" 
+          ) 
+
+from 
+    occupations o
+
+order by 
+    o.name;
+
+
+select 
+    concat(
+            "There are a total of " 
+          , count(*) 
+          , " " 
+          , lower(o.occupation) 
+          , "s." 
+          )
+
+from 
+    occupations o
+
+group by 
+    o.occupation
+
+order by 
+    count(*) asc 
+  , o.occupation;
 
 
 
---mysql
-select concat( name ,"(", upper( substr(occupation,1,1) ) , ")" ) from occupations order by name;
-select concat("There are a total of " , count(*) ," " ,  lower(occupation) , "s." )
-from occupations group by occupation
-order by count(*) asc , occupation;
+/* mysql */
+select 
+    concat( 
+            o.name 
+          , "("
+          , upper( 
+                substr( o.occupation, 1, 1) 
+                 ) 
+          , ")" 
+          ) 
+
+from 
+    occupations o
+
+order by 
+    o.name;
+
+
+select 
+    concat(
+            "There are a total of " 
+          , count(*) 
+          , " " 
+          , lower(o.occupation) 
+          , "s." 
+          )
+
+from 
+    occupations o
+
+group by 
+    o.occupation
+
+order by 
+    count(*) asc 
+  , o.occupation;
