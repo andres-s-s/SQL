@@ -1,2 +1,5 @@
---mysql  &  ms sql server
-select max(population) - min(population) from city;
+/* mysql  &  ms sql server */
+select 
+    max(c.population) - min(c.population) 
+
+from city c;

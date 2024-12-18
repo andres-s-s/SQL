@@ -1,2 +1,8 @@
---mysql  &  ms sql server
-select floor( avg(population) ) from city;
+/* mysql  &  ms sql server */
+select 
+    floor( 
+        avg(c.population) 
+         ) 
+
+from 
+    city c;

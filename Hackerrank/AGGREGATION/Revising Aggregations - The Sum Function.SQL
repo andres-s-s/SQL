@@ -1,2 +1,10 @@
 --mysql  &  ms sql server
-select count(*) from city where population > 100000;
+select 
+    count(*) 
+
+from 
+    city c 
+
+where 
+      1=1
+  and c.population > 100000;
