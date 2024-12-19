@@ -1,4 +1,4 @@
---mysql  &  ms sql server
+/* mysql  &  ms sql server */
 select 
     f.x 
   , f.y 
@@ -7,30 +7,12 @@ from
   functions f 
 
     join functions fl
-      on  f.x = fl.y 
+       on f.x = fl.y 
       and f.y = fl.x 
       and f.x < f.y
 
 union 
 
-select 
-    x 
-  , y 
-
-from 
-  functions f 
-
-group by 
-    x 
-  , y 
-
-having count(*) > 1 
-
-order by x;
-
-
-
---mysql  &  ms sql server
 select 
     f.x 
   , f.y 
@@ -38,10 +20,32 @@ select
 from 
   functions f 
 
+group by 
+    f.x 
+  , f.y 
+
+having count(*) > 1 
+
+order by 
+    x;
+
+
+
+
+/* mysql  &  ms sql server */
+select 
+    f.x 
+  , f.y 
+
+from 
+    functions f 
+
 where exists(
-        select * 
+        select 
+            * 
         
-        from  functions fl 
+        from
+            functions fl 
         
         where 
               1=1
@@ -54,9 +58,11 @@ where exists(
           , fl.y  
             )
 or    exists(
-        select * 
+        select 
+            * 
         
-        from  functions fl 
+        from 
+            functions fl 
         
         where
               1=1
@@ -64,21 +70,23 @@ or    exists(
           and fl.y = f.y 
         
         group by 
-            x 
-          , y 
+            fl.x 
+          , fl.y 
         
-        having count(*)> 1  )
+        having 
+            count(*)> 1  )
 
 group by 
-    x 
-  , y
+    f.x 
+  , f.y
 
 order by 
-    x; 
+    f.x; 
 
 
 
---mysql  &  ms sql server
+
+/* mysql  &  ms sql server */
 select 
     f.x 
   , f.y 
@@ -86,13 +94,29 @@ select
 from 
   functions f 
 
-where exists(select * from  functions fl 
-             where f.x = fl.y and f.y = fl.x  
-             group by fl.x , fl.y
-             having count(*) > 1 or  f.x < f.y )
+where 
+    exists (
+            select 
+                * 
+            
+            from  
+                functions fl 
+            
+            where 
+                  1=1
+              and f.x = fl.y 
+              and f.y = fl.x  
+            
+            group by 
+                fl.x , fl.y
+            
+            having 
+                  count(*) > 1 
+               or f.x < f.y )
 
 group by 
-    x 
-  , y
+    f.x 
+  , f.y
 
-order by x; 
+order by 
+    f.x; 

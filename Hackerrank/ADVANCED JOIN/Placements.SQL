@@ -1,4 +1,4 @@
---mysql  &  ms sql server
+/* mysql  &  ms sql server */
 select 
     s.name 
 
@@ -22,7 +22,8 @@ order by
 
 
 
---mysql  &  ms sql server
+
+/* mysql  &  ms sql server */
 select 
     s.name 
 
