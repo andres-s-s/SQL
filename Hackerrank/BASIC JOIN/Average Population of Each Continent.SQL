@@ -1,4 +1,4 @@
---mysql  &  ms sql server
+/* mysql  &  ms sql server */
 select 
     co.continent 
   , floor(avg(c.population)) 
@@ -6,6 +6,7 @@ select
 from country co 
 
 join city c 
-  on c.countrycode = co.code 
+   on c.countrycode = co.code 
 
-group by  co.continent ;
+group by  
+    co.continent ;

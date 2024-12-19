@@ -1,15 +1,34 @@
---mysql  &  ms sql server 
+/* mysql  &  ms sql server */
 select 
-    hacker_id 
-  , name 
-  , sum(m) 
+    t.hacker_id 
+  , t.name 
+  , sum(t.m) 
 
-from 
-    (select h.hacker_id , name , max(score) as m  from hackers h join submissions s
-     on h.hacker_id = s.hacker_id group by h.hacker_id , name , s.challenge_id) as t
+from (
+        select 
+            h.hacker_id 
+          , h.name 
+          , max(score) as m  
+        
+        from 
+            hackers h 
+            
+            join submissions s
+               on h.hacker_id = s.hacker_id 
+        
+        group by 
+            h.hacker_id 
+          , h.name 
+          , s.challenge_id
+     ) as t
 
-group by hacker_id , name 
+group by 
+    t.hacker_id 
+  , t.name 
 
-having  sum(m) > 0
+having  
+    sum(t.m) > 0
 
-order by sum(m) desc , hacker_id;
+order by 
+    sum(t.m) desc 
+  , t.hacker_id;

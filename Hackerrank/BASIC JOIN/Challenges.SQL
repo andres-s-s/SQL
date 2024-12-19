@@ -1,22 +1,67 @@
---mysql  &  ms sql server 
-with tl as (select h.hacker_id , name , count(*) as c ,
-                     row_number() over(partition by count(*) order by h.hacker_id) as counter
-                     from hackers as h join challenges as c 
-                     on h.hacker_id = c.hacker_id group by  h.hacker_id , name )
-                     
-select hacker_id , name , c from tl 
-where c  = (select max(c) from tl ) 
-or  c not in(select c from tl where counter = 2)
-order by c desc , hacker_id;
+/* mysql  &  ms sql server */
+with number_of_challenges_per_student as (
+  select 
+      h.hacker_id 
+    , h.name 
+    , count(*) as amount 
+    , row_number() 
+        over(
+          partition by 
+              count(*) 
+            ) 
+        as r
+
+  from 
+      hackers as h 
+      
+      join challenges as c 
+         on h.hacker_id = c.hacker_id 
+
+  group by  
+      h.hacker_id 
+    , h.name                             )
+/*Close cte*/
+
+          
+select 
+    hacker_id 
+  , name 
+  , amount 
+
+from 
+    number_of_challenges_per_student n 
+
+where 
+      amount = (select max(amount) from number_of_challenges_per_student ) 
+   or amount not in(select amount from number_of_challenges_per_student where r = 2)
+
+order by 
+    amount desc 
+  , hacker_id;
 
 
 
---mysql  &  ms sql server 
-select h.hacker_id , name , count(*) 
-from hackers as h join challenges as c on h.hacker_id = c.hacker_id
-group by  h.hacker_id , name 
-having  count(*) = (select max(co) from (select count(*) as co from challenges group by hacker_id) as t )
-or  count(*) in    (select coun from (select count(*) as coun from challenges group by hacker_id) as t
+/* mysql  &  ms sql server */
+select 
+    h.hacker_id 
+  , name 
+  , count(*) 
+
+from 
+    hackers as h 
+    
+    join challenges c 
+       on h.hacker_id = c.hacker_id
+
+group by  
+    h.hacker_id 
+  , name 
+
+having  
+      count(*) =  (select max(co) from (select count(*) as co from challenges group by hacker_id) as t )
+   or count(*) in (select coun 
+                   
+                   from (select count(*) as coun from challenges group by hacker_id) as t
                     group by coun having count(*) = 1)
 order by count(*) desc ,  h.hacker_id;
 

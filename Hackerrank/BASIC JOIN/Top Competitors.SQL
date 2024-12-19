@@ -1,7 +1,7 @@
---mysql  &  ms sql server
+/* mysql  &  ms sql server */
 select 
     h.hacker_id 
-  , name 
+  , h.name 
 
 from 
     hackers as h 
@@ -16,9 +16,15 @@ from
     on c.difficulty_level = d.difficulty_level
 
 where 
-    d.score = s.score /*we can replace this where with and*/
+    d.score = s.score /*we can replace this where with and */
 
-group by h.hacker_id , name 
-having count(*) > 1
+group by 
+    h.hacker_id 
+  , h.name 
 
-order by count(*) desc ,  h.hacker_id ;
+having 
+    count(*) > 1
+
+order by 
+    count(*) desc 
+  , h.hacker_id ;
