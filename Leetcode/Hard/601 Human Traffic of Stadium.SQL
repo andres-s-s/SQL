@@ -1,3 +1,21 @@
+/*
+  Instructions:
+
+  Write a solution to display the records with three or more rows with consecutive id's, 
+  and the number of people is greater than or equal to 100 for each.
+
+  Return the result table ordered by visit_date in ascending order.
+
+  +---------------+---------+
+  | Column Name   | Type    |
+  +---------------+---------+
+  | id            | int     |
+  | visit_date    | date    |
+  | people        | int     |
+  +---------------+---------+
+*/
+
+
 -- mysql  &  ms sql server
 select 
     id 
@@ -84,6 +102,7 @@ with cte as (
         
         then 1 
         else null 
+
       end as tf 
     
   from (
