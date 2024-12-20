@@ -14,77 +14,126 @@
   | people        | int     |
   +---------------+---------+
 */
+--  count(*) over(partition by ind ) >= 3 as cnt --mysql alternative
+--where cnt = 1  --mysql alternative
 
 
 -- mysql  &  ms sql server
-select 
-    id 
-  , visit_date 
-  , people 
+with greater_than_99 as (                               
+  select 
+      s.id
+    , s.visit_date
+    , s.people
+  from 
+      stadium s
+  where 
+        s.people >= 100
+                        )
+-- close cte 
 
-from (
-        select 
-            id 
-          , visit_date 
-          , people 
-          , count(*) 
-              over(
-                partition by 
-                    ind 
-                  ) 
-              as cnt 
-            --  count(*) over(partition by ind ) >= 3 as cnt --mysql alternative
-        from (    
-                select 
-                    id 
-                  , visit_date 
-                  , people 
-                  , sum(tf) 
-                      over(
-                        order by 
-                            id asc
-                          ) 
-                      as ind
-                from (
-                        select 
-                            * 
-                          , case 
-                            
-                              when lag(id) 
-                                     over(
-                                       order by 
-                                           id asc
-                                         ) = id - 1 
-                              then 0 
-                              
-                              else 1 
-                            
-                            end as tf 
-                        from (
-                                select 
-                                    * 
-                                from 
-                                    stadium 
-                                where 
-                                      people >= 100
-                             ) as t 
-                     ) as t2
-             ) as t3  
-     ) as t4
+
+
+, consecutive_ids_t_or_f as (
+  select 
+      g.id
+    , g.visit_date
+    , g.people
+    , case 
+      
+        when lag(g.id) 
+               over(
+                 order by 
+                     g.id asc
+                   ) = g.id - 1 
+        then 0 
+        
+        else 1 
+      
+      end as tf 
+  
+  from 
+      greater_than_99 g
+                     )
+-- close cte 
+
+
+
+, consecutive_ids as (    
+  select 
+      c.id 
+    , c.visit_date 
+    , c.people 
+    , sum(c.tf) 
+        over(
+          order by 
+              c.id asc
+            ) 
+        as ind
+
+  from 
+      consecutive_ids_t_or_f c
+                     )
+-- close cte
+
+
+
+, amount_of_consecutive_ids as (
+  select 
+      c.id 
+    , c.visit_date 
+    , c.people 
+    , count(*) 
+        over(
+          partition by 
+              c.ind 
+            ) 
+        as cnt
+   -- count(*) over(partition by ind ) >= 3 as cnt --mysql alternative
+
+
+  from 
+      consecutive_ids c
+     )
+
+
+
+select 
+    a.id 
+  , a.visit_date 
+  , a.people 
+
+from
+    amount_of_consecutive_ids a
 
 where 
       1=1
-  and cnt >= 3 
---where cnt = 1  --mysql alternative
+  and a.cnt >= 3 
+   -- cnt = 1  --mysql alternative
+
+
 
 order by 
-    visit_date asc;
+    a.visit_date asc;
 
 
 
 
 --mysql  &  ms sql server
-with cte as (
+with greater_than_99 as (                               
+  select 
+      s.id
+    , s.visit_date
+    , s.people
+  from 
+      stadium s
+  where 
+        s.people >= 100
+                        )
+-- close cte 
+
+
+
+, consecutive_ids_t_or_f as (
   select 
       id 
     , visit_date 
@@ -105,30 +154,24 @@ with cte as (
 
       end as tf 
     
-  from (
-        select 
-            * 
-        from 
-            stadium 
-        where 
-            people >= 100 
-       ) as t
-            )
+  from 
+      greater_than_99  )
 -- close cte
 
 
 
 select 
-    id 
-  , visit_date 
-  , people 
+    c.id 
+  , c.visit_date 
+  , c.people 
 
 from 
-    cte 
+    consecutive_ids_t_or_f c 
 
 where 
       1=1
-  and tf is not null 
+  and c.tf is not null 
+  
 
 order by 
     id asc;
