@@ -1,41 +1,115 @@
---MySQL  &  MS SQL SERVER
-SELECT id , visit_date , people FROM (
-    SELECT id ,visit_date ,people ,
-    COUNT(*) OVER(PARTITION BY ind )  AS cnt 
---  COUNT(*) OVER(PARTITION BY ind ) >= 3 AS cnt --MySQL alternative
-    FROM (    
-        SELECT id ,visit_date ,people ,
-        SUM(tf) OVER(ORDER BY id ASC) AS ind
-        FROM (
-            SELECT * , 
-            CASE WHEN LAG(id) OVER(ORDER BY id ASC) = id - 1 
-            THEN 0 ELSE 1 END AS tf 
-            FROM (
-                SELECT * FROM Stadium WHERE people >= 100
-            ) AS T 
-        ) AS T2
-    ) AS T3  
-) AS T4
-WHERE cnt >= 3 
---WHERE cnt = 1  --MySQL alternative
-ORDER BY visit_date ASC;
+-- mysql  &  ms sql server
+select 
+    id 
+  , visit_date 
+  , people 
+
+from (
+        select 
+            id 
+          , visit_date 
+          , people 
+          , count(*) 
+              over(
+                partition by 
+                    ind 
+                  ) 
+              as cnt 
+            --  count(*) over(partition by ind ) >= 3 as cnt --mysql alternative
+        from (    
+                select 
+                    id 
+                  , visit_date 
+                  , people 
+                  , sum(tf) 
+                      over(
+                        order by 
+                            id asc
+                          ) 
+                      as ind
+                from (
+                        select 
+                            * 
+                          , case 
+                            
+                              when lag(id) 
+                                     over(
+                                       order by 
+                                           id asc
+                                         ) = id - 1 
+                              then 0 
+                              
+                              else 1 
+                            
+                            end as tf 
+                        from (
+                                select 
+                                    * 
+                                from 
+                                    stadium 
+                                where 
+                                      people >= 100
+                             ) as t 
+                     ) as t2
+             ) as t3  
+     ) as t4
+
+where 
+      1=1
+  and cnt >= 3 
+--where cnt = 1  --mysql alternative
+
+order by 
+    visit_date asc;
 
 
 
---MySQL  &  MS SQL SERVER
-WITH CTE AS (
-    SELECT id , visit_date , people ,
-    CASE WHEN 
-         LEAD(id)   OVER(ORDER BY id ) - 1 = id AND 
-         LEAD(id,2) OVER(ORDER BY id ) - 2 = id
-    OR   LEAD(id)   OVER(ORDER BY id ) - 1 = id AND 
-         LAG(id)    OVER(ORDER BY id ) + 1 = id
-    OR   LAG(id)    OVER(ORDER BY id ) + 1 = id AND
-         LAG(id,2)  OVER(ORDER BY id ) + 2 = id
-    THEN 1 ELSE NULL END AS tf 
-    FROM (SELECT * FROM Stadium WHERE people >= 100 ) AS T
-)
-SELECT id , visit_date , people 
-FROM CTE 
-WHERE tf IS NOT NULL 
-ORDER BY id ASC;
+
+--mysql  &  ms sql server
+with cte as (
+  select 
+      id 
+    , visit_date 
+    , people 
+    , case 
+        when 
+              lead(id)   over(order by id ) - 1 = id 
+          and lead(id,2) over(order by id ) - 2 = id
+           
+           or lead(id)   over(order by id ) - 1 = id 
+          and lag(id)    over(order by id ) + 1 = id
+           
+           or lag(id)    over(order by id ) + 1 = id 
+          and lag(id,2)  over(order by id ) + 2 = id
+        
+        then 1 
+        else null 
+      end as tf 
+    
+  from (
+        select 
+            * 
+        from 
+            stadium 
+        where 
+            people >= 100 
+       ) as t
+            )
+-- close cte
+
+
+
+select 
+    id 
+  , visit_date 
+  , people 
+
+from 
+    cte 
+
+where 
+      1=1
+  and tf is not null 
+
+order by 
+    id asc;
