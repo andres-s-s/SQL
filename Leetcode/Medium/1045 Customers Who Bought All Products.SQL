@@ -1,18 +1,49 @@
---MySQL  &  MS SQL SERVER
-WITH  Amt   AS ( 
-    SELECT COUNT(*) AS cnt FROM Product 
+--mysql  &  ms sql server
+with amt as ( 
+  select 
+      count(*) as cnt 
+  
+  from 
+      product 
 )
-, Customers AS (
-    SELECT DISTINCT customer_id , product_key FROM Customer 
+
+
+, customers as (
+  select 
+      distinct customer_id 
+    , product_key 
+  
+  from 
+      customer 
 ) 
-SELECT customer_id FROM Customers GROUP BY customer_id 
-HAVING COUNT(*) = (SELECT cnt FROM Amt );
+
+
+select 
+    customer_id 
+
+from 
+    customers 
+
+group by 
+    customer_id 
+
+having 
+    count(*) = (select cnt from amt );
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT customer_id 
-FROM Customer 
-GROUP BY customer_id 
-HAVING COUNT(DISTINCT product_key) = 
-      (SELECT COUNT(*) FROM Product);
+--mysql  &  ms sql server
+select 
+    customer_id 
+
+from 
+    customer 
+
+group by 
+    customer_id 
+
+having 
+    count(distinct product_key) = ( select 
+                                        count(*) 
+                                    from 
+                                        product);

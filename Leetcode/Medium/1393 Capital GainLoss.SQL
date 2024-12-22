@@ -1,30 +1,80 @@
---MySQL  &  MS SQL SERVER
-WITH CTE AS (
-  SELECT stock_name , 
-    CASE WHEN operation = 'Buy' THEN 
-    LEAD(price) OVER(ORDER BY stock_name , operation_day ASC) - price 
-    ELSE 0 END AS gl 
-  FROM Stocks
-)
-SELECT stock_name , SUM(gl) AS capital_gain_loss 
-FROM CTE GROUP BY stock_name;
+--mysql  &  ms sql server
+with cte as (
+  select 
+      stock_name 
+    , case 
+          when operation = 'buy' 
+          then lead(price) 
+                 over(
+                   order by 
+                       stock_name 
+                     , operation_day asc
+                     ) - price 
+          
+          else 0 
+      end 
+        as gl 
+  
+  from 
+      stocks
+            )
+
+
+select 
+    stock_name 
+  , sum(gl) 
+      as capital_gain_loss 
+
+from 
+    cte 
+
+group by 
+    stock_name;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT stock_name , SUM(gl) AS capital_gain_loss
-FROM (
-    SELECT stock_name , 
-    CASE  WHEN operation = 'Buy' THEN  -price ELSE price 
-    END AS gl 
-    FROM Stocks
-) AS T 
-GROUP BY stock_name;
+--mysql  &  ms sql server
+select 
+    stock_name 
+  , sum(gl) 
+      as capital_gain_loss
+
+from (
+        select 
+            stock_name 
+          , case 
+                when operation = 'buy' 
+                then -price 
+                
+                else price 
+            end 
+              as gl 
+        
+        from 
+            stocks
+     ) as t 
+
+group by 
+    stock_name;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT DISTINCT stock_name , 
-  SUM( CASE WHEN operation = 'Buy' THEN -price ELSE price END )
-  OVER(PARTITION BY stock_name) AS capital_gain_loss
-FROM Stocks;
+--mysql  &  ms sql server
+select 
+    distinct stock_name 
+  , sum( 
+          case 
+              when operation = 'buy' 
+              then -price 
+              
+              else price 
+          end 
+       )
+      over(
+        partition by 
+            stock_name
+          ) 
+      as capital_gain_loss
+
+from 
+    stocks;

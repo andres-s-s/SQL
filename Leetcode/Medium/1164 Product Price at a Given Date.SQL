@@ -1,65 +1,150 @@
---MySQL 
-SELECT T.product_id , COALESCE( P.new_price , 10 ) AS price 
-FROM (
-    SELECT product_id , MAX(
-        CASE WHEN 
-          STR_TO_DATE( change_date, '%Y-%m-%d') <= 
-          STR_TO_DATE('2019-08-16', '%Y-%m-%d')
-        THEN change_date END
-    ) AS dt
-    FROM Products
-    GROUP BY product_id
-) AS T 
-LEFT JOIN Products P
-ON P.product_id = T.product_id AND T.dt = P.change_date;
+--mysql 
+select 
+    t.product_id 
+  , coalesce( p.new_price , 10 ) 
+      as price 
+
+from (
+      select 
+          product_id 
+        , max(
+              case 
+                  when str_to_date( change_date, '%y-%m-%d') 
+                    <= str_to_date('2019-08-16', '%y-%m-%d')
+              then change_date 
+              
+              end
+             ) 
+            as dt
+    
+      from 
+          products
+    
+      group by 
+          product_id
+     ) as t 
+
+    left join products p
+       on p.product_id = t.product_id 
+      and t.dt = p.change_date;
 
 
 
---MySQL 
-WITH CTE AS (
-    SELECT DISTINCT product_id ,
-    FIRST_VALUE(new_price) OVER(PARTITION BY product_id 
-    ORDER BY change_date DESC ) AS price 
-    FROM Products
-    WHERE STR_TO_DATE( change_date, '%Y-%m-%d') <= 
-          STR_TO_DATE('2019-08-16', '%Y-%m-%d')
-)
-SELECT * FROM CTE 
-UNION ALL 
-SELECT DISTINCT product_id , 10 AS price 
-FROM Products
-WHERE product_id NOT IN (SELECT product_id FROM CTE );
+--mysql 
+with cte as (
+  select 
+      distinct product_id 
+    , first_value(new_price) 
+        over(
+          partition by 
+              product_id 
+          
+          order by 
+              change_date desc 
+            ) 
+        as price 
+  
+  from 
+      products
+  
+  where 
+        1=1
+    and str_to_date( change_date, '%y-%m-%d') 
+     <= str_to_date('2019-08-16', '%y-%m-%d')
+            )
+
+
+select 
+    * 
+
+from 
+    cte 
+
+union all 
+
+select 
+    distinct product_id 
+  , 10 
+      as price 
+
+from 
+    products
+
+where 
+    product_id not in (select product_id from cte );
 
 
 
---MS SQL SERVER
-SELECT T.product_id , COALESCE( P.new_price , 10 ) AS price 
-FROM (
-    SELECT product_id , MAX(
-        CASE WHEN 
-          CAST( change_date  AS DATE) <= 
-          CAST('2019-08-16'  AS DATE )
-        THEN change_date END
-    ) AS dt
-    FROM Products
-    GROUP BY product_id
-) AS T 
-LEFT JOIN Products P
-ON P.product_id = T.product_id AND T.dt = P.change_date;
+--ms sql server
+select 
+    t.product_id 
+  , coalesce( p.new_price , 10 ) 
+      as price 
+
+from (
+      select 
+          product_id 
+        , max(
+              case 
+                  when cast( change_date  as date) 
+                    <= cast('2019-08-16'  as date )
+                  then change_date 
+              
+              end
+             ) 
+            as dt
+    
+      from 
+          products
+    
+      group by 
+          product_id
+     ) as t 
+
+    left join products p
+       on p.product_id = t.product_id 
+      and t.dt = p.change_date;
 
 
 
---MS SQL SERVER
-WITH CTE AS (
-    SELECT DISTINCT product_id ,
-    FIRST_VALUE(new_price) OVER(PARTITION BY product_id 
-    ORDER BY change_date DESC ) AS price 
-    FROM Products
-    WHERE CAST( change_date  AS DATE) <= 
-          CAST('2019-08-16'  AS DATE )
-)
-SELECT * FROM CTE 
-UNION ALL 
-SELECT DISTINCT product_id , 10 AS price 
-FROM Products
-WHERE product_id NOT IN (SELECT product_id FROM CTE );
+--ms sql server
+with cte as (
+  select 
+      distinct product_id 
+    , first_value(new_price) 
+        over(
+          partition by 
+              product_id 
+          order by 
+              change_date desc 
+            ) 
+        as price 
+  
+  from 
+      products
+
+  where 
+        1=1
+    and cast( change_date  as date) 
+     <= cast('2019-08-16'  as date )
+            )
+
+
+select 
+    * 
+
+from 
+    cte 
+
+union all 
+
+select 
+    distinct product_id 
+  , 10 
+      as price 
+
+from 
+    products
+
+where 
+    product_id not in (select product_id from cte );

@@ -1,131 +1,304 @@
---MySQL  
-SELECT 
-C1.visited_on , 
-SUM(C2.amount) AS amount ,
-ROUND( SUM(C2.amount)/7 , 2 ) AS average_amount 
-FROM (
-    SELECT DISTINCT visited_on FROM Customer 
-    WHERE STR_TO_DATE( visited_on , '%Y-%m-%d')  >
-        (SELECT ADDDATE( MIN(visited_on), INTERVAL 5 DAY)  FROM Customer ) )
-AS C1 
-JOIN Customer C2
-ON   STR_TO_DATE( C2.visited_on , '%Y-%m-%d') 
-BETWEEN 
-SUBDATE(     C1.visited_on, INTERVAL 6 DAY)  AND
-STR_TO_DATE( C1.visited_on , '%Y-%m-%d')   
-GROUP BY C1.visited_on  
-ORDER BY C1.visited_on ASC ;
+--mysql  
+select 
+    c1.visited_on 
+  , sum(c2.amount) 
+      as amount 
+  , round( 
+            sum(c2.amount)/7 
+          , 2 
+         ) 
+      as average_amount 
+
+from (
+      select 
+          distinct visited_on 
+      
+      from 
+          customer 
+      
+      where
+            1=1 
+        and str_to_date( visited_on , '%y-%m-%d')  
+          > (
+              select 
+                  adddate( min(visited_on), interval 5 day)  
+              
+              from 
+                  customer 
+            ) 
+     ) as c1 
+
+    join customer c2
+       on str_to_date( c2.visited_on , '%y-%m-%d') 
+          between subdate(     c1.visited_on , interval 6 day)  
+              and str_to_date( c1.visited_on , '%y-%m-%d')   
+
+group by 
+    c1.visited_on  
+
+order by 
+    c1.visited_on asc ;
 
 
 
---MS SQL SERVER
-WITH CTE AS (
-    SELECT DISTINCT visited_on FROM Customer 
-    WHERE CAST( visited_on AS DATE )  >
-        (SELECT DATEADD(DAY , 5 , MIN(visited_on) )  FROM Customer ) 
-)
-SELECT 
-C1.visited_on , 
-SUM(C2.amount) AS amount ,
-ROUND( SUM(C2.amount)/7.0 , 2 ) AS average_amount 
-FROM CTE AS C1 
-JOIN Customer C2
-ON   CAST( C2.visited_on AS DATE ) 
-BETWEEN 
-DATEADD(DAY , -6 , C1.visited_on )  AND
-CAST( C1.visited_on AS DATE )   
-GROUP BY C1.visited_on 
-ORDER BY C1.visited_on ASC ;
+--ms sql server
+with cte as (
+  select 
+      distinct visited_on 
+  
+  from 
+      customer 
+  
+  where 
+        1=1
+    and cast( visited_on as date ) 
+      > (
+          select 
+              dateadd( 
+                          day 
+                        , 5 
+                        , min(visited_on) 
+                     )
+          
+          from 
+              customer 
+        ) 
+            )
 
 
 
+select 
+    c1.visited_on 
+  , sum(c2.amount) 
+      as amount 
+  , round( 
+            sum(c2.amount)/7.0 
+          , 2 
+         ) 
+      as average_amount 
 
---MySQL  
-WITH CTE AS (
-    SELECT DISTINCT visited_on FROM Customer 
-    WHERE STR_TO_DATE( visited_on , '%Y-%m-%d')  >
-        (SELECT ADDDATE( MIN(visited_on), INTERVAL 5 DAY)  FROM Customer ) ) , 
+from 
+    cte as c1 
 
-    CTE2 AS (
-    SELECT visited_on , 
-       (SELECT SUM(amount)  FROM Customer
-        WHERE STR_TO_DATE( visited_on , '%Y-%m-%d') BETWEEN 
-        SUBDATE(     C.visited_on, INTERVAL 6 DAY)  AND
-        STR_TO_DATE( C.visited_on , '%Y-%m-%d')   
-        ) AS amount
-    FROM CTE C
-    )
+    join customer c2
+       on cast( c2.visited_on as date ) 
+          between dateadd(
+                              day 
+                            , -6 
+                            , c1.visited_on 
+                         )  
 
-SELECT visited_on , 
-amount , 
-ROUND( amount/7 , 2 ) AS average_amount
-FROM CTE2;
+      and cast( c1.visited_on as date )   
 
+group by 
+    c1.visited_on 
 
-
---MS SQL SERVER
-WITH CTE AS (
-    SELECT DISTINCT visited_on FROM Customer 
-    WHERE CAST( visited_on AS DATE )  >
-        (SELECT DATEADD(DAY , 5 , MIN(visited_on) )  FROM Customer ) ) , 
-
-    CTE2 AS (
-    SELECT visited_on , 
-       (SELECT SUM(amount)  FROM Customer
-        WHERE CAST( visited_on AS DATE ) BETWEEN 
-        DATEADD(DAY , -6 , C.visited_on ) AND
-        CAST(  C.visited_on  AS DATE )   
-        ) AS amount
-    FROM CTE C
-    )
-
-SELECT visited_on , 
-amount , 
-ROUND( amount/7.0 , 2 ) AS average_amount
-FROM CTE2;
-
-
-
---MySQL
-SELECT DISTINCT visited_on , 
-  amount ,
-  ROUND( amount/7 , 2 ) AS average_amount
-FROM (
-  SELECT visited_on , 
-    SUM( amount )
-      OVER( ORDER BY visited_on 
-      RANGE BETWEEN INTERVAL 6 DAY PRECEDING AND CURRENT ROW )
-    AS amount
-    FROM Customer
-) AS T
-WHERE visited_on > 
-  (SELECT ADDDATE( MIN(visited_on) , INTERVAL 5 DAY)  FROM Customer )
-ORDER BY visited_on ASC;
+order by 
+    c1.visited_on asc ;
 
 
 
 
---MS SQL SERVER
---This could work if there were not missing dates as the description of the problem suggest by stating that 
+--mysql  
+with cte as (
+  select 
+      distinct visited_on 
+  
+  from 
+      customer 
+  
+  where 
+        1=1
+    and str_to_date( visited_on , '%y-%m-%d')
+      > (
+          select 
+              adddate( min(visited_on), interval 5 day)  
+          from customer 
+        ) 
+            ) 
+
+
+, cte2 as (
+  select 
+      visited_on 
+    , (
+        select 
+            sum(amount)  
+        
+        from 
+            customer
+      
+        where
+              1=1 
+          and str_to_date( visited_on , '%y-%m-%d') 
+              between subdate( c.visited_on, interval 6 day)  
+                  and str_to_date( c.visited_on , '%y-%m-%d')   
+      ) as amount
+  
+  from 
+      cte c
+          )
+
+
+
+select 
+    visited_on 
+  , amount 
+  , round( amount/7 , 2 ) 
+      as average_amount
+
+from 
+    cte2;
+
+
+
+
+--ms sql server
+with cte as (
+  select 
+      distinct visited_on 
+  
+  from 
+      customer 
+  
+  where 
+        1=1
+    and cast( visited_on as date )  
+      > (
+          select 
+              dateadd(
+                        day 
+                      , 5 
+                      , min(visited_on) 
+                     )  
+
+  from 
+      customer 
+        ) 
+            ) 
+
+
+, cte2 as (
+  select 
+      visited_on 
+    , (
+        select 
+            sum(amount)  
+        
+        from 
+            customer
+      
+        where 
+              cast( visited_on as date ) 
+                between dateadd(day , -6 , c.visited_on ) 
+                    and cast(  c.visited_on  as date )   
+      ) as amount
+  
+  from 
+      cte c
+          )
+
+
+
+select 
+    visited_on 
+  , amount 
+  , round( amount/7.0 , 2 ) 
+      as average_amount
+
+from 
+    cte2;
+
+
+
+--mysql
+select 
+    distinct visited_on 
+  , amount 
+  , round( amount/7 , 2 ) 
+      as average_amount
+
+from (
+        select 
+            visited_on 
+          , sum( amount )
+              over( 
+                order by 
+                    visited_on 
+                range between 
+                      interval 6 day preceding 
+                  and current row 
+                  )
+              as amount
+        
+        from 
+            customer
+     ) as t
+
+where 
+      1=1
+  and visited_on 
+    > (
+        select 
+            adddate( min(visited_on) , interval 5 day)  
+        
+        from 
+            customer )
+
+order by 
+    visited_on asc;
+
+
+
+
+--ms sql server
+--this could work if there were not missing dates as the description of the problem suggest by stating that 
 --(there will be at least one customer every day).
-WITH CTE AS (
-    SELECT visited_on , SUM(amount) AS amount
-    FROM Customer
-    GROUP BY visited_on
+with cte as (
+  select 
+      visited_on 
+    , sum(amount) 
+        as amount
+  
+  from 
+      customer
+  
+  group by 
+      visited_on
 
 )
 
-SELECT DISTINCT visited_on , 
-  amount ,
-  ROUND( amount/7.0 , 2 ) AS average_amount
-FROM (
-  SELECT visited_on , 
-    SUM( amount )
-      OVER( ORDER BY visited_on 
-      ROWS BETWEEN  6 PRECEDING AND CURRENT ROW )
-    AS amount
-    FROM CTE
-) AS T
-WHERE visited_on > 
-   (SELECT DATEADD(DAY , 5 , MIN(visited_on) )  FROM Customer )
-ORDER BY visited_on ASC;
+select 
+    distinct visited_on 
+  , amount 
+  , round( amount/7.0 , 2 ) 
+      as average_amount
+
+from (
+        select 
+            visited_on 
+          , sum( amount )
+              over( 
+                order by 
+                    visited_on 
+                rows between  
+                      6 preceding 
+                  and current row )
+              as amount
+          
+          from 
+              cte
+     ) as t
+
+where 
+      1=1
+  and visited_on 
+    > ( 
+        select 
+            dateadd(day , 5 , min(visited_on) )  
+        
+        from 
+            customer )
+
+order by 
+    visited_on asc;

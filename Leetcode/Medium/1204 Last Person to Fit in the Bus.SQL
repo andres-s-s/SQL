@@ -1,51 +1,123 @@
---MySQL  &  MS SQL SERVER
-SELECT DISTINCT FIRST_VALUE(person_name) OVER(ORDER BY wght DESC )
-AS person_name
-FROM (
-    SELECT person_name , SUM(weight) OVER(ORDER BY turn ASC)  AS wght 
-    FROM Queue
-) AS T
-WHERE wght <= 1000;
+--mysql  &  ms sql server
+select 
+    distinct first_value(person_name) 
+      over(
+        order by 
+            wght desc 
+          )
+      as person_name
+
+from (
+        select 
+            person_name 
+          , sum(weight) 
+              over(
+                order by 
+                    turn asc
+                  )
+              as wght 
+
+        from 
+            queue
+     ) as t
+
+where 
+    wght <= 1000;
 
 
 
---MySQL  
-SELECT person_name
-FROM (
-    SELECT person_name , SUM(weight) OVER(ORDER BY turn ASC)  AS wght 
-    FROM Queue
-) AS T
-WHERE wght <= 1000
-ORDER BY wght DESC LIMIT 1 ;
+--mysql  
+select 
+    person_name
+
+from (  
+        select 
+            person_name 
+          , sum(weight) 
+              over(
+                order by 
+                    turn asc
+                  )  
+              as wght 
+        
+        from 
+            queue
+     ) as t
+
+where 
+    wght <= 1000
+
+order by 
+    wght desc 
+
+limit 1 ;
 
 
 
---MS SQL SERVER
-SELECT TOP 1 person_name
-FROM (
-    SELECT person_name , SUM(weight) OVER(ORDER BY turn ASC)  AS wght 
-    FROM Queue
-) AS T
-WHERE wght <= 1000
-ORDER BY wght DESC;
+--ms sql server
+select 
+    top 1 person_name
+
+from (
+        select 
+            person_name 
+          , sum(weight) 
+              over(
+                order by 
+                    turn asc
+                  )  
+              as wght 
+        
+        from 
+            queue
+     ) as t
+
+where 
+    wght <= 1000
+
+order by 
+    wght desc;
 
 
 
---MySQL  
-SELECT   Q1.person_name 
-FROM     Queue Q1 JOIN Queue Q2 
-ON       Q1.turn >= Q2.turn 
-GROUP BY Q1.person_name 
-HAVING   SUM( Q2.weight ) <= 1000
-ORDER BY SUM( Q2.weight ) DESC 
-LIMIT 1 ;
+--mysql  
+select   
+    q1.person_name 
+
+from 
+    queue q1 
+    
+    join queue q2 
+       on q1.turn >= q2.turn 
+
+group by 
+    q1.person_name 
+
+having   
+    sum( q2.weight ) <= 1000
+
+order by 
+    sum( q2.weight ) desc 
+
+limit 1 ;
 
 
 
---MS SQL SERVER
-SELECT   TOP 1 Q1.person_name 
-FROM     Queue Q1 JOIN Queue Q2 
-ON       Q1.turn >= Q2.turn 
-GROUP BY Q1.person_name 
-HAVING   SUM( Q2.weight ) <= 1000
-ORDER BY SUM( Q2.weight ) DESC ;
+--ms sql server
+select   
+    top 1 q1.person_name 
+
+from 
+    queue q1 
+    
+    join queue q2 
+       on q1.turn >= q2.turn 
+
+group by 
+    q1.person_name 
+
+having   
+    sum( q2.weight ) <= 1000
+
+order by 
+    sum( q2.weight ) desc ;

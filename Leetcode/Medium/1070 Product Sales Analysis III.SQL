@@ -1,40 +1,40 @@
---MySQL  &  MS SQL SERVER
-SELECT product_id , year AS first_year , quantity , price 
-FROM   Sales
-WHERE  CONCAT(product_id , year ) IN 
-      (SELECT CONCAT( product_id , MIN(year) ) FROM Sales 
-       GROUP BY product_id ); 
+--mysql  &  ms sql server
+select product_id , year as first_year , quantity , price 
+from   sales
+where  concat(product_id , year ) in 
+      (select concat( product_id , min(year) ) from sales 
+       group by product_id ); 
 
 
 
---MySQL  &  MS SQL SERVER 
-WITH CTE AS (
-    SELECT product_id , MIN(year) AS year 
-    FROM Sales GROUP BY product_id
+--mysql  &  ms sql server 
+with cte as (
+    select product_id , min(year) as year 
+    from sales group by product_id
 )
 
-SELECT product_id , year AS first_year , quantity , price 
-FROM Sales S
-WHERE year = (SELECT year FROM CTE C 
-              WHERE S.product_id = C.product_id  )  ;
+select product_id , year as first_year , quantity , price 
+from sales s
+where year = (select year from cte c 
+              where s.product_id = c.product_id  )  ;
 
 
 
---MySQL
-SELECT product_id , year AS first_year , quantity , price 
-FROM Sales
-WHERE (product_id , year ) IN 
-      (SELECT product_id , MIN(year) FROM Sales 
-       GROUP BY product_id ); 
+--mysql
+select product_id , year as first_year , quantity , price 
+from sales
+where (product_id , year ) in 
+      (select product_id , min(year) from sales 
+       group by product_id ); 
 
 
 
---MySQL  &  MS SQL SERVER ---Testcases passed, but took too long.
-SELECT product_id , year AS first_year , quantity , price 
-FROM (
-    SELECT DENSE_RANK() 
-    OVER(PARTITION BY product_id ORDER BY year ASC ) AS ind , 
+--mysql  &  ms sql server ---testcases passed, but took too long.
+select product_id , year as first_year , quantity , price 
+from (
+    select dense_rank() 
+    over(partition by product_id order by year asc ) as ind , 
     product_id , year , quantity , price 
-    FROM Sales
-) AS T 
-WHERE ind = 1 ; 
+    from sales
+) as t 
+where ind = 1 ; 
