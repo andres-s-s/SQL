@@ -7,7 +7,9 @@ sums of total_submissions, total_accepted_submissions, total_views, and total_un
 for each contest sorted by contest_id. Exclude the contest from the result if 
 all four sums are 0.
 
-*/--mysql  &  ms sql server
+*/
+
+--mysql  &  ms sql server
 select 
     c.contest_id 
   , hacker_id 
