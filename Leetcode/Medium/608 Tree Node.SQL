@@ -1,32 +1,78 @@
---MySQL  &  MS SQL SERVER
-WITH CTE AS (SELECT DISTINCT p_id FROM Tree)
+--mysql  &  ms sql server
+with cte as (
+  select 
+      distinct p_id 
+  
+  from 
+      tree)
 
-SELECT id , 
-CASE WHEN p_id IS  NULL THEN 'Root' 
-     WHEN   id IN (SELECT p_id FROM CTE ) THEN 'Inner'  
-     ELSE 'Leaf'
-END AS 'type'
-FROM Tree ; 
+select 
+    id 
+  , case 
+        when p_id is null 
+        then 'root' 
+     
+        when id in (select p_id from cte ) 
+        then 'inner'  
+     
+        else 'leaf'
+    
+      end as 'type'
+
+from 
+    tree ; 
 
 
 
---MySQL  &  MS SQL SERVER
-WITH CTE AS (SELECT DISTINCT p_id FROM Tree)
+--mysql  &  ms sql server
+with cte as (
+  select 
+      distinct p_id 
+  
+  from 
+      tree)
 
-SELECT id , 
-CASE WHEN T.p_id IS  NULL THEN 'Root' 
-     WHEN C.p_id IS  NULL THEN 'Leaf'  
-     ELSE 'Inner'
-END AS 'type'
-FROM Tree T LEFT JOIN CTE C ON T.id = C.p_id ; 
+select 
+    id 
+  , case 
+        when t.p_id is null 
+        then 'root' 
+        
+        when c.p_id is null 
+        then 'leaf'  
+   
+        else 'inner'
+      
+      end as 'type'
+
+from 
+    tree t 
+    
+    left join cte c 
+       on t.id = c.p_id ; 
 
 
 
---MySQL
-WITH CTE AS (SELECT DISTINCT p_id FROM Tree)
+--mysql
+with cte as (
+  select 
+      distinct p_id 
+  
+  from 
+      tree  )
 
-SELECT id , 
-IF(p_id IS NULL , "Root" , 
-    IF(id IN (SELECT p_id FROM CTE ) , "Inner" , "Leaf") 
-) AS type
-FROM Tree ; 
+
+
+select 
+    id 
+  , if(p_id is null 
+  , "root" 
+  , if(
+          id in (select p_id from cte ) 
+        , "inner" 
+        , "leaf") 
+      ) 
+      as type
+
+from 
+    tree ; 

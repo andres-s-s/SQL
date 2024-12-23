@@ -1,122 +1,384 @@
---MySQL
-SELECT 
-ROUND(
-COUNT( player_id)/(SELECT COUNT(DISTINCT player_id) AS tamnt FROM Activity) 
-, 2 ) AS fraction
-FROM (
-    SELECT player_id FROM (
-        SELECT player_id , event_date FROM (
-            SELECT player_id , event_date , 
-            ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY event_date ASC ) AS ind
-            FROM Activity
-        ) AS T 
-        WHERE ind IN (1 , 2 )
-    ) AS T2 
-    GROUP BY player_id 
-    HAVING DATEDIFF( MAX(event_date) , MIN(event_date) ) =  2 - 1
-) AS T3 ;
+  --mysql
+select 
+    round(
+            count( player_id)
+          / (
+              select 
+                  count(distinct player_id) 
+                    as tamnt 
+              from 
+                  activity
+            ) 
+        , 2 
+         ) 
+      as fraction
+
+from (
+        select 
+            player_id
+
+        from (
+                select 
+                    player_id 
+                  , event_date 
+                
+                from (
+                        select 
+                            player_id 
+                          , event_date 
+                          , row_number() 
+                              over(
+                                partition by 
+                                    player_id 
+                                order by 
+                                    event_date asc 
+                                  ) 
+                              as ind
+                        
+                        from 
+                            activity
+                     ) as t 
+        where 
+            ind in (1 , 2 )
+             ) as t2 
+        
+        group by 
+            player_id 
+
+        having 
+            datediff( max(event_date) , min(event_date) ) =  2 - 1
+     ) as t3 ;
+  
+  
+  
+  --mysql
+select 
+    round( 
+            count( player_id )
+          / (
+              select 
+                  count(distinct player_id ) 
+              
+              from 
+                  activity) 
+        , 2 
+         )
+      as fraction
+from (
+      select 
+          t.player_id  
+      from (
+              select 
+                  player_id 
+                , min(event_date) 
+                    as event_date
+          
+              from 
+                  activity 
+              
+              group by 
+                  player_id
+           ) as t 
+      
+      join activity a 
+         on a.player_id = t.player_id 
+        and adddate(t.event_date, interval 1 day) = a.event_date
+     ) as t2;
 
 
 
---MySQL
-SELECT ROUND( COUNT( player_id )/( SELECT COUNT(DISTINCT player_id ) FROM Activity) , 2 )
-AS fraction
-FROM (
-    SELECT T.player_id  FROM (
-        SELECT player_id , MIN(event_date) AS event_date
-        FROM Activity GROUP BY player_id
-    ) AS T 
-    JOIN Activity A 
-    ON   A.player_id = T.player_id 
-    AND  ADDDATE(T.event_date, INTERVAL 1 DAY) = A.event_date
-) AS T2;
+--mysql
+select 
+    round( 
+            sum( tf )
+          /
+            count(distinct player_id) 
+        , 2 
+         )
+      as fraction
 
+from (
+        select 
+            player_id 
+          , ind = 2 
+            and datediff(event_date , min(event_date) 
+                  over(
+                    partition by 
+                        player_id)
+                        ) = 2 - 1 
+              as tf
+        
+        from (
+                select 
+                    player_id 
+                  , event_date 
+                  , row_number() 
+                      over(
+                        partition by 
+                            player_id 
+                        order by 
+                            event_date asc 
+                          ) 
+                      as ind
+                
+                from 
+                    activity
+             ) as t 
+  
+        where 
+              ind = 1 or ind = 2 
+     ) as t2;
+  
+  
+  
+  ---mysql
+select 
+    round(  
+            count( a2.player_id ) 
+          / count( a1.player_id ) 
+        , 2 
+         ) 
+      as fraction
 
+from 
+    activity a1
 
---MySQL
-SELECT ROUND( SUM( tf )/COUNT(DISTINCT player_id) , 2 )
-AS fraction
-FROM (
-    SELECT player_id , ind = 2 AND DATEDIFF(event_date , MIN(event_date) OVER(PARTITION BY player_id)) = 2 - 1 AS tf
-    FROM (
-        SELECT player_id , event_date , 
-        ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY event_date ASC ) AS ind
-        FROM Activity
-    ) AS T 
-    WHERE ind = 1 OR ind = 2 
-) AS T2;
+    left join activity a2 
+       on  a1.player_id =  a2.player_id 
+      and adddate(a1.event_date, interval  1 day) = a2.event_date
 
+where 
+      1=1
+  and (a1.event_date , a1.player_id ) in 
+                                        (
+                                            select 
+                                                min(event_date) 
+                                              , player_id  
+                                            
+                                            from 
+                                                activity 
+                                            
+                                            group by 
+                                                player_id
+                                        );
+  
+  
+  
+  --ms sql server
+select 
+    round(
+            count( player_id)
+          / cast( 
+                  (
+                    select 
+                        count(distinct player_id) 
+                          as tamnt 
+                    
+                    from 
+                        activity
+                  ) as float
+                )
+        , 2 
+         ) 
+      as fraction
 
+from (
+        select 
+            player_id 
+        
+        from (
+                select 
+                    player_id 
+                  , event_date 
+                
+                from (
+                        select 
+                            player_id 
+                          , event_date 
+                          , row_number() 
+                              over(
+                                partition by 
+                                    player_id 
+                                order by    
+                                    event_date asc 
+                                  ) 
+                              as ind
+                        
+                        from 
+                            activity
+                     ) as t 
+      
+                where 
+                      1=1
+                  and ind = 1 
+                   or ind = 2 
+             ) as t2 
+  
+        group by 
+            player_id 
+  
+        having 
+            datediff( 
+                        dd 
+                      , min(event_date) 
+                      , max(event_date)  
+                    ) = 2 - 1
+     ) as t3 ;
+  
+  
+  
+  --ms sql server
+select 
+    round( 
+            count( player_id )
+          / cast( 
+                  (
+                    select 
+                        count(distinct player_id ) 
+                    
+                    from 
+                        activity
+                  ) as float
+                ) 
+        , 2 )
+      as fraction
 
----MySQL
-SELECT ROUND(  COUNT( A2.player_id ) / COUNT( A1.player_id ) , 2 ) AS fraction
-FROM Activity A1
-LEFT JOIN Activity A2 
-ON  A1.player_id =  A2.player_id 
-AND ADDDATE(A1.event_date, INTERVAL  1 DAY) = A2.event_date
-WHERE (A1.event_date , A1.player_id ) IN 
-(SELECT MIN(event_date) , player_id  FROM Activity GROUP BY player_id);
+from (
+        select 
+            t.player_id  
+        
+        from (
+                select 
+                    player_id 
+                  , min(event_date) 
+                      as event_date
+                
+                from 
+                    activity 
+                
+                group by 
+                    player_id
+             ) as t 
 
+        join activity a 
+           on a.player_id = t.player_id 
+          and dateadd(
+                          day 
+                        , 1 
+                        , t.event_date 
+                     ) = a.event_date 
+     ) as t2;
+  
+  
+  
+  --ms sql server 
+select 
+    round( 
+            sum( tf )
+          / cast(
+                  (
+                    select 
+                        count(distinct player_id) 
+                          as tamnt 
+                    
+                    from 
+                        activity
+                  ) as float
+                )
+        , 2 
+         )
+      as fraction
 
+from (
+        select 
+            player_id 
+          , case 
+                when ind = 2 
+                 and datediff(
+                                dd 
+                              , min(event_date) 
+                                  over(
+                                    partition by 
+                                      player_id)  
+                              , event_date
+                             ) = 2 - 1  
+                then 1 
+                
+                else 0 
+            end 
+              as tf
+        
+        from (
+                select 
+                    player_id 
+                  , event_date 
+                  , row_number() 
+                      over(
+                        partition by 
+                            player_id 
+                        order by 
+                            event_date asc 
+                          ) 
+                      as ind
+                
+                from 
+                    activity
+             ) as t 
+  
+        where 
+              ind = 1 
+           or ind = 2 
+  
+     ) as t2;
+  
+  
+  
 
---MS SQL SERVER
-SELECT 
-ROUND(
-COUNT( player_id)/CAST( (SELECT COUNT(DISTINCT player_id) AS tamnt FROM Activity) AS FLOAT)
-, 2 ) AS fraction
-FROM (
-    SELECT player_id FROM (
-        SELECT player_id , event_date FROM (
-            SELECT player_id , event_date , 
-            ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY event_date ASC ) AS ind
-            FROM Activity
-        ) AS T 
-        WHERE ind = 1 OR ind = 2 
-    ) AS T2 
-    GROUP BY player_id 
-    HAVING DATEDIFF(DD , MIN(event_date) , MAX(event_date)  ) = 2 - 1
-) AS T3 ;
-
-
-
---MS SQL SERVER
-SELECT ROUND( COUNT( player_id )/CAST( (SELECT COUNT(DISTINCT player_id ) FROM Activity) AS FLOAT) , 2 )
-AS fraction
-FROM (
-    SELECT T.player_id  FROM (
-        SELECT player_id , MIN(event_date) AS event_date
-        FROM Activity GROUP BY player_id
-    ) AS T 
-    JOIN Activity A 
-    ON   A.player_id = T.player_id 
-    AND  DATEADD(DAY , 1 , T.event_date ) = A.event_date 
-) AS T2;
-
-
-
---MS SQL SERVER 
-SELECT ROUND( SUM( tf )/CAST((SELECT COUNT(DISTINCT player_id) AS tamnt FROM Activity) AS FLOAT), 2 )
-AS fraction
-FROM (
-    SELECT player_id , CASE WHEN ind = 2 AND DATEDIFF(DD ,  MIN(event_date) OVER(PARTITION BY player_id)  , event_date) = 2 - 1  
-    THEN 1 ELSE 0 END AS tf
-    FROM (
-        SELECT player_id , event_date , 
-        ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY event_date ASC ) AS ind
-        FROM Activity
-    ) AS T 
-    WHERE ind = 1 OR ind = 2 
+  --ms sql server
+with cte as (
+  select 
+      min(event_date) 
+        as md 
+    , player_id 
     
-) AS T2;
+  from 
+      activity 
+  
+  group by 
+      player_id
+            )
 
+select 
+    round(  
+            count( a2.player_id ) 
+          / cast( 
+                    count( a1.player_id ) as float 
+                )
+        , 2 ) 
+      as fraction
 
+from 
+    activity a1
 
---MS SQL SERVER
-WITH CTE AS (SELECT MIN(event_date) AS md , player_id FROM Activity GROUP BY player_id)
+    left join activity a2 
+       on a1.player_id =  a2.player_id 
+      and dateadd(
+                    day 
+                  , 1 
+                  , a1.event_date 
+                 ) = a2.event_date
 
-SELECT ROUND(  COUNT( A2.player_id ) / CAST( COUNT( A1.player_id ) AS FLOAT ), 2 ) AS fraction
-FROM Activity A1
-LEFT JOIN Activity A2 
-ON  A1.player_id =  A2.player_id 
-AND DATEADD(DAY , 1 , A1.event_date ) = A2.event_date
-WHERE EXISTS(SELECT * FROM CTE WHERE A1.event_date = md AND A1.player_id = player_id );
+where 
+      1=1
+  and exists(
+                select 
+                    * 
+                
+                from 
+                    cte 
+                
+                where 
+                      1=1
+                  and a1.event_date = md 
+                  and a1.player_id = player_id );
+  

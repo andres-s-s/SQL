@@ -1,12 +1,41 @@
---MySQL  &  MS SQL SERVER
-SELECT  E.name FROM Employee E JOIN Employee E2
-ON E.id = E2.managerId 
-GROUP BY E.name , E.id
-HAVING COUNT(*) >= 5;
+--mysql  &  ms sql server
+select  
+    e.name 
+
+from 
+    employee e 
+    
+    join employee e2
+       on e.id = e2.managerid 
+
+group by 
+    e.name 
+  , e.id
+
+having 
+    count(*) >= 5;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT name FROM Employee 
-WHERE id IN (SELECT managerId FROM Employee GROUP BY managerId 
-             HAVING COUNT(*) >= 5  );
+--mysql  &  ms sql server
+select 
+    name 
+
+from 
+    employee 
+
+where 
+      1=1
+  and id in (
+              select 
+                  managerid 
+              
+              from 
+                  employee 
+              
+              group by 
+                  managerid 
+             
+              having 
+                  count(*) >= 5  
+            );

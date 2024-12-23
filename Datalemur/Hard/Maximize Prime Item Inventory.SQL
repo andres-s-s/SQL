@@ -25,7 +25,7 @@ with
 /*
 The sum function gets the amount of space that one batch will take 
 The count function gets the total numbers of item per batch 
-*/
+  */
 
 
 
@@ -50,8 +50,9 @@ select
             ) /s.pe_sf 
           ) * s.pe_cnt 
           as item_count
-  /* The result of space_left/pe_sf gets rounded down then multiplied by pe_cnt to know the total items 
-     The division gets the amount of batches that fit in   */
+  /* 
+    The result of space_left/pe_sf gets rounded down then multiplied by pe_cnt to know the total items 
+    The division gets the amount of batches that fit in   */
 
 from 
   summary s
@@ -70,6 +71,8 @@ select
 
 from 
   summary s;
+
+
 
 
 

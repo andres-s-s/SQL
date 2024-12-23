@@ -1,62 +1,118 @@
---MySQL
-CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
-BEGIN
-  RETURN (
-        SELECT salary 
-        FROM (  SELECT salary , DENSE_RANK() OVER(ORDER BY salary DESC) AS ind
-                FROM Employee 
-             ) AS T 
-        WHERE ind = N
+--mysql
+create function getnthhighestsalary(n int) returns int
+  begin
+      return (
+               select 
+                   salary 
+               
+               from (  
+                       select 
+                            salary 
+                          , dense_rank() 
+                              over(
+                                order by 
+                                    salary desc
+                                  ) 
+                              as ind
+                       
+                       from 
+                           employee 
+                    ) as t 
+               where ind = n
   );
-END
+  end
 
 
 
---MySQL
-CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
-BEGIN
-  SET N = N - 1; 
-  RETURN (
-        SELECT DISTINCT salary FROM Employee 
-        ORDER BY salary DESC LIMIT  N , 1
+
+--mysql
+create function getnthhighestsalary(n int) returns int
+  begin
+      set n = n - 1; 
+      return (
+               select 
+                   distinct salary 
+               
+               from 
+                   employee 
+               
+               order by 
+                   salary desc 
+               
+               limit  n , 1
   );
-END  
+  end  
 
 
 
---MySQL
-CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
-BEGIN
-DECLARE Ind INT;
-SET Ind = N-1;
-  RETURN (
-        SELECT DISTINCT salary FROM Employee 
-        ORDER BY salary DESC LIMIT  Ind , 1
+--mysql
+create function getnthhighestsalary(n int) returns int
+  begin
+      declare ind int;
+      set ind = n-1;
+      return (
+                select 
+                    distinct salary 
+                
+                from 
+                    employee 
+                
+                order by 
+                    salary desc 
+                
+                limit 
+                    ind 
+                   , 1
   );
-END
+  end
 
 
 
---MS SQL SERVER
-CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT AS
-BEGIN
-    RETURN (
-        SELECT  salary 
-        FROM (  SELECT salary , DENSE_RANK() OVER(ORDER BY salary DESC) AS ind
-                FROM Employee 
-             ) AS T 
-        WHERE ind = @N
+
+--ms sql server
+create function getnthhighestsalary(@n int) returns int as
+begin
+    return (
+              select 
+                  salary 
+              
+              from (  
+                      select 
+                          salary 
+                        , dense_rank() 
+                            over(
+                              order by 
+                                  salary desc
+                                ) 
+                            as ind
+                      
+                      from 
+                          employee 
+                   ) as t 
+              
+              where 
+                    ind = @n
 
     );
-END
+end
 
 
 
---MS SQL SERVER
-CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT AS
-BEGIN
-    RETURN (
-          SELECT DISTINCT Salary FROM Employee ORDER BY Salary DESC
-          OFFSET @N - 1 ROWS FETCH NEXT 1 ROW ONLY       
+
+--ms sql server
+create function getnthhighestsalary(@n int) returns int as
+begin
+    return (
+              select 
+                  distinct salary 
+              
+              from 
+                  employee 
+              
+              order by 
+                  salary desc
+              
+              offset @n - 1 rows 
+              fetch next 1 row only       
     );
-END
+end

@@ -50,10 +50,10 @@ from
 
 where 
       1=1
-  and  e.manager_code        =  m.manager_code 
-  and  m.senior_manager_code = sm.senior_manager_code 
+  and e.manager_code         =  m.manager_code 
+  and m.senior_manager_code  = sm.senior_manager_code 
   and sm.lead_manager_code   = lm.lead_manager_code 
-  and  c.company_code        = lm.company_code 
+  and c.company_code         = lm.company_code 
 
 group by 
     c.company_code 

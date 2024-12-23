@@ -87,7 +87,7 @@ from
 
 order by
     total_cost desc -- Sum of the cost of the ingredients
-  , pizza asc; -- Concat function
+  , pizza asc; -- Set of strings
 
 
 

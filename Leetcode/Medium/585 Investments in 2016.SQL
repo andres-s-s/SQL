@@ -1,53 +1,217 @@
---MySQL  &  MS SQL SERVER
-SELECT ROUND( SUM( tiv_2016 ) , 2 ) AS tiv_2016 FROM Insurance I
-WHERE 
-tiv_2015 IN (SELECT tiv_2015 FROM Insurance GROUP BY tiv_2015 
-                   HAVING COUNT(*) > 1 )
-AND EXISTS  (SELECT lat , lon FROM Insurance WHERE I.lat = lat AND I.lon = lon
-             GROUP BY lat , lon  HAVING COUNT(*) = 1 );
+--mysql  &  ms sql server
+select 
+    round( 
+            sum( tiv_2016 ) 
+          , 2 
+         ) 
+      as tiv_2016 from insurance i
+
+where 
+      1=1
+  and tiv_2015 in (
+                    select 
+                        tiv_2015 
+                    
+                    from 
+                        insurance 
+                    
+                    group by 
+                        tiv_2015 
+                    
+                    having 
+                        count(*) > 1 
+                  )
+  and exists  (
+                    select 
+                        lat 
+                      , lon 
+                    
+                    from 
+                        insurance 
+                    
+                    where 
+                          i.lat = lat 
+                      and i.lon = lon
+             
+                    group by 
+                        lat 
+                      , lon  
+                    
+                    having 
+                        count(*) = 1 );
 
 
 
---MySQL  &  MS SQL SERVER
-WITH CTE  AS (SELECT tiv_2015 FROM Insurance 
-              GROUP BY tiv_2015 HAVING COUNT(*) > 1 ), 
-     CTE2 AS (SELECT lat , lon FROM Insurance  GROUP BY lat , lon
-              HAVING COUNT(*) = 1 )
+--mysql  &  ms sql server
+with cte  as (
+  select 
+      tiv_2015 
+   
+  from 
+      insurance 
+              
+  group by 
+      tiv_2015 
+  
+  having 
+      count(*) > 1 
+             )
 
-SELECT ROUND ( SUM( tiv_2016 ) , 2 ) AS tiv_2016 FROM Insurance I
-JOIN CTE2 AS C ON C.lat = I.lat AND C.lon = I.lon
-WHERE I.tiv_2015 IN (SELECT tiv_2015 FROM CTE )
-AND C.lat IS NOT NULL ;
+
+, cte2 as (
+  select 
+      lat 
+    , lon 
+  
+  from 
+      insurance  
+
+  group by 
+      lat 
+    , lon
+
+  having 
+      count(*) = 1 )
 
 
 
---MySQL  &  MS SQL SERVER ---FASTEST
-WITH CTE (tiv_2016 , tiv_2015c , latlonc ) AS(
-    SELECT tiv_2016 ,
-    COUNT(*) OVER( PARTITION BY tiv_2015 ) , 
-    COUNT(*) OVER( PARTITION BY lat , lon)
-    FROM Insurance 
+select 
+    round ( 
+              sum( tiv_2016 ) 
+            , 2 
+          ) 
+      as tiv_2016 
+
+from 
+    insurance i
+
+    join cte2 as c 
+       on c.lat = i.lat 
+      and c.lon = i.lon
+
+where 
+      1=1
+  and i.tiv_2015 in ( 
+                        select 
+                            tiv_2015 
+                        from 
+                            cte )
+  and c.lat is not null ;
+
+
+
+--mysql  &  ms sql server ---fastest
+with cte (tiv_2016 , tiv_2015c , latlonc ) as (
+  select 
+      tiv_2016 
+    , count(*) 
+        over( 
+          partition by 
+              tiv_2015 ) 
+    , count(*) 
+        over( 
+          partition by 
+              lat 
+            , lon
+            )
+  
+  from 
+      insurance 
 )
 
-SELECT ROUND( SUM( tiv_2016 ) , 2 ) AS tiv_2016 FROM 
-CTE WHERE tiv_2015c > 1 AND latlonc = 1 ; 
+select 
+    round( 
+            sum( tiv_2016 ) 
+          , 2 
+         ) 
+      as tiv_2016 
+      
+from 
+    cte 
+
+where 
+      1=1
+  and tiv_2015c > 1 
+  and latlonc = 1 ; 
 
 
 
---MySQL 
-SELECT ROUND( SUM( tiv_2016 ) , 2 ) AS tiv_2016 FROM Insurance 
-WHERE tiv_2015 IN (SELECT tiv_2015 FROM Insurance GROUP BY tiv_2015 
-                   HAVING COUNT(*) > 1 )
-AND (lat,lon)  IN (SELECT lat , lon FROM Insurance GROUP BY lat , lon 
-                   HAVING COUNT(*) = 1 );
+--mysql 
+select 
+    round( 
+            sum( tiv_2016 ) 
+          , 2 
+         ) 
+      as tiv_2016 
+
+from 
+    insurance 
+
+where 
+      1=1
+  and tiv_2015  in (
+                    select 
+                        tiv_2015 
+                    
+                    from 
+                        insurance 
+                    
+                    group by 
+                        tiv_2015 
+                    
+                    having 
+                        count(*) > 1 
+                   )
+  and (lat,lon) in (
+                    select 
+                        lat 
+                      , lon 
+                    
+                    from 
+                        insurance 
+                    
+                    group by 
+                        lat 
+                      , lon 
+                   
+                    having 
+                        count(*) = 1 
+                   );
 
 
 
---MySQL 
-SELECT ROUND( SUM( tiv_2016 ) , 2 ) as tiv_2016 FROM(
+--mysql 
+select 
+    round( 
+            sum( tiv_2016 ) 
+          , 2 
+         ) 
+      as tiv_2016 
 
-    SELECT *  FROM Insurance  GROUP BY lat , lon  HAVING COUNT(*) = 1 
-    AND tiv_2015 IN (SELECT tiv_2015 FROM Insurance 
-                     GROUP BY tiv_2015 HAVING COUNT(*)>1 )
+from (   
+        select 
+            *  
+        
+        from 
+            insurance  
+        
+        group by 
+            lat 
+          , lon  
+        
+        having
+              1=1 
+          and count(*) = 1 
+          and tiv_2015 in ( select 
+                                tiv_2015 
+                            
+                            from 
+                                insurance 
+                            
+                            group by 
+                                tiv_2015 
+                            
+                            having 
+                                count(*)>1 )
 
-) AS T ;
+     ) as t ;

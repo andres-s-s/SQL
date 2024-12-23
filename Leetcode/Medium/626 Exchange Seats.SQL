@@ -1,57 +1,163 @@
---MySQL  &  MS SQL SERVER
-SELECT 
-CASE WHEN  LEAD(id) OVER(ORDER BY id ) IS NULL AND id % 2 != 0
-     THEN  id ELSE 
-     CASE  WHEN id % 2 = 0 THEN id - 1 ELSE id + 1 END 
-END AS id , student 
-FROM Seat 
-ORDER BY id ASC;
+--mysql  &  ms sql server
+select 
+    case 
+        when lead(id) 
+               over(
+                 order by 
+                     id 
+                   ) is null 
+         and id % 2 != 0
+        then  id 
+        
+        else 
+            case  
+                when id % 2 = 0 
+                then id - 1 
+                
+                else id + 1 
+            end 
+    end 
+      as id 
+  , student 
+
+from 
+    seat 
+
+order by 
+    id asc;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT id , 
-COALESCE( 
-    CASE WHEN id % 2 != 0 THEN LEAD(student) OVER(ORDER BY id ASC ) 
-    ELSE LAG(student) OVER(ORDER BY id ASC ) END , 
-    student
-) AS student 
-FROM Seat ; 
+--mysql  &  ms sql server
+  select id , 
+  coalesce( 
+  case when id % 2 != 0 then lead(student) over(order by id asc ) 
+  else lag(student) over(order by id asc ) end , 
+  student
+  ) as student 
+  from seat ; 
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT ROW_NUMBER() OVER(ORDER BY id ASC ) AS id , student FROM (
-    SELECT student , 
-        CASE WHEN id % 2 = 0 THEN id - 1 ELSE id + 1 END AS id 
-    FROM Seat
-) AS T ;
+--mysql  &  ms sql server
+select 
+    row_number() 
+      over(
+        order by 
+            id asc 
+          ) 
+      as id 
+  , student 
+
+from (
+        select 
+            student 
+          , case 
+                when id % 2 = 0 
+                then id - 1 
+                
+                else id + 1 
+            end 
+              as id 
+    
+        from 
+            seat
+     ) as t ;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT ROW_NUMBER() 
-       OVER(ORDER BY (CASE WHEN id % 2 = 0 THEN id - 1 ELSE id + 1 END ) ASC ) AS id
- , student FROM Seat;
+--mysql  &  ms sql server
+select 
+    row_number() 
+      over(
+        order by 
+            (
+                case 
+                    when id % 2 = 0 
+                    then id - 1 
+                    
+                    else id + 1 
+                end 
+            ) asc 
+          ) 
+
+      as id
+ , student 
+
+from 
+    seat;
 
 
 
---MySQL  &  MS SQL SERVER
-WITH CTE AS ( 
-  SELECT    id , student    FROM Seat    WHERE id % 2 != 0 AND id = (SELECT COUNT(*) FROM Seat )
-  UNION ALL 
-  SELECT S1.id , S2.student FROM Seat S1 JOIN Seat S2 ON S1.id - 1 = S2.id WHERE S1.id % 2  = 0 
-  UNION ALL 
-  SELECT S1.id , S2.student FROM Seat S1 JOIN Seat S2 ON S1.id + 1 = S2.id WHERE S1.id % 2 != 0 
+--mysql  &  ms sql server
+with cte as ( 
+  select 
+      id 
+    , student    
+
+from 
+    seat    
+
+where 
+      1=1
+  and id % 2 != 0 
+  and id = (select count(*) from seat )
+
+union all 
+  
+select 
+    s1.id 
+  , s2.student 
+
+from 
+    seat s1 
+    
+    join seat s2 
+       on s1.id - 1 = s2.id 
+
+where 
+    s1.id % 2  = 0 
+  
+union all 
+  
+select 
+    s1.id 
+  , s2.student 
+
+from 
+    seat s1 
+    
+    join seat s2 
+       on s1.id + 1 = s2.id 
+
+where 
+      s1.id % 2 != 0 
 )
-SELECT * FROM CTE ORDER BY id ASC ; 
+select * from cte order by id asc ; 
 
 
 
---MySQL  
-SELECT 
-IF(  LEAD(id) OVER(ORDER BY id ) IS NULL AND id % 2 != 0 , id  ,
-     IF( id % 2 = 0 , id - 1 , id + 1 ) 
-) AS id , student 
-FROM Seat 
-ORDER BY id ASC;
+--mysql  
+select 
+    if( 
+          lead(id) 
+            over(
+              order by 
+                  id 
+                ) is null 
+          and id % 2 != 0 
+        , id  
+        , if( 
+                id % 2 = 0 
+              , id - 1 
+              , id + 1 
+            ) 
+      ) 
+      as id 
+  , student 
+
+from 
+    seat 
+
+order by 
+    id asc;

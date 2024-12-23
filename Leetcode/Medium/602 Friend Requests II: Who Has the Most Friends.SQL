@@ -1,55 +1,179 @@
---MySQL
-SELECT id , COUNT(*) AS num
-FROM (
-    SELECT accepter_id  AS id FROM requestaccepted
-    UNION ALL
-    SELECT requester_id AS id FROM requestaccepted
-) AS T 
-GROUP BY id ORDER BY COUNT(*) DESC LIMIT 1 ;
+--mysql
+select 
+    id 
+  , count(*) as num
+
+from (
+        select 
+            accepter_id  as id 
+        
+        from 
+            requestaccepted
+        
+        union all
+    
+        select 
+            requester_id as id 
+        
+        from 
+            requestaccepted
+     ) as t 
+
+group by 
+    id 
+
+order by 
+    count(*) desc 
+
+limit 1 ;
 
 
 
---MySQL
-WITH 
-CTE  AS (SELECT requester_id AS id , COUNT(*) AS cnt
-        FROM RequestAccepted GROUP BY requester_id ) , 
-CTE2 AS (SELECT accepter_id  AS id , COUNT(*) AS cnt
-         FROM RequestAccepted GROUP BY accepter_id )
+--mysql
+with cte  as (
+  select 
+      requester_id as id 
+    , count(*) as cnt
 
-SELECT id , num FROM (
-    SELECT id , SUM( cnt ) AS num FROM (
-        SELECT id , cnt   FROM CTE  UNION ALL 
-        SELECT id , cnt   FROM CTE2 
-    ) AS T
-    GROUP BY id
-) AS T2 
-ORDER BY num DESC LIMIT 1 ;
+  from 
+      requestaccepted 
+  
+  group by 
+      requester_id ) 
 
 
 
----MS SQL SERVER
-SELECT TOP 1 id , COUNT(*) AS num
-FROM (
-    SELECT accepter_id  AS id FROM requestaccepted
-    UNION ALL
-    SELECT requester_id AS id FROM requestaccepted
-) AS T 
-GROUP BY id ORDER BY COUNT(*) DESC;
+, cte2 as (
+  select 
+      accepter_id  as id 
+    , count(*) as cnt
+
+  from 
+      requestaccepted 
+  
+  group by 
+      accepter_id )
 
 
 
----MS SQL SERVER
-WITH 
-CTE  AS (SELECT requester_id AS id , COUNT(*) AS cnt
-        FROM RequestAccepted GROUP BY requester_id ) , 
-CTE2 AS (SELECT accepter_id  AS id , COUNT(*) AS cnt
-         FROM RequestAccepted GROUP BY accepter_id )
+select 
+    id 
+  , num 
+  
+from (
+        select 
+            id 
+          , sum( cnt ) as num 
+        
+        from (
+                select 
+                    id 
+                  , cnt   
+                
+                from 
+                    cte  
+                
+                union all 
+                
+                select 
+                    id 
+                  , cnt   
+                
+                from 
+                    cte2 
+    ) as t
+    group by id
+) as t2 
 
-SELECT TOP 1 id , num FROM (
-    SELECT id , SUM( cnt ) AS num FROM (
-        SELECT id , cnt   FROM CTE  UNION ALL 
-        SELECT id , cnt   FROM CTE2 
-    ) AS T
-    GROUP BY id
-) AS T2 
-ORDER BY num DESC ;
+order by 
+    num desc 
+
+limit 1 ;
+
+
+
+---ms sql server
+select 
+    top 1 id 
+  , count(*) as num
+
+from (
+        select 
+            accepter_id  as id 
+        
+        from 
+            requestaccepted
+        
+        union all
+        
+        select 
+            requester_id as id 
+        
+        from 
+            requestaccepted
+) as t 
+
+group by 
+    id 
+
+order by 
+    count(*) desc;
+
+
+
+---ms sql server
+with cte  as (
+  select 
+      requester_id as id 
+    , count(*) as cnt
+
+  from 
+      requestaccepted 
+  
+  group by 
+      requester_id ) 
+
+
+, cte2 as (
+            select 
+                accepter_id  as id 
+              , count(*) as cnt
+         
+            from 
+                requestaccepted 
+            
+            group by 
+                accepter_id )
+
+
+
+select 
+    top 1 id 
+  , num 
+
+from (
+        select 
+            id 
+          , sum( cnt ) as num 
+        
+        from (
+                select 
+                    id 
+                  , cnt   
+                
+                from cte  
+                
+                union all 
+                
+                select 
+                    id 
+                  , cnt   
+                
+                from 
+                    cte2 
+    ) as t
+    group by id
+) as t2 
+
+order by 
+    num desc ;

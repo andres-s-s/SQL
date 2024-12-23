@@ -1,52 +1,149 @@
---MySQL  &  MS SQL SERVER
-SELECT MAX( salary ) AS SecondHighestSalary  FROM Employee 
-WHERE ( SELECT MAX( salary ) FROM Employee ) != salary ;
+--mysql  &  ms sql server
+select 
+    max( salary ) as secondhighestsalary  
+
+from 
+    employee 
+
+where 
+      1=1
+  and  salary != (
+                    select 
+                        max( salary ) 
+                    from 
+                        employee 
+                 )  ;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT MAX( salary ) AS SecondHighestSalary
-FROM (  SELECT salary , DENSE_RANK() OVER(ORDER BY salary DESC) AS ind
-        FROM Employee 
-     ) AS T 
-WHERE ind = 2;
+
+--mysql  &  ms sql server
+select 
+    max( salary ) as secondhighestsalary
+
+from (  
+        select 
+            salary 
+          , dense_rank() 
+              over(
+                order by 
+                  salary desc
+                  ) 
+              as ind
+        from employee 
+     ) as t 
+
+where 
+    ind = 2;
 
 
 
---MySQL
-SELECT CASE WHEN COUNT(*) = 0 THEN NULL ELSE salary END AS SecondHighestSalary
-FROM (  SELECT salary , DENSE_RANK() OVER(ORDER BY salary DESC) AS ind
-        FROM Employee 
-     ) AS T 
-WHERE ind = 2;
+
+--mysql
+select 
+    case 
+        
+        when count(*) = 0 
+        then null 
+        
+        else salary 
+    
+      end as secondhighestsalary
+
+from (  
+        select 
+            salary 
+          , dense_rank() 
+              over(
+                order by 
+                    salary desc
+                  ) 
+          as ind
+        
+        from 
+            employee 
+     ) as t 
+
+where 
+      ind = 2;
 
 
 
---MySQL
-SELECT
-    (SELECT DISTINCT Salary 
-    FROM Employee ORDER BY salary DESC 
-    LIMIT 1 OFFSET 1 )  
-AS SecondHighestSalary;
+
+--mysql
+select
+    (
+      select 
+          distinct e.salary 
+      
+      from 
+          employee e 
+      
+      order by 
+          e.salary desc 
+      
+      limit 1 
+      
+      offset 1 
+
+    ) as secondhighestsalary;
+/*
+  If you trying using a cte or getting rid of the subquery the query will not return
+  null when needed
+  */
 
 
 
---MS SQL SERVER
-SELECT ISNULL( 
-    (SELECT  salary 
-    FROM (
-        SELECT  salary , DENSE_RANK() OVER(ORDER BY salary DESC) AS ind
-        FROM Employee 
-         ) AS T 
-    WHERE ind = 2
-    GROUP BY salary ) 
-, NULL ) AS SecondHighestSalary;
+
+--ms sql server
+
+with ranked_salaries as (
+
+  select
+      salary 
+    , dense_rank() 
+        over(
+          order by 
+              salary desc
+            ) 
+        as ind
+  
+  from 
+      employee 
+                        )
+
+
+select 
+    isnull( 
+            (select 
+                 salary 
+             from 
+                 ranked_salaries
+             where 
+                 ind = 2
+             group by 
+                 salary 
+            ) 
+          , null 
+          ) 
+      as secondhighestsalary;
 
 
 
---MS SQL SERVER
-SELECT
-   (SELECT DISTINCT Salary 
-    FROM Employee ORDER BY salary DESC 
-    OFFSET 1 ROW FETCH NEXT 1 ROW ONLY)  
-AS SecondHighestSalary;
+
+--ms sql server
+select
+    (
+      select
+          distinct e.salary
+
+      from
+          employee e
+
+      order by
+          e.salary desc
+    
+      offset 1 row
+      fetch next 1 row only
+
+    ) as secondhighestsalary;

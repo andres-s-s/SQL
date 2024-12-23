@@ -1,34 +1,102 @@
---MySQL  &  MS SQL SERVER
-SELECT score , DENSE_RANK() OVER(ORDER BY score DESC ) AS "rank"
-FROM Scores ORDER BY score DESC ;
+--mysql  &  ms sql server
+select 
+    score 
+  , dense_rank() 
+      over(
+        order by 
+            score desc 
+          ) 
+      as "rank"
+
+from 
+    scores 
+
+order by 
+    score desc ;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT S.score , COUNT(*) AS "rank"
-FROM Scores AS S 
-JOIN ( SELECT DISTINCT score FROM Scores ) AS S2
-ON S.score <= S2.score 
-GROUP BY S.id , S.score 
-ORDER BY S.score DESC ;
+--mysql  &  ms sql server
+select 
+    s.score 
+  , count(*) as "rank"
+
+from 
+    scores as s 
+
+    join ( 
+          select 
+              distinct score 
+          
+          from 
+              scores 
+         ) as s2
+       on s.score <= s2.score 
+
+group by 
+    s.id 
+  , s.score 
+
+order by 
+    s.score desc ;
 
 
 
---MySQL  &  MS SQL SERVER
-SELECT score , SUM(rnk) OVER(ORDER BY score DESC) AS "rank" 
-FROM (
-  SELECT score ,  
-  CASE WHEN LAG(score) OVER(ORDER BY score DESC) = score THEN 0 ELSE + 1 END AS "rnk" 
-  FROM Scores
-) AS T ;
+
+--mysql  &  ms sql server
+select 
+    score 
+  , sum(rnk) 
+      over(
+        order by 
+            score desc
+          ) 
+      as "rank" 
+
+from (
+        select 
+            score 
+          , case 
+            
+                when lag(score) 
+                       over(
+                         order by 
+                             score desc
+                           ) = score 
+                
+                then 0 
+              
+                else + 1 
+              
+              end as "rnk" 
+        
+      from 
+        scores
+     ) as t ;
 
 
 
---MySQL
-SELECT score , CONVERT(rnk , SIGNED) AS "rank" FROM (
-    SELECT score , 
-    @rank := CASE WHEN score = @p THEN @rank ELSE @rank + 1 
-    END AS "rnk" , @p := score
-    FROM Scores , (SELECT @p:=-1 , @rank:=0 ) AS T
-    ORDER BY score DESC
-) T2;
+--mysql
+select 
+    score 
+  , convert(rnk , signed) as "rank" 
+
+from (
+        select 
+            score 
+          , @rank := 
+                    case 
+                        when score = @p 
+                        then @rank 
+                        
+                        else @rank + 1 
+              end as "rnk" 
+          , @p := score
+        
+        from 
+            scores 
+          , (select @p:=-1 , @rank:=0 ) as t
+    
+        order by 
+            score desc
+) t2;

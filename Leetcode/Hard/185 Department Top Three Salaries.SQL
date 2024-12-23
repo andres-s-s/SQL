@@ -30,7 +30,11 @@
 
 
 
--- mysql  &  ms sql server
+-- +--------------------------------------------------------------------+
+-- |  solution 1: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 with ranked_employee_salaries as  (
   select 
       e.id
@@ -44,7 +48,7 @@ with ranked_employee_salaries as  (
           order by 
               e.salary desc 
             ) 
-        as ind /* For each deparment, It will create a list, the bigger salary gets 1,
+        as ind /* For each deparment, It will create a list, the biggest salary gets 1,
                     if it's not unique all of them get 1
                     The same happens with all the 3 top salaries
                   */
@@ -71,7 +75,13 @@ from
 
 
 
--- mysql  &  ms sql server
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 2: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     d.name as department -- department name
   , e.name as employee   -- employee   name

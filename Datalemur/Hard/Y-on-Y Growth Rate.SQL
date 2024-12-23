@@ -48,8 +48,16 @@ select
   , cvs.product_id
   , cvs.curr_year_spend 
   , cvs.prev_year_spend
-  , round( ( ( cvs.curr_year_spend - cvs.prev_year_spend ) *100.0 )/cvs.prev_year_spend 
-             , 2 ) as yoy_rate
+  , round( 
+           ( 
+              ( 
+                  cvs.curr_year_spend 
+                - cvs.prev_year_spend 
+              ) *100.0 
+           )/cvs.prev_year_spend 
+           , 2 
+         ) 
+      as yoy_rate
     /*
       Year-on-year growth rate
       The order of the operations work from left to right, first it goes the subtraction

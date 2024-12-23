@@ -8,6 +8,7 @@
 */
 
 
+
 /*
   The cte takes a list of users who performed an action in june of 2022
 
