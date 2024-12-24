@@ -90,15 +90,15 @@ with distinct_p as (
 select 
     b.n 
   , if( 
-        b.p is null -- If this condition is met then write Root
-      , "Root"   
-      , (
-          if( -- If that first condition is not met execute this
-               b.n in (select p from distinct_p ) -- Is this is true write Inner
-            , "Inner" 
+          b.p is null -- If this condition is met then write Root
+        , "Root"   
+        , (
+            if( -- If that first condition is not met execute this
+                 b.n in (select p from distinct_p ) -- Is this is true write Inner
+              , "Inner" 
             , "Leaf" -- If it's not true
-            ) 
-        )
+              ) 
+          )
       ) 
 
 from 
