@@ -1,4 +1,23 @@
-/* mysql  &  ms sql server */
+/*
+  You are given a table, Functions, containing two columns: X and Y.
+  Column      Type
+  X           Integer
+  Y           Integer
+
+  Two pairs (X1, Y1) and (X2, Y2) are said to be symmetric pairs if X1 = Y2 and Y1 = X2.
+
+  Write a query to output all such symmetric pairs in ascending order by the value of X. 
+  List the rows such that X1 ≤ Y1.
+  
+  */
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 1: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     f.x 
   , f.y 
@@ -32,7 +51,12 @@ order by
 
 
 
-/* mysql  &  ms sql server */
+
+-- +--------------------------------------------------------------------+
+-- |  solution 2: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     f.x 
   , f.y 
@@ -86,7 +110,11 @@ order by
 
 
 
-/* mysql  &  ms sql server */
+-- +--------------------------------------------------------------------+
+-- |  solution 3: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     f.x 
   , f.y 

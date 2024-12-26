@@ -1,6 +1,51 @@
+/*
+  You are given a table, Projects, containing three columns: Task_ID, Start_Date and End_Date. 
+  It is guaranteed that the difference between the End_Date and the Start_Date is equal 
+  to 1 day for each row in the table.
+
+  If the End_Date of the tasks are consecutive, then they are part of the same project
+
+  Write a query to output the start and end dates of projects listed by the number of days 
+  it took to complete the project in ascending order. If there is more than one project 
+  that have the same number of completion days, then order by the start date of the project.
+
+  Column          Type
+  Task_id         Integer
+  Start_Date      Date
+  End_Date        Date
+  */
+
+
+
+
+
+
+
+
+
+
 /* mysql */
+
+with start_dates as (
+  select 
+      p.start_date 
+  
+  from 
+      projects p
+  
+  where 
+      p.start_date not in (
+                            select 
+                                end_date 
+                            from 
+                                projects 
+                          )  
+                    ) 
+
+
+
 select 
-    t.start_date 
+    s.start_date 
   , (
         select 
             p.end_date 
@@ -11,37 +56,46 @@ select
         where 
               1=1
           and p.end_date not in (select start_date from projects)  
-          and p.end_date > t.start_date 
+          and p.end_date > s.start_date 
 
         order by 
             p.end_date 
 
         limit 1 
-    ) 
-      as end_date
+    ) as end_date 
 
 from 
-    (
-        select 
-            p.start_date 
-        
-        from 
-            projects p
-        
-        where 
-            p.start_date not in (select end_date from projects )  
-    ) as t
+    start_dates s
 
 order by 
-    end_date - t.start_date 
-  , t.start_date;
+    end_date - s.start_date 
+  , s.start_date;
 
 
 
 
 /* mysql */
+
+with start_dates as (
+  select 
+      p.start_date 
+  
+  from 
+      projects p
+  
+  where 
+      p.start_date not in (
+                            select 
+                                end_date 
+                            from 
+                                projects 
+                          )  
+                    ) 
+
+
+
 select 
-    start_date 
+    s.start_date 
   , (
         select 
             min(p.end_date) 
@@ -52,24 +106,15 @@ select
         where 
               1=1
           and p.end_date not in (select start_date from projects)  
-          and p.end_date > t.start_date 
+          and p.end_date > s.start_date 
     ) as end_date
 
 from 
-    (
-        select 
-            p.start_date 
-        
-        from 
-            projects p
-     
-        where 
-            p.start_date not in (select end_date from projects )  
-    ) as t
+    start_dates s
 
 order by 
-    end_date - t.start_date 
-  , t.start_date;
+    end_date - s.start_date 
+  , s.start_date;
 
 
 

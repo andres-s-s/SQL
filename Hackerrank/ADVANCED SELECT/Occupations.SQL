@@ -7,6 +7,7 @@
   Note: Print NULL when there are no more names corresponding to an occupation.
   
   The OCCUPATIONS table 
+  Column          Type
   Name            String
   Occupation      String
   */

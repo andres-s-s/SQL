@@ -1,4 +1,28 @@
-/* mysql  &  ms sql server */
+/*
+  Write a query identifying the type of each record in the TRIANGLES table using 
+  its three side lengths. Output one of the following statements for each record in the table:
+
+  Equilateral: It's a triangle with 3 sides of equal length.
+  Isosceles: It's a triangle with 2 sides of equal length.
+  Scalene: It's a triangle with 3 sides of differing lengths.
+  Not A Triangle: The given values of A, B, and C don't form a triangle.
+
+  The TRIANGLES table is described as follows:
+  Column          Type
+  A               Integer
+  B               Integer
+  C               Integer
+  */
+
+
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 1: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     case 
 
@@ -23,7 +47,11 @@ from
 
 
 
-/* mysql  &  ms sql server */
+-- +--------------------------------------------------------------------+
+-- |  solution 2: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     case 
     
@@ -52,7 +80,11 @@ from
 
 
 
-/* mysql  &  ms sql server */
+-- +--------------------------------------------------------------------+
+-- |  solution 3: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     case 
 
@@ -82,18 +114,24 @@ from
 
 
 
-/* mysql */
+-- +--------------------------------------------------------------------+
+-- |  solution 4: mysql   
+-- +--------------------------------------------------------------------+
+
+
 select 
     if(
-        t.a+t.b <= t.c
-      , "Not A Triangle"
-      , if( 
-            t.a=t.b and t.b=t.c
-          , "Equilateral"
-          , if(
-                t.a=t.b or t.a=t.c 
-              , "Isosceles"
-              , "Scalene") 
-          ) 
+          t.a+t.b <= t.c
+        , "Not A Triangle"
+        , if( 
+                t.a=t.b and t.b=t.c
+              , "Equilateral"
+              , if(
+                    t.a=t.b or t.a=t.c 
+                  , "Isosceles"
+                  , "Scalene") 
+            ) 
       ) 
-from triangles t;
+
+from 
+    triangles t;
