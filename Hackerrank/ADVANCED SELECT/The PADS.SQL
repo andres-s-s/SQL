@@ -80,12 +80,12 @@ order by
 /* mysql */
 select 
     concat( 
-            o.name 
-          , "("
-          , upper( 
-                substr( o.occupation, 1, 1) 
-                 ) 
-          , ")" 
+              o.name 
+            , "("
+            , upper( 
+                  substr( o.occupation, 1, 1) 
+                   ) 
+            , ")" 
           ) 
 
 from 
@@ -97,11 +97,11 @@ order by
 
 select 
     concat(
-            "There are a total of " 
-          , count(*) 
-          , " " 
-          , lower(o.occupation) 
-          , "s." 
+              "There are a total of " 
+            , count(*) 
+            , " " 
+            , lower(o.occupation) 
+            , "s." 
           )
 
 from 
