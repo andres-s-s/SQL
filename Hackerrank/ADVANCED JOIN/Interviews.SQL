@@ -204,10 +204,10 @@ group by
   , name 
 
 having ( 
-    sum(ts)
-  + sum(tas)
-  + sum(tv)
-  + sum(tuv) 
+            sum(ts)
+          + sum(tas)
+          + sum(tv)
+          + sum(tuv) 
        ) > 0
 
 order by 

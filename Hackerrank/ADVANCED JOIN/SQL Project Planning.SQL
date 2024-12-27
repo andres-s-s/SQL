@@ -24,7 +24,10 @@
 
 
 
-/* mysql */
+-- +--------------------------------------------------------------------+
+-- |  solution 1: mysql
+-- +--------------------------------------------------------------------+
+
 
 with start_dates as (
   select 
@@ -74,7 +77,12 @@ order by
 
 
 
-/* mysql */
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 2: mysql
+-- +--------------------------------------------------------------------+
+
 
 with start_dates as (
   select 
@@ -119,319 +127,407 @@ order by
 
 
 
-/* mysql */
-select 
-    t1.start_date 
-  , t2.end_date 
+-- +--------------------------------------------------------------------+
+-- |  solution 3: mysql
+-- +--------------------------------------------------------------------+
+
+with start_dates as (
+  select 
+      p.start_date 
+    , row_number() 
+        over(
+          order by 
+              p.start_date 
+            ) 
+        as ind 
+  
+  from 
+      projects p 
+  
+  where 
+      p.start_date not in (select end_date from projects )  
+    )
+
  
-from (
-        select 
-            p.start_date 
-          , row_number() 
-              over(
-                order by 
-                    p.start_date 
-                  ) 
-              as ind 
-        
-        from 
-            projects p 
-        
-        where 
-            p.start_date not in (select end_date from projects )  
-    ) as t1
+, end_dates as (
+  select 
+      p.end_date   
+    , row_number() 
+        over(
+          order by 
+              p.end_date 
+            )
+        as ind 
 
-    join (
-            select 
-                p.end_date   
-              , row_number() 
-                  over(
-                    order by 
-                        p.end_date 
-                      )
-                  as ind 
-         
-            from 
-                projects p
-            
-            where 
-                p.end_date not in (select start_date from projects)   
-         ) as t2
-       on t1.ind = t2.ind 
+  from 
+      projects p
+  
+  where 
+      p.end_date not in (select start_date from projects)   
+         ) 
+
+
+
+select 
+    s.start_date 
+  , e.end_date 
+ 
+from  start_dates s
+
+    join end_dates e
+       on s.ind = e.ind 
 
 order by 
-    datediff( t2.end_date , t1.start_date )
-  , t1.start_date;
+    datediff( e.end_date , s.start_date )
+  , s.start_date;
 
 
 
 
-/* mysql */
+-- +--------------------------------------------------------------------+
+-- |  solution 4: mysql
+-- +--------------------------------------------------------------------+
+
+
+with start_dates as (
+  select 
+      p.start_date 
+    , @num := @num + 1 
+        as ind 
+  
+  from 
+      projects p
+    , (select @num := 0) 
+        as nt
+  
+  where 
+      p.start_date not in (select end_date from projects ) 
+
+  order by 
+      p.start_date
+                    ) 
+
+
+, end_dates as (
+  select 
+      p.end_date  
+    , @numb := @numb + 1 
+        as ind  
+  
+  from 
+      projects p
+    , (select @numb := 0) 
+        as nt 
+  
+  where 
+      p.end_date not in (select start_date from projects)   
+  
+  order by 
+      p.end_date
+               ) 
+
+
 select 
-    t1.start_date 
-  , t2.end_date 
+    s.start_date 
+  , e.end_date 
 
-from (
-        select 
-            p.start_date 
-          , @num := @num + 1 
-              as ind 
-        
-        from 
-            projects p
-          , (select @num := 0) 
-              as nt
-        
-        where 
-            p.start_date not in (select end_date from projects ) 
-     
-        order by 
-            p.start_date
-    ) as t1
+from 
+    start_dates s
 
-  join (
-        select 
-            p.end_date  
-          , @numb := @numb + 1 
-              as ind  
-        
-        from 
-            projects p
-          , (select @numb := 0) 
-              as nt 
-        
-        where 
-            p.end_date not in (select start_date from projects)   
-        
-        order by 
-            p.end_date
-    ) as t2
-     on t1.ind = t2.ind 
+    join end_dates e
+       on s.ind = e.ind 
      
 order by 
-    datediff(  t2.end_date , t1.start_date )
-  , t1.start_date;
+    datediff(  e.end_date , s.start_date )
+  , s.start_date;
 
 
 
 
-/* mysql */
-select 
-    min(t2.start_date) 
-  , max(t2.end_date) 
+-- +--------------------------------------------------------------------+
+-- |  solution 5: mysql
+-- +--------------------------------------------------------------------+
 
-from (
-        select 
-            t.start_date 
-          , t.end_date 
-          , sum(t.tf) 
-              over(
-                order by 
-                    t.start_date
-                  ) 
-              as same_proj
+with new_projects as  (
+    select
+        p.start_date 
+      , p.end_date 
+      , case 
+            when lag(p.end_date) 
+                   over(
+                     order by 
+                         p.start_date
+                       ) = p.start_date
+            then 0 -- If the previous end_date and the current start_date are the same
+            else 1 -- If they are not the same 
+          
+          end as tf
     
-        from (
-                select 
-                    p.start_date 
-                  , p.end_date 
-                  , case 
-                        when lag(p.end_date) 
-                               over(
-                                 order by 
-                                     p.start_date
-                                   ) = p.start_date
-                        then 0 
-                        else 1 
-                      
-                      end as tf
-                
-                from 
-                    projects p
-              ) t
-     ) as t2
+    from 
+        projects p
+                      )
+
+
+, same_projects as (
+  select 
+      n.start_date 
+    , n.end_date 
+    , sum(n.tf) 
+        over(
+          order by 
+              n.start_date
+            ) 
+        as same_proj
+
+  from 
+      new_projects n
+               ) 
+
+
+
+select 
+    min(s.start_date) 
+  , max(s.end_date) 
+
+from 
+    same_projects s
 
 group by 
-    t2.same_proj
+    s.same_proj
 
 order by 
-    datediff( max(end_date) , min(start_date) )
-  , min(start_date);
+    datediff( max(s.end_date) , min(s.start_date) )
+  , min(s.start_date);
 
 
 
-
-/* mysql */
-select 
-    min(t2.start_date) 
-  , max(t2.end_date) 
-
-from (
-        select 
-            t.start_date 
-          , t.end_date 
-          , sum(t.tf) 
-              over(
-                order by 
-                    start_date
-                  ) 
-              as same_proj
-        from (
-                select 
-                    p.start_date 
-                  , p.end_date 
-                  , if( 
-                        lag(p.end_date) 
-                          over(
-                            order by 
-                                p.start_date
-                              ) = start_date 
-                      , 0 
-                      , 1 
-                      )  
-                      as tf
-                from 
-                    projects p
-             ) t
-     ) as t2
-
-group by 
-    t2.same_proj
-
-order by 
-    datediff( max(t2.end_date) , min(t2.start_date) )
-  , min(t2.start_date);
+-- +--------------------------------------------------------------------+
+-- |  solution 6: mysql
+-- +--------------------------------------------------------------------+
 
 
-
-
-/* ms sql server */
-select 
-    t1.start_date 
-  , t1.end_date 
-
-from (
-        select 
-            t.start_date 
-          , (
-                select 
-                    top 1 p.end_date 
-                
-                from 
-                    projects p
-                
-                where
-                      1=1 
-                  and p.end_date not in (select start_date from projects)  
-                  and p.end_date > t.start_date 
-                
-                order by 
-                    end_date 
-            ) as end_date
-        from (
-                select 
-                    p.start_date 
-                
-                from 
-                    projects p
-                
-                where 
-                    p.start_date not in (select end_date from projects )  
-             ) as t  
-     ) t1
-
-order by 
-    datediff(dd , t1.start_date , t1.end_date)
-  , t1.start_date;
-
-
-
-
-/* ms sql server */
-select 
-    t1.start_date 
-  , t2.end_date 
-
-from (
-        select 
-            p.start_date 
-          , row_number() 
-              over(
-                order by 
-                    p.start_date 
-                  ) 
-              as ind 
-        
-        from 
+with new_projects as (
+  select 
+      p.start_date 
+    , p.end_date 
+    , if( 
+          lag(p.end_date) 
+            over(
+              order by 
+                  p.start_date
+                ) = start_date 
+        , 0 -- If the previous end_date and the current start_date are the same
+        , 1 -- If they are not the same 
+        )  
+        as tf
+  from 
             projects p
-        
-        where 
-            p.start_date not in (select end_date from projects )  
-     ) as t1
-
-    join (
-            select 
-                p.end_date
-              , row_number() 
-                  over(
-                    order by 
-                        p.end_date 
-                      )   
-                  as ind 
-            
-            from 
-                projects p
-            
-            where 
-                p.end_date not in (select start_date from projects)   
-         ) as t2
-         on t1.ind = t2.ind 
-
-order by 
-    datediff( dd, t1.start_date, t2.end_date)
-  , t1.start_date;
+             )
 
 
+, same_projects as (
+  select 
+      n.start_date 
+    , n.end_date 
+    , sum(n.tf) 
+        over(
+          order by 
+              n.start_date
+            ) 
+        as same_proj
+
+  from 
+      new_projects n
+               ) 
 
 
-/* ms sql server */
 select 
-    min(t2.start_date) 
-  , max(t2.end_date) 
+    min(s.start_date) 
+  , max(s.end_date) 
 
-from (  
-        select 
-            t.start_date 
-          , t.end_date 
-          , sum(t.tf) 
-              over(
-                order by 
-                    start_date
-                  ) 
-              as p
-        from (
-                select 
-                    p.start_date 
-                  , p.end_date 
-                  , case 
-                      when 
-                        lag(p.end_date) 
-                          over(
-                            order by 
-                                p.start_date
-                              ) = p.start_date
-                      then 0 
-                      else 1 
-
-                    end as tf
-                from 
-                    projects p
-             ) t
-     ) as t2
+from 
+    same_projects s
 
 group by 
-    t2.p
+    s.same_proj
 
 order by 
-    datediff( dd, min(t2.start_date) , max(t2.end_date) )
-  , min(t2.start_date);
+    datediff( max(s.end_date) , min(s.start_date) )
+  , min(s.start_date);
+
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 7: ms sql server
+-- +--------------------------------------------------------------------+
+
+
+with start_dates as (
+  select 
+      p.start_date 
+  
+  from 
+      projects p
+
+  where 
+      p.start_date not in (select end_date from projects )  
+                    ) 
+
+
+, projects_start_and_end_date as (
+  select 
+      t.start_date 
+    , (
+          select 
+              top 1 p.end_date 
+          
+          from 
+              projects p
+          
+          where
+                1=1 
+            and p.end_date not in (select start_date from projects)  
+            and p.end_date > t.start_date 
+          
+          order by 
+              end_date 
+      ) as last_date
+
+  from start_dates t  
+                                 )
+
+
+
+select 
+    p.start_date 
+  , p.last_date 
+
+from 
+    projects_start_and_end_date p
+    /* 
+      The secod cte already has the answer but it is not possible to sort it directly 
+      because it can't used the newly created last_date field so we need to query that 
+      cte so we can use last_date field to order the results
+      */
+
+order by 
+    datediff(dd , p.start_date , p.last_date)
+  , p.start_date;
+
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 7: ms sql server
+-- +--------------------------------------------------------------------+
+
+
+with start_dates as (
+  select 
+      p.start_date 
+    , row_number() 
+        over(
+          order by 
+              p.start_date 
+            ) 
+        as ind 
+
+  from 
+      projects p
+
+  where 
+      p.start_date not in (select end_date from projects )  
+                    ) 
+
+
+, end_dates as (
+  select 
+      p.end_date
+    , row_number() 
+        over(
+          order by 
+              p.end_date 
+            )   
+        as ind 
+    
+  from 
+      projects p
+    
+  where 
+      p.end_date not in (select start_date from projects)   
+               )
+
+
+select 
+    s.start_date 
+  , e.end_date 
+
+from 
+    start_dates s
+
+    join end_dates e
+       on s.ind = e.ind 
+
+order by 
+    datediff( dd, s.start_date, e.end_date)
+  , s.start_date;
+
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 7: ms sql server
+-- +--------------------------------------------------------------------+
+
+
+with new_projects as  (
+    select
+        p.start_date 
+      , p.end_date 
+      , case 
+            when lag(p.end_date) 
+                   over(
+                     order by 
+                         p.start_date
+                       ) = p.start_date
+            then 0 -- If the previous end_date and the current start_date are the same
+            else 1 -- If they are not the same 
+          
+          end as tf
+    
+    from 
+        projects p
+                      )
+
+
+, same_projects as (
+  select 
+      n.start_date 
+    , n.end_date 
+    , sum(n.tf) 
+        over(
+          order by 
+              n.start_date
+            ) 
+        as same_proj
+
+  from 
+      new_projects n
+               ) 
+
+
+
+select 
+    min(s.start_date) 
+  , max(s.end_date) 
+
+from 
+    same_projects s
+
+group by 
+    s.same_proj
+
+order by 
+    datediff( dd, min(s.start_date) , max(s.end_date) )
+  , min(s.start_date);
