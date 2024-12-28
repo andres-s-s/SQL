@@ -1,8 +1,8 @@
 /* mysql */
 select 
     repeat( 
-            "* "
-          , @num := @num - 1 
+              "* "
+            , @num := @num - 1 
           ) 
 
 from 
@@ -12,6 +12,8 @@ from
 where 
       1=1
   and @num > 1;
+
+
 
 
 

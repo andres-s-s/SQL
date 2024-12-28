@@ -33,137 +33,104 @@
 
 
 
+-- +--------------------------------------------------------------------+
+-- |  solution 1: mysql  &  ms sql server   
+-- +--------------------------------------------------------------------+
 
-/* Mysql */
-set @date = (
+
+set @date = (   
   select 
-      min(submission_date) 
-  
+      min(s.submission_date) 
   from 
-    submissions )
-;
-/* This gets the date of the first day of the contest */
+      submissions s
+            );
 
 
 select 
-    mt.submission_date 
-  , mt.ct /*Total number of unique hackers who made at least one submission each day*/
-  , ( 
-       select 
-            s.hacker_id 
-       
-       from 
-       submissions s 
-
-       where 
-              s.submission_date = mt.submission_date
-
-       group by 
-            s.hacker_id 
-       
-       order by 
-            count(*) desc , 
-            s.hacker_id asc 
-       
-       limit 1 
-    ) as h_id /*Hacker id who made the most number of submissions per day*/
+    dt.submission_date 
+    ,( 
+        select 
+            count(distinct s.hacker_id) 
+        
+        from 
+          submissions s
       
-  , ( 
-       select 
-           name 
-       
-       from hackers h
-
-       where 
-          h.hacker_id = h_id 
-      ) as h_name /*Hacker name who made maximum number of submissions per day*/
-
-from  (
-
-          select 
-              t.submission_date 
-            , count(*) 
-                as ct 
-
-          from  (
-                          select 
-                              s.submission_date 
-                            , s.hacker_id 
+        where 
+              submission_date = dt.submission_date 
+          and ( 
+                select 
+                    count(distinct u.submission_date) 
                       
-                          from 
-                            submissions s
-                          
-                          group by 
-                              s.submission_date 
-                            , s.hacker_id   
+                from 
+                  submissions u
+                      
+                where 
+                      s.submission_date > u.submission_date 
+                  and u.hacker_id = s.hacker_id
+              ) = datediff( dt.submission_date , @date )  
+                    /*
+                        Alternative for the datediff line of code
+                        (
+                        select 
+                            count(distinct b.submission_date )
+                        from 
+                            submissions b
+                        where 
+                              s.submission_date > b.submission_date
+                        )
+                      */
+     ) /* Total number of unique hackers who made at least one submission each day */
+  , (   
+      select 
+          s.hacker_id 
+        
+      from 
+          submissions s
+        
+      where 
+            s.submission_date = dt.submission_date 
+        
+      group by 
+          s.hacker_id 
+        
+      order by 
+          count(*) desc 
+        , s.hacker_id 
+        
+        limit 1 
+    ) as h_id  /*  Hacker id who made the most submissions per day  */
+  , (
+      select 
+          h.name 
+      
+      from 
+          hackers h  
+        
+      where 
+            h_id = h.hacker_id  
+    )  /*  Hacker name who made the most number of submissions per day  */
 
-              ) as t 
-              /*
-                A hacker can make several submissions the same day so this table gets a list
-                of hackers and the day the made at least one submission
-                So this table gets rid of extra submissions made by a hacker on the same day
-                */
-          where (
-                          select 
-                              count(distinct s.submission_date) 
-                          
-                          from submissions s
-                          
-                          where 
-                                s.hacker_id = t.hacker_id  
-                            and s.submission_date < t.submission_date 
-                )  
-            =  datediff(t.submission_date , @date )
-              /*
-                This where condicion from the first subquery summons a table, this is how it works
-                We have the table t with 2 columns,submission_date and hacker_id, remember it
-                Imagine this
-                For the first day It gets a hacker_id from a hacker who made a submission that day
-                Then it looks for the amount of records before that day for that hacker_id
-                After that it compares that amount of records for that hacker with the amount of days
-                  before that submission_date
-                In this case it will be 0 because it's the first day and the count function will return 0
-                  datediff(t.submission_date , @date ) will also return 0 
-                  That is because all the hackers who made a submission the first day meet the requirement
-                  of having made a submission since the first day 
-                I know this might be confusion but bear with me 
-
-                For the second day It gets a hacker_id from a hacker who made a submission that day
-                Then it looks for the amount of records before that day for that hacker_id
-                After that it compares that amount of records for that hacker with the amount of days
-                  before that submission_date
-                If the hacker made a submission the first day the count function will return 1 
-                  and the datediff(t.submission_date , @date ) will return 1 but if that hacker
-                  did not make a submission that day there is no match 
-
-                Look at this example
-
-                Record being analized
-                2016-03-06 49 84307 Evelyn
-
-                Evelyn's records from previous days
-                2016-03-01 112 84307 Evelyn
-                2016-03-02 59 84307 Evelyn
-                2016-03-05 49 84307 Evelyn
-
-                From 2016-03-01 to 2016-03-06 There are 5 days but the previos records are not 5
-                  therefore Evelyn didn't make submissions each day 
-                
-                After filtering those records They are grouped by submission_date
-                That's how we get total number of unique hackers who made at least 
-                  submission each day
-
-                */
-
-          group by t.submission_date
-          ) as mt
+from (  
+        select 
+            distinct submission_date 
+        
+        from 
+          submissions 
+        
+        order by 
+            submission_date asc  
+      ) as dt
 
 order by 
-    mt.submission_date asc;
+    dt.submission_date asc;
 
 
 
---mysql
+-- +--------------------------------------------------------------------+
+-- |  solution 2: mysql
+-- +--------------------------------------------------------------------+
+
+
 set @date = (
   select 
       min(submission_date) 
@@ -255,23 +222,23 @@ from  (
                 */
           ) as mt
 
-  join  
-    submissions s 
-    on mt.submission_date = s.submission_date
-  /*
-    From the subquery called mt we get the day of the contest and number of hackers
-    but it's necessary to obtain the hacker_id and the name, the submissions table
-    has that information thus the join uses submission_date field, because it is found
-    in both tables (submissions and mt subquery)
-    */
+    join  
+      submissions s 
+      on mt.submission_date = s.submission_date
+      /*
+        From the subquery called mt we get the day of the contest and number of hackers
+        but it's necessary to obtain the hacker_id and the name, the submissions table
+        has that information thus the join uses submission_date field, because it is found
+        in both tables (submissions and mt subquery)
+        */
 
-  join  
-    hackers h     
-    on s.hacker_id = h.hacker_id 
-  /*
-    This join is to get the hacker names, this information is not found in the submissions
-    table but this last table has a hacker_id that is linked to a name
-    */
+    join  
+      hackers h     
+      on s.hacker_id = h.hacker_id 
+      /*
+        This join is to get the hacker names, this information is not found in the submissions
+        table but this last table has a hacker_id that is linked to a name
+        */
 
 where 
       s.hacker_id = ( select 
@@ -307,8 +274,11 @@ order by
     mt.submission_date asc;
 
 
+-- +--------------------------------------------------------------------+
+-- |  solution 3: mysql
+-- +--------------------------------------------------------------------+
 
---mysql
+
 select 
     mt.submission_date 
   , count(*) 
@@ -319,49 +289,55 @@ from (
     select 
         submission_date 
       , hacker_id 
-      , if(hacker_id != @hv , @csct := 1 ,  @csct := @csct + 1 ) 
+      , if(   
+              hacker_id != @hv 
+            , @csct := 1 
+            , @csct := @csct + 1 ) 
           as h_rank 
       , @hv := hacker_id  
     
     from (
-          select 
-              distinct submission_date 
-            , hacker_id  
-          
-          from 
-            submissions 
-          
-          order by 
-              hacker_id 
-            , submission_date  
+            select 
+                distinct submission_date 
+              , hacker_id  
+            
+            from 
+              submissions 
+            
+            order by 
+                hacker_id 
+              , submission_date  
           ) as sd 
         ,(
-          select @csct := 1,@hv := 0 
+            select 
+                @csct := 1
+              , @hv := 0 
           ) as et 
 ) as mt
 
 
-  join (
-    select 
-        submission_date 
-      , @d := @d + 1 
-          as d_rank
-
-    from (
+    join (
           select 
-              distinct submission_date 
+              submission_date 
+            , @d := @d + 1 
+                as d_rank
 
-          from 
-            submissions 
-          
-          order by 
-              submission_date asc ) 
-            as idt
-        , (
-          select @d := 0
-          ) as dv 
+          from (
+                select 
+                    distinct submission_date 
+      
+                from 
+                  submissions 
+                
+                order by 
+                    submission_date asc ) 
+                  as idt
+              , (
+                  select 
+                      @d := 0
+                ) as dv 
       ) as dt
-  on dt.submission_date = mt.submission_date and mt.h_rank = dt.d_rank
+    on dt.submission_date = mt.submission_date and mt.h_rank = dt.d_rank
 
   join (
       select 
@@ -409,82 +385,11 @@ order by
 
 
 
---mysql favorite solution
-set @date = 
-(   select 
-        min(submission_date) 
-    from submissions 
-);
 
-select 
-    dt.submission_date 
-    ,(
-      select 
-          count(distinct hacker_id) 
-      
-      from 
-        submissions as s
-    
-      where 
-            submission_date = dt.submission_date 
-        and ( 
-              select 
-                  count(distinct submission_date) 
-                    
-              from 
-                submissions 
-                    
-              where 
-                    s.submission_date > submission_date 
-                and hacker_id = s.hacker_id
-            ) 
-        = datediff( dt.submission_date , @date )  
-     ) 
-  , (   
-    select hacker_id 
-      
-    from 
-      submissions 
-      
-    where 
-          submission_date = dt.submission_date 
-      
-    group by 
-        hacker_id 
-      
-    order by 
-        count(*) desc 
-      , hacker_id 
-      
-      limit 1 
-    ) as h_id 
-  , (
-    select 
-        name 
-    
-    from 
-      hackers  
-      
-    where 
-          h_id = hacker_id  )
+-- +--------------------------------------------------------------------+
+-- |  solution 4: ms sql server   
+-- +--------------------------------------------------------------------+
 
-from (  
-      select 
-          distinct submission_date 
-      
-      from 
-        submissions 
-      
-      order by 
-          submission_date asc  
-      ) as dt
-
-order by 
-    dt.submission_date asc;
-
-
-
---ms sql server
 declare @date date;
 
 set @date = 
@@ -493,78 +398,86 @@ set @date =
     from submissions 
 );
 
+
 select 
-    submission_date 
-  , ct 
-  , h_id 
-  , name 
+    t.submission_date 
+  , t.ct 
+  , t.h_id 
+  , (
+      select 
+          h.name 
+      
+      from 
+          hackers h  
+        
+      where 
+            t.h_id = h.hacker_id  
+    )
 
 from (
       select 
-          mt.submission_date 
-        , mt.ct 
+          dt.submission_date 
         ,( 
           select 
-              top 1 hacker_id 
+              count(distinct hacker_id) 
+          
+          from 
+            submissions s
+         
+          where 
+                submission_date = dt.submission_date 
+            and (
+                select 
+                    count(distinct submission_date) 
+                
+                from 
+                  submissions 
+                
+                where 
+                      dt.submission_date > submission_date 
+                  and hacker_id = s.hacker_id) 
+            = datediff(dd, @date , dt.submission_date ) 
+         ) as ct
+        ,(
+            select 
+                top 1 hacker_id 
+            
+            from 
+                submissions 
+           
+            where 
+                  submission_date = dt.submission_date 
+           
+            group by 
+                hacker_id 
+          
+            order by 
+                count(*) desc 
+              , hacker_id  
+         ) as h_id 
+         /*
+            I can not do the same I did in the solution 1 and query the hacker name directly
+            using the new created h_id field
+            */
+    
+    from (
+          select 
+              distinct submission_date 
           
           from 
             submissions 
-          
-          where 
-                submission_date = mt.submission_date
-          
-          group by 
-              hacker_id 
-          
-          order by 
-              count(*) desc 
-            , hacker_id asc 
-         
-         ) as h_id 
-from (
-      select 
-          submission_date 
-        , count(*) as ct 
-        
-      from (
-            select 
-                submission_date 
-              , hacker_id 
-            
-            from submissions 
-            
-            group by 
-                submission_date 
-              , hacker_id 
-           
-           ) as t 
-      
-      where (
-              select 
-                  count(distinct submission_date) 
-              
-              from submissions 
-            
-              where 
-                    hacker_id = t.hacker_id  
-                  and submission_date < t.submission_date 
-            )  
-            =  datediff(dd, @date , t.submission_date )
-      
-      group by 
-          t.submission_date
-     
-     ) as mt
-      ) xt 
-  join hackers h 
-    on xt.h_id = h.hacker_id 
- 
+         ) as dt
+     ) as t 
+
 order by 
     submission_date asc ;
 
 
 
---ms sql server
+-- +--------------------------------------------------------------------+
+-- |  solution 5: ms sql server   
+-- +--------------------------------------------------------------------+
+
 declare @date date;
 
 set @date = 
@@ -649,7 +562,13 @@ order by
 
 
 
---ms sql server
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 6: ms sql server   
+-- +--------------------------------------------------------------------+
+
+
 select 
     mt.submission_date 
   , count(*) 
@@ -732,75 +651,3 @@ order by
     mt.submission_date asc
 
 
-
---ms sql server
-declare @date date;
-
-set @date = 
-(   select 
-        min(submission_date) 
-    from submissions 
-);
-
-select 
-    submission_date 
-  , ct 
-  , h_id 
-  , name 
-
-from (
-      select 
-          dt.submission_date 
-        ,( 
-          select 
-              count(distinct hacker_id) 
-          
-          from 
-            submissions s
-         
-          where 
-                submission_date = dt.submission_date 
-            and (
-                select 
-                    count(distinct submission_date) 
-                
-                from 
-                  submissions 
-                
-                where 
-                      dt.submission_date > submission_date 
-                  and hacker_id = s.hacker_id) 
-            = datediff(dd, @date , dt.submission_date ) 
-         ) as ct
-        ,(
-          select 
-              top 1 hacker_id 
-          
-          from 
-            submissions 
-         
-         where 
-            submission_date = dt.submission_date 
-         
-        group by 
-            hacker_id 
-        
-        order by 
-            count(*) desc 
-          , hacker_id  
-         ) as h_id 
-    
-    from (
-          select 
-              distinct submission_date 
-          
-          from 
-            submissions 
-         ) as dt
-     ) as t 
-
-  join hackers h 
-    on h.hacker_id = h_id
-
-order by 
-    submission_date asc ;

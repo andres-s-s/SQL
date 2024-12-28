@@ -83,9 +83,10 @@ order by
 -- +--------------------------------------------------------------------+
 -- |  solution 2: mysql  &  ms sql server   
 -- +--------------------------------------------------------------------+
-/*
-  This code is less efficient and does not aligned with modern SQL practices
-  */
+
+
+/*  This code is less efficient and does not aligned with modern SQL practices  */
+  
 
 select 
     c.company_code 
