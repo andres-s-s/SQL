@@ -1,45 +1,29 @@
---mysql  &  ms sql server
+~~~sql
 select 
-    case 
-        when lead(id) 
-               over(
-                 order by 
-                     id 
-                   ) is null 
-         and id % 2 != 0
-        then  id 
-        
-        else 
-            case  
-                when id % 2 = 0 
-                then id - 1 
-                
-                else id + 1 
-            end 
+    s.id
+  , case
+      when id % 2 = 0 
+        then lag(student)
+                over(order by id)
+        else coalesce( 
+                lead(student)
+                    over(order by id)
+              , student
+            )
     end 
-      as id 
-  , student 
-
+    as "student"
+    
 from 
-    seat 
+    Seat s
 
 order by 
-    id asc;
+        s.id
+~~~
 
 
 
 --mysql  &  ms sql server
-  select id , 
-  coalesce( 
-  case when id % 2 != 0 then lead(student) over(order by id asc ) 
-  else lag(student) over(order by id asc ) end , 
-  student
-  ) as student 
-  from seat ; 
-
-
-
---mysql  &  ms sql server
+~~~sql
 select 
     row_number() 
       over(
@@ -63,10 +47,13 @@ from (
         from 
             seat
      ) as t ;
+~~~
+
 
 
 
 --mysql  &  ms sql server
+~~~sql
 select 
     row_number() 
       over(
@@ -86,7 +73,7 @@ select
 
 from 
     seat;
-
+~~~
 
 
 --mysql  &  ms sql server

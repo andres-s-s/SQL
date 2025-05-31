@@ -224,3 +224,123 @@ where
 
 order by 
     id asc;
+
+
+
+
+-- +--------------------------------------------------------------------+
+-- |  solution 3: mysql  &  ms sql server  &  PostgreSQL
+-- +--------------------------------------------------------------------+
+
+with consecutive_ids as (
+  select 
+      s.id
+    , s.visit_date
+    , s.people
+    , id
+      -
+      row_number()
+        over(order by s.id)
+      as grp
+
+  from 
+      Stadium s
+
+  where
+      s.people >= 100
+)
+
+, amount_of_c_ids as (
+  select 
+      c.id
+    , c.visit_date
+    , c.people
+    , count(*) over(partition by c.grp)
+        as cnt
+
+  from 
+      consecutive_ids c
+)
+
+select 
+    a.id
+  , a.visit_date
+  , a.people
+
+from 
+    amount_of_c_ids a
+
+where 
+    a.cnt >=3
+
+
+ 
+
+-- +--------------------------------------------------------------------+
+-- |  solution 4: mysql  &  ms sql server  &  PostgreSQL
+-- +--------------------------------------------------------------------+
+
+with greater_than as (
+
+  select 
+      s.id
+    , s.visit_date
+    , s.people
+    , case
+        when
+          lag(id) over(order by id ) + 1 
+          =
+          id
+        then
+          0
+        else
+          1
+      end
+        as t_f
+
+
+  from 
+      Stadium s
+
+  where
+      s.people >= 100
+)
+
+, cte as (
+
+  select
+      g.id
+    , g.visit_date
+    , g.people
+    , sum(t_f) over(order by g.id)
+        as sm
+
+  from 
+      greater_than g
+)
+
+
+, cte2 as (
+
+  select 
+      id
+    , visit_date
+    , people
+    , count(*) over(partition by sm)
+        as cnt
+
+  from 
+      cte
+)
+
+
+select 
+    id
+  , visit_date
+  , people
+
+from 
+    cte2
+
+where
+    cnt >=3

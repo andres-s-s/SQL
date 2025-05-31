@@ -86,43 +86,44 @@ order by
 
 with start_dates as (
   select 
-      p.start_date 
+      p.start_date
+  from 
+      Projects p
+  where 
+         1=1
+    and p.start_date not in 
+                   (select end_date from Projects)
+)
+
+
+, end_dates as (
+  select 
+      p.end_date
   
   from 
-      projects p
+     Projects p
   
-  where 
-      p.start_date not in (
-                            select 
-                                end_date 
-                            from 
-                                projects 
-                          )  
-                    ) 
-
-
+  where
+         1=1
+    and p.end_date not in 
+                   (select start_date from Projects)
+)
 
 select 
-    s.start_date 
+    s.start_date
   , (
-        select 
-            min(p.end_date) 
-      
-        from 
-            projects p
-     
-        where 
-              1=1
-          and p.end_date not in (select start_date from projects)  
-          and p.end_date > s.start_date 
-    ) as end_date
+        select min(e.end_date)
+        from end_dates e
+        where e.end_date > s.start_date
+    ) 
+      as end_date
 
-from 
+from
     start_dates s
 
 order by 
-    end_date - s.start_date 
-  , s.start_date;
+    end_date - s.start_date asc
+  , s.start_date
 
 
 
@@ -133,53 +134,48 @@ order by
 
 with start_dates as (
   select 
-      p.start_date 
+      p.start_date
     , row_number() 
-        over(
-          order by 
-              p.start_date 
-            ) 
-        as ind 
-  
+        over(order by p.start_date asc)
+        as seq
   from 
-      projects p 
-  
+      Projects p
   where 
-      p.start_date not in (select end_date from projects )  
-    )
+         1=1
+    and p.start_date not in 
+                   (select end_date from Projects)
+)
 
- 
+
 , end_dates as (
   select 
-      p.end_date   
+      p.end_date
     , row_number() 
-        over(
-          order by 
-              p.end_date 
-            )
-        as ind 
-
+        over(order by p.end_date asc)
+        as seq
   from 
-      projects p
+     Projects p
   
-  where 
-      p.end_date not in (select start_date from projects)   
-         ) 
-
-
+  where
+         1=1
+    and p.end_date not in 
+                   (select start_date from Projects)
+)
 
 select 
-    s.start_date 
-  , e.end_date 
- 
-from  start_dates s
+    s.start_date
+  , e.end_date
+
+from
+    start_dates s
 
     join end_dates e
-       on s.ind = e.ind 
-
+       on e.seq = s.seq
+      
 order by 
-    datediff( e.end_date , s.start_date )
-  , s.start_date;
+    e.end_date - s.start_date asc
+  , s.start_date
+
 
 
 
@@ -365,55 +361,54 @@ order by
 
 with start_dates as (
   select 
-      p.start_date 
+      p.start_date
+  from 
+      Projects p
+  where 
+         1=1
+    and p.start_date not in 
+                   (select end_date from Projects)
+)
+
+
+, end_dates as (
+  select 
+      p.end_date
   
   from 
-      projects p
+     Projects p
+  
+  where
+         1=1
+    and p.end_date not in 
+                   (select start_date from Projects)
+)
 
-  where 
-      p.start_date not in (select end_date from projects )  
-                    ) 
+, final_result as ( -- it's not sorted yet
+select 
+    s.start_date
+  , (
+        select min(e.end_date)
+        from end_dates e
+        where e.end_date > s.start_date
+    ) 
+      as end_date
 
+from
+    start_dates s
 
-, projects_start_and_end_date as (
-  select 
-      t.start_date 
-    , (
-          select 
-              top 1 p.end_date 
-          
-          from 
-              projects p
-          
-          where
-                1=1 
-            and p.end_date not in (select start_date from projects)  
-            and p.end_date > t.start_date 
-          
-          order by 
-              end_date 
-      ) as last_date
-
-  from start_dates t  
-                                 )
-
-
+)
 
 select 
-    p.start_date 
-  , p.last_date 
+    f.start_date
+  , f.end_date
 
 from 
-    projects_start_and_end_date p
-    /* 
-      The secod cte already has the answer but it is not possible to sort it directly 
-      because it can't used the newly created last_date field so we need to query that 
-      cte so we can use last_date field to order the results
-      */
+    final_result f
 
 order by 
-    datediff(dd , p.start_date , p.last_date)
-  , p.start_date;
+    datediff(dd , f.start_date , f.end_date) asc
+  , f.start_date
 
 
 
@@ -425,54 +420,47 @@ order by
 
 with start_dates as (
   select 
-      p.start_date 
+      p.start_date
     , row_number() 
-        over(
-          order by 
-              p.start_date 
-            ) 
-        as ind 
-
+        over(order by p.start_date asc)
+        as seq
   from 
-      projects p
-
+      Projects p
   where 
-      p.start_date not in (select end_date from projects )  
-                    ) 
+         1=1
+    and p.start_date not in 
+                   (select end_date from Projects)
+)
 
 
 , end_dates as (
   select 
       p.end_date
     , row_number() 
-        over(
-          order by 
-              p.end_date 
-            )   
-        as ind 
-    
+        over(order by p.end_date asc)
+        as seq
   from 
-      projects p
-    
-  where 
-      p.end_date not in (select start_date from projects)   
-               )
-
+     Projects p
+  
+  where
+         1=1
+    and p.end_date not in 
+                   (select start_date from Projects)
+)
 
 select 
-    s.start_date 
-  , e.end_date 
+    s.start_date
+  , e.end_date
 
-from 
+from
     start_dates s
 
     join end_dates e
-       on s.ind = e.ind 
+       on e.seq = s.seq
 
 order by 
-    datediff( dd, s.start_date, e.end_date)
+    datediff(dd, s.start_date  , e.end_date ) asc
   , s.start_date;
-
 
 
 

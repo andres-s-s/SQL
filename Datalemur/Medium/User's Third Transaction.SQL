@@ -1,26 +1,28 @@
-with t as (
-  select 
-      * 
+with transactions_cte as (
+  select
+      t.user_id
+    , t.spend
+    , t.transaction_date
     , row_number()
         over(
           partition by 
-              user_id 
+              t.user_id
           order by 
-              transaction_date asc) 
-      as ind 
-  
-  from 
-    transactions
+              t.transaction_date
+            )
+        as transaction_n
+  from
+      transactions t
 )
 
+
 select 
-    user_id 
-  , spend 
-  , transaction_date 
+    t.user_id
+  , t.spend
+  , t.transaction_date
 
 from 
-  t 
+    transactions_cte t
 
-where 
-      1=1
-  and ind = 3;
+where
+    transaction_n = 3

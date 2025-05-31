@@ -42,7 +42,81 @@
   */
 
 
+select 
+    c.contest_id
+  , c.hacker_id
+  , c.name
+  , sum(total_submissions)
+      as ts
+  , sum(total_accepted_submission)
+      as tas
+  , sum(total_views)
+      as tv
+  , sum(total_unique_views)
+      as tuv
 
+from 
+
+
+    (
+    select -- If each college does not have unique challenges add distinct 
+        cl.contest_id
+      , ch.challenge_id
+
+    from 
+        Colleges cl
+        
+        join Challenges ch
+           on ch.college_id = cl.college_id
+    ) as h
+
+
+    join Contests c
+       on h.contest_id = c.contest_id
+
+
+    left join (
+            select 
+                vs.challenge_id
+              , sum(vs.total_views) 
+                  as total_views
+              , sum(vs.total_unique_views)
+                  as total_unique_views
+            from 
+                View_Stats vs
+            
+            group by 
+                vs.challenge_id
+         ) as v
+       on h.challenge_id = v.challenge_id
+
+    
+    left join (
+            select 
+                st.challenge_id
+              , sum(st.total_submissions) 
+                  as total_submissions
+              , sum(st.total_accepted_submissions)
+                  as total_accepted_submission
+            from 
+                Submission_Stats st
+            
+            group by 
+                st.challenge_id
+         ) as s
+       on h.challenge_id = s.challenge_id
+
+
+group by 
+    c.contest_id
+  , c.hacker_id
+  , c.name
+
+having 
+    (ts+tas+tv+tuv) > 0
+
+order by 
+    c.contest_id
 
 
 -- +--------------------------------------------------------------------+

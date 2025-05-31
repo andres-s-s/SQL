@@ -76,6 +76,9 @@ from
 
 group by 
     n.ind;
+
+order by 
+    n.ind
 /*
   The 4 case statements produce 4 new different columns
   Without the min and max functions and group clause the result would look like this
@@ -179,6 +182,9 @@ from
     names_in_order_and_occupations n
 
 group by 
+    n.ind
+
+order by 
     n.ind;
 
 

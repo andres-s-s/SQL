@@ -35,7 +35,35 @@
 
 
 
+select 
+    distinct
+    t.request_at
+      as "Day"
+  , round(
+        count(*) filter(where t.status like 'cancelled%')
+          over(partition by t.request_at)::decimal
+        /
+        count(*) 
+          over(partition by t.request_at)::decimal
+      , 2)
+      as "Cancellation Rate"
 
+from 
+    Trips t
+
+    left join Users u
+       on u.users_id = t.client_id
+    
+    left join Users s
+       on s.users_id = t.driver_id
+
+where 
+        1=1
+    and u.banned = 'No'
+    and s.banned = 'No'
+    and request_at in (   '2013-10-01' 
+                        , '2013-10-02' 
+                        , '2013-10-03' )
 
 
 

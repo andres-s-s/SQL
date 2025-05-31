@@ -9,4 +9,4 @@ from
 
     left join texts t
       on t.email_id = e.email_id 
-     and t.signup_action = 'confirmed';
+     and t.signup_action = 'Confirmed';

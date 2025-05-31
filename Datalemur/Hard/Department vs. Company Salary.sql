@@ -14,7 +14,8 @@ with avg_month_salary as (
     from 
         salary s
     where
-        to_char( s.payment_date , 'DD/MM/YYYY' ) like '%03/2024%'
+        to_char( s.payment_date , 'DD/MM/YYYY' ) like '%03/2024%' -- March 2024
+
 ) -- average salary for March 2024
 
 
@@ -22,7 +23,7 @@ with avg_month_salary as (
 
     select 
         e.department_id
-      , to_char( s.payment_date , 'MM-YYYY' )
+      , to_char( s.payment_date , 'MM-YYYY' ) -- Month and year
           as mnth
       , avg(s.amount) -- department_id average salary
           as d_id_avg_salary
@@ -33,14 +34,13 @@ with avg_month_salary as (
            on s.employee_id = e.employee_id 
 
     where
-        to_char( s.payment_date , 'DD/MM/YYYY' ) like '%03/2024%'
+        to_char( s.payment_date , 'DD/MM/YYYY' ) like '%03/2024%' -- March 2024
     
     group by 
         e.department_id
       , to_char( s.payment_date , 'MM-YYYY' )
 
-
-)
+)   -- average department salary for March 2024
 
 
 

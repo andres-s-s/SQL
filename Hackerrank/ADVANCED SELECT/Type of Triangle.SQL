@@ -70,7 +70,6 @@ select
       when t.a = t.b 
         or t.c = t.b 
         or t.a = t.c 
-        or t.b = t.c 
       then "Isosceles"
   
     else "Scalene" 

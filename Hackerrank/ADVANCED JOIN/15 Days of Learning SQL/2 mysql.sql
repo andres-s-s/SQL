@@ -86,8 +86,10 @@ from  (
               
               where 
                     hacker_id = t.hacker_id  
-                and submission_date < t.submission_date )  
-              =  datediff( t.submission_date , @date )
+                and submission_date < t.submission_date
+              )  
+              =  
+              datediff( t.submission_date , @date )
         group by t.submission_date
               /*
                 This where condicion from the first subquery summons a table, this is how it works

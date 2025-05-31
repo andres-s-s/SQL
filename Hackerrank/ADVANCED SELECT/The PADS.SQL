@@ -25,9 +25,7 @@ select
     concat( 
               o.name 
             , "("
-            , upper( 
-                  left( o.occupation , 1 ) -- First letter of that profession
-                   ) 
+            , upper( left( o.occupation , 1 ) ) -- First letter of that profession 
             , ")" 
           ) 
 

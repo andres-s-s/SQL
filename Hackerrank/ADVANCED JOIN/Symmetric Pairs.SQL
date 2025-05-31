@@ -19,37 +19,39 @@
 
 
 select 
-    f.x 
-  , f.y 
+    a.x
+  , a.y
 
 from 
-  functions f 
+    Functions a
+    
+    join Functions b
+       on a.x < b.x
+      and a.x = b.y
+      and a.y = b.x
+      
+union all
 
-    join functions fl
-       on f.x = fl.y 
-      and f.y = fl.x 
-      and f.x < f.y
-
-union 
-
-select 
-    f.x 
-  , f.y 
+select  
+    a.x
+  , a.y
 
 from 
-  functions f 
-
+    Functions a
+    
+where 
+      a.x = a.y
+      
 group by 
-    f.x 
-  , f.y 
+    a.x
+  , a.y
 
-having count(*) > 1 
+having count(*) > 1
+
 
 order by 
-    x;
-
-
-
+    x
+  , y
 
 
 -- +--------------------------------------------------------------------+

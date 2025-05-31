@@ -34,8 +34,7 @@ select
         If the Advertiser didn't pay its user_id won't be in the daily_pay table
         Regardless if it is New, Existing or Churn it will turn into Churn
 
-        Therefore the rest of Advertisers have made at least one payment
-        That is why we have a nested case statement
+        Therefore they made payments in the past but not now
         */
       else                                
 
