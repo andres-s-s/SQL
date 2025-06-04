@@ -69,6 +69,7 @@ order by
 **MySQL**,  **PostgreSQL**, **MS SQL Server**  
 This solution works in the case that some people have the same most number of friends.
 The others work under the assumption there is no such case.
+
 ~~~sql
 with ids as (
 

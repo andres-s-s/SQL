@@ -1,3 +1,7 @@
+### ➡️ Solution 1  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
 ~~~sql
 select 
     s.id
@@ -21,38 +25,10 @@ order by
 ~~~
 
 
+### ➡️ Solution 2  
 
---mysql  &  ms sql server
-~~~sql
-select 
-    row_number() 
-      over(
-        order by 
-            id asc 
-          ) 
-      as id 
-  , student 
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
 
-from (
-        select 
-            student 
-          , case 
-                when id % 2 = 0 
-                then id - 1 
-                
-                else id + 1 
-            end 
-              as id 
-    
-        from 
-            seat
-     ) as t ;
-~~~
-
-
-
-
---mysql  &  ms sql server
 ~~~sql
 select 
     row_number() 
@@ -76,7 +52,13 @@ from
 ~~~
 
 
---mysql  &  ms sql server
+# 📖 Extra solutions 📖  
+
+### ➡️ Solution 3  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 with cte as ( 
   select 
       id 
@@ -120,31 +102,12 @@ from
 where 
       s1.id % 2 != 0 
 )
-select * from cte order by id asc ; 
-
-
-
---mysql  
 select 
-    if( 
-          lead(id) 
-            over(
-              order by 
-                  id 
-                ) is null 
-          and id % 2 != 0 
-        , id  
-        , if( 
-                id % 2 = 0 
-              , id - 1 
-              , id + 1 
-            ) 
-      ) 
-      as id 
-  , student 
+    * 
 
 from 
-    seat 
+    cte 
 
 order by 
-    id asc;
+    id asc ; 
+~~~

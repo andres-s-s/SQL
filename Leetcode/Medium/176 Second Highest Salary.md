@@ -1,4 +1,3 @@
-
 ### ➡️ Solution 1  
 
 **MySQL**,  **PostgreSQL**, **MS SQL Server**, **Oracle**
