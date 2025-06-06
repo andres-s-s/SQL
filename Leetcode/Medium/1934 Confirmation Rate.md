@@ -1,51 +1,108 @@
---mysql  &  ms sql server
+### ➡️ Solution 1  
+
+**MySQL**, **MS SQL Server**
+
+~~~sql
 select 
-    user_id 
-  , round(  
-            count(
+    c.user_id
+  , round(
+        count(
                 case 
                     when action = 'confirmed' 
                     then 1 
                     
                     else null 
                 end 
-                 )
-        / 
-            cast( 
-                  count(*) as float 
-                ) 
-      , 2 ) 
-      as confirmation_rate
+        )
+        /
+        cast( count(*) as decimal)
+      , 2
+    )
+    as confirmation_rate
+
 
 from 
-    confirmations
+    Confirmations c
 
 group by 
-    user_id 
+    c.user_id
+
 
 union all
 
+
 select 
-    user_id 
-  , 00.00 
-      as confirmation_rate 
+    user_id
+  , 0
+    as confirmation_rate
 
 from 
-    signups 
+    Signups
 
 where 
-      user_id not in (
+    user_id not in (
                         select 
-                            distinct user_id 
-                        
+                            user_id
                         from 
-                            confirmations
-                     );
+                            Confirmations
+
+    )
+~~~
 
 
 
 
---mysql  &  ms sql server
+**PostgreSQL**
+
+~~~sql
+select 
+    c.user_id
+  , round(
+        count(c.action)
+            filter(where c.action = 'confirmed' )
+        /
+        count(*)::numeric
+      , 2
+    )
+    as confirmation_rate
+
+
+from 
+    Confirmations c
+
+group by 
+    c.user_id
+
+
+union all
+
+
+select 
+    user_id
+  , 0
+    as confirmation_rate
+
+from 
+    Signups
+
+where 
+    user_id not in (
+                        select 
+                            user_id
+                        from 
+                            Confirmations
+
+    )
+
+~~~
+
+
+
+### ➡️ Solution 2  
+
+**MySQL**,  **MS SQL Server**
+
+~~~sql
 select 
     s.user_id 
   , coalesce(
@@ -78,3 +135,4 @@ from
 
 group by 
     user_id ;
+~~~
