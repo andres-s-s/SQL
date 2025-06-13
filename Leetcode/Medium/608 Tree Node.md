@@ -1,4 +1,8 @@
---mysql  &  ms sql server
+### ➡️ Solution 1  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 with cte as (
   select 
       distinct p_id 
@@ -21,10 +25,14 @@ select
 
 from 
     tree ; 
+~~~
 
 
+### ➡️ Solution 2  
 
---mysql  &  ms sql server
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 with cte as (
   select 
       distinct p_id 
@@ -50,10 +58,16 @@ from
     
     left join cte c 
        on t.id = c.p_id ; 
+~~~
 
 
+# 📖 Extra solutions 📖  
 
---mysql
+### ➡️ Solution 3
+
+**MySQL**
+
+~~~sql
 with cte as (
   select 
       distinct p_id 
@@ -66,13 +80,14 @@ with cte as (
 select 
     id 
   , if(p_id is null 
-  , "root" 
-  , if(
-          id in (select p_id from cte ) 
-        , "inner" 
-        , "leaf") 
-      ) 
-      as type
+      , "root" 
+      , if(
+              id in (select p_id from cte ) 
+            , "inner" 
+            , "leaf") 
+          ) 
+    as type
 
 from 
     tree ; 
+~~~

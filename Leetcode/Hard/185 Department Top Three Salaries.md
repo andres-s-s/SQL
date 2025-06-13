@@ -1,39 +1,41 @@
-/*
-  A high earner in a department is an employee who has a salary in the top 
-    three unique salaries for that department.
+## 📝 Problem 📝
 
-  Write a solution to find the employees who are high earners in each of the departments.
+A high earner in a department is an employee who has a salary in the top 
+three unique salaries for that department.
 
-  Return the result table in any order.
+Write a solution to find the employees who are high earners in each of the departments.
 
-
-  Table: Employee
-  +--------------+---------+
-  | Column Name  | Type    |
-  +--------------+---------+
-  | id           | int     |
-  | name         | varchar |
-  | salary       | int     |
-  | departmentId | int     |
-  +--------------+---------+
+Return the result table in any order.
 
 
-  Table: Department
-  +-------------+---------+
-  | Column Name | Type    |
-  +-------------+---------+
-  | id          | int     |
-  | name        | varchar |
-  +-------------+---------+
-  */
+    Table: Employee
+    +--------------+---------+
+    | Column Name  | Type    |
+    +--------------+---------+
+    | id           | int     |
+    | name         | varchar |
+    | salary       | int     |
+    | departmentId | int     |
+    +--------------+---------+
+  
+  
+    Table: Department
+    +-------------+---------+
+    | Column Name | Type    |
+    +-------------+---------+
+    | id          | int     |
+    | name        | varchar |
+    +-------------+---------+
 
 
 
 
--- +--------------------------------------------------------------------+
--- |  solution 1: mysql  &  ms sql server   
--- +--------------------------------------------------------------------+
 
+### ➡️ Solution 1  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 
 with ranked_employee_salaries as  (
   select 
@@ -71,17 +73,17 @@ from
     join department d 
        on (r.ind between 1 and 3) -- Inclusive in both ends, top 3 unique salaries for that department
       and r.departmentid = d.id  ;
+~~~
 
 
 
 
+### ➡️ Solution 2  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**  
 
 
--- +--------------------------------------------------------------------+
--- |  solution 2: mysql  &  ms sql server   
--- +--------------------------------------------------------------------+
-
-
+~~~sql
 select 
     d.name as department -- department name
   , e.name as employee   -- employee   name
@@ -125,3 +127,4 @@ where 3 > (
   bigger than that one) is not true
   this would not be selected
   */
+~~~

@@ -1,4 +1,8 @@
---mysql  &  ms sql server
+### ➡️ Solution 1  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 select 
     score 
   , dense_rank() 
@@ -13,10 +17,15 @@ from
 
 order by 
     score desc ;
+~~~
 
 
 
---mysql  &  ms sql server
+### ➡️ Solution 2  
+
+**MySQL**,  **PostgreSQL**, **MS SQL Server**
+
+~~~sql
 select 
     s.score 
   , count(*) as "rank"
@@ -39,44 +48,14 @@ group by
 
 order by 
     s.score desc ;
+~~~
 
 
+# 📖 Extra solutions 📖  
 
+### ➡️ Solution 3  
 
---mysql  &  ms sql server
-select 
-    score 
-  , sum(rnk) 
-      over(
-        order by 
-            score desc
-          ) 
-      as "rank" 
-
-from (
-        select 
-            score 
-          , case 
-            
-                when lag(score) 
-                       over(
-                         order by 
-                             score desc
-                           ) = score 
-                
-                then 0 
-              
-                else + 1 
-              
-              end as "rnk" 
-        
-      from 
-        scores
-     ) as t ;
-
-
-
---mysql
+~~~sql
 select 
     score 
   , convert(rnk , signed) as "rank" 
@@ -100,3 +79,4 @@ from (
         order by 
             score desc
 ) t2;
+~~~

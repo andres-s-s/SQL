@@ -59,7 +59,8 @@ end
 
 **PostgreSQL**
 ~~~sql
-CREATE OR REPLACE FUNCTION NthHighestSalary(N INT) RETURNS TABLE (nth_salary INT) AS $$ -- "TABLE (Salary INT)" was change because it produced an error
+CREATE OR REPLACE FUNCTION NthHighestSalary(N INT) RETURNS TABLE (nth_salary INT) AS $$ 
+-- "TABLE (Salary INT)" was change because it produced an error
 BEGIN
 
   RETURN QUERY (
@@ -93,7 +94,8 @@ $$ LANGUAGE plpgsql;
 ~~~sql
 create function getnthhighestsalary(n int) returns int
   begin
-      set n = n - 1; -- Not possible to do this subtraction in other way
+      set n = n - 1; -- Not possible to do limit  n - 1, 1
+      -- You can do: declare seq int; set seq = n-1;
       return (
                select 
                    distinct salary 

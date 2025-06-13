@@ -1,50 +1,53 @@
-/*
-  262. Trips and Users
+## 📝 Problem 📝
 
-  The cancellation rate is computed by dividing the number of canceled (by client or driver) 
-  requests with unbanned users by the total number of requests with unbanned users on that day.
+262 Trips and Users
 
-  Write a solution to find the cancellation rate of requests with unbanned users (both client 
-  and driver must not be banned) each day between "2013-10-01" and "2013-10-03". 
-  Round Cancellation Rate to two decimal points.
+The cancellation rate is computed by dividing the number of canceled (by client or driver) 
+requests with unbanned users by the total number of requests with unbanned users on that day.
 
-  Return the result table in any order.
+Write a solution to find the cancellation rate of requests with unbanned users (both client 
+and driver must not be banned) each day between "2013-10-01" and "2013-10-03". 
+Round Cancellation Rate to two decimal points.
+
+Return the result table in any order.
   
-  Table: Trips
-  +-------------+----------+
-  | Column Name | Type     |
-  +-------------+----------+
-  | id          | int      |
-  | client_id   | int      |
-  | driver_id   | int      |
-  | city_id     | int      |
-  | status      | enum     |
-  | request_at  | varchar  |     
-  +-------------+----------+
+    Table: Trips
+    +-------------+----------+
+    | Column Name | Type     |
+    +-------------+----------+
+    | id          | int      |
+    | client_id   | int      |
+    | driver_id   | int      |
+    | city_id     | int      |
+    | status      | enum     |
+    | request_at  | varchar  |     
+    +-------------+----------+
 
 
-  Table: Users
-  +-------------+----------+
-  | Column Name | Type     |
-  +-------------+----------+
-  | users_id    | int      |
-  | banned      | enum     |
-  | role        | enum     |
-  +-------------+----------+
-  */
+    Table: Users
+    +-------------+----------+
+    | Column Name | Type     |
+    +-------------+----------+
+    | users_id    | int      |
+    | banned      | enum     |
+    | role        | enum     |
+    +-------------+----------+
 
+### ➡️ Solution 1  
 
+**PostgreSQL**
 
+~~~sql
 select 
     distinct
     t.request_at
       as "Day"
   , round(
         count(*) filter(where t.status like 'cancelled%')
-          over(partition by t.request_at)::decimal
+            over(partition by t.request_at)::decimal
         /
         count(*) 
-          over(partition by t.request_at)::decimal
+            over(partition by t.request_at)::decimal
       , 2)
       as "Cancellation Rate"
 
@@ -65,14 +68,14 @@ where
                         , '2013-10-02' 
                         , '2013-10-03' )
 
+~~~
 
 
+### ➡️ Solution 2  
 
--- +--------------------------------------------------------------------+
--- |  solution 1: mysql   
--- +--------------------------------------------------------------------+
+**MySQL**  
 
-
+~~~sql
 with banned as ( 
   select 
     u.users_id 
@@ -122,19 +125,64 @@ where
 
 group by 
     t.request_at; -- There are many records that share the same date so it's vital to group them
+~~~
+
+
+**MS SQL Server**  
+
+~~~sql
+with cte as ( 
+  select 
+      users_id as id 
+   
+  from 
+      users 
+  
+  where 
+        banned = 'Yes' 
+            )
+-- close cte
+
+
+select 
+    request_at as day 
+  , round(
+          avg( 
+            case 
+            
+              when status != 'completed' 
+              then 1.0 
+              else 0.0 
+            
+            end )
+        , 2 ) 
+      as "Cancellation rate"
+
+from 
+    trips  
+
+where 
+      1=1
+  and client_id not in (select id from cte)
+  and driver_id not in (select id from cte) 
+  and cast( request_at  as date )
+        between     cast(  '2013-10-01'  as date)
+                and cast(  '2013-10-03'  as date)
+
+group by 
+    request_at;
+
+~~~
 
 
 
 
 
+### ➡️ Solution 3  
 
+**MySQL**
 
-
--- +--------------------------------------------------------------------+
--- |  solution 2: mysql   
--- +--------------------------------------------------------------------+
-
-
+~~~sql
 with not_banned as ( 
     select 
         u.users_id 
@@ -192,74 +240,12 @@ where
 
 group by 
     t.request_at; -- There are many records that share the same date so it's vital to group them
+~~~
 
 
+**MS SQL Server**
 
-
-
-
-
-
--- +--------------------------------------------------------------------+
--- |  solution 3: ms sql server   
--- +--------------------------------------------------------------------+
--- like the 1 but adapted to ms sql server
-
-with cte as ( 
-  select 
-      users_id as id 
-   
-  from 
-      users 
-  
-  where 
-        banned = 'Yes' 
-            )
--- close cte
-
-
-select 
-    request_at as day 
-  , round(
-          avg( 
-            case 
-            
-              when status != 'completed' 
-              then 1.0 
-              else 0.0 
-            
-            end )
-        , 2 ) 
-      as "Cancellation rate"
-
-from 
-    trips  
-
-where 
-      1=1
-  and client_id not in (select id from cte)
-  and driver_id not in (select id from cte) 
-  and cast( request_at  as date )
-            between cast(  '2013-10-01'  as date)
-                and cast(  '2013-10-03'  as date)
-
-group by 
-    request_at;
-
-
-
-
-
-
-
-
--- +--------------------------------------------------------------------+
--- |  solution 4: ms sql server   
--- +--------------------------------------------------------------------+
-
-/* like the 3 but adapted to ms sql server */
-
-
+~~~sql
 with cte as ( 
   select 
       users_id as id 
@@ -306,3 +292,4 @@ where
 
 group by 
     request_at;
+~~~
