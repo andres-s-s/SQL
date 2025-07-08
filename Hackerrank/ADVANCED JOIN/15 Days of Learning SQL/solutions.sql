@@ -17,8 +17,10 @@ from (
                 s.hacker_id
             from 
                 Submissions s
-            where s.submission_date = d.submission_date
-            group by s.hacker_id
+            where 
+                s.submission_date = d.submission_date
+            group by 
+                s.hacker_id
             order by 
                 count(*) desc
               , s.hacker_id asc
